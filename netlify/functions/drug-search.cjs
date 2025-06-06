@@ -207,7 +207,7 @@ module.exports.handler = async function(event, context) {
             continue;
           }
 
-          const translationPrompt = `Translate the following medical text from English to Indonesian: "${originalText}"`;
+          const translationPrompt = `Provide a single, formal Indonesian translation for the following English medical text. Do not offer multiple options or explanations. Text to translate: "${originalText}"`;
           translationPromises.push(
             callGemini(translationPrompt, `translation for ${field} of ${drugIdentifier}`).then(translatedText => {
               if (translatedText && !translatedText.toLowerCase().startsWith('error') && !translatedText.toLowerCase().includes('blocked')) {
