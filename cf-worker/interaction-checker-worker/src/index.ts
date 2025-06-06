@@ -85,7 +85,7 @@ function handleOptions(request: Request) {
   ) {
     // Handle CORS preflight requests.
     const origin = request.headers.get('Origin');
-    const allowedOrigins = ['https://daivanlabs.com', 'http://localhost:8888', 'http://localhost:8787', 'https://nucleai.daivanlabs.com'];
+    const allowedOrigins = ['https://daivanlabs.com', 'http://localhost:8888', 'http://localhost:8787', 'https://nucleai.daivanlabs.com', 'https://digisehat.daivanlabs.com'];
     let allowOrigin = 'http://localhost:8888';
     if (origin && allowedOrigins.includes(origin)) {
       allowOrigin = origin;
@@ -123,7 +123,7 @@ export default {
 
 		// Define CORS headers for the actual response
     const origin = request.headers.get('Origin');
-    const allowedOrigins = ['https://daivanlabs.com', 'http://localhost:8888', 'http://localhost:8787', 'https://nucleai.daivanlabs.com'];
+    const allowedOrigins = ['https://daivanlabs.com', 'http://localhost:8888', 'http://localhost:8787', 'https://nucleai.daivanlabs.com', 'https://digisehat.daivanlabs.com'];
     let allowOrigin = 'http://localhost:8888';
     if (origin && allowedOrigins.includes(origin)) {
       allowOrigin = origin;
