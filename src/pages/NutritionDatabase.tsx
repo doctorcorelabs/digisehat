@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'; // Added useEffect
+import { useTranslation } from 'react-i18next'; // Added for i18n
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import PageHeader from '@/components/PageHeader';
@@ -53,6 +54,7 @@ interface FdcApiResponse {
 
 // --- Component ---
 const NutritionDatabase = () => {
+  const { t } = useTranslation(); // Added for i18n
   const featureName: FeatureName = 'nutrition_database';
   // Get isLoadingToggles from the hook
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
@@ -89,17 +91,17 @@ const NutritionDatabase = () => {
          const result = await checkAccess(featureName);
          if (result.quota === 0) {
               setInitialAccessAllowed(false);
-              setInitialAccessMessage(result.message || 'Access denied for your level.');
+              setInitialAccessMessage(result.message || t('nutritionDatabase.accessDeniedDefaultDescription'));
          } else {
               setInitialAccessAllowed(true);
          }
        } catch (error) {
          console.error("Error checking initial feature access:", error);
          setInitialAccessAllowed(false);
-         setInitialAccessMessage('Failed to check feature access.');
+         setInitialAccessMessage(t('nutritionDatabase.toastAccessCheckError'));
          toast({
-           title: "Error",
-           description: "Could not verify feature access at this time.",
+           title: t('nutritionDatabase.toastErrorTitle'),
+           description: t('nutritionDatabase.toastAccessCheckError'),
            variant: "destructive",
          });
        } finally {
@@ -118,8 +120,8 @@ const NutritionDatabase = () => {
      const accessResult = await checkAccess(featureName);
      if (!accessResult.allowed) {
        toast({
-         title: "Access Denied",
-         description: accessResult.message || 'You cannot perform a search at this time.',
+         title: t('nutritionDatabase.toastAccessDeniedTitle'),
+         description: accessResult.message || t('nutritionDatabase.toastCannotSearchDescription'),
          variant: "destructive",
        });
        openUpgradeDialog(); // Open the upgrade dialog
@@ -129,13 +131,13 @@ const NutritionDatabase = () => {
 
     if (!query.trim()) {
       // Use toast or keep setSearchError
-      toast({ title: "Input Error", description: "Please enter a food item to search.", variant: "default" });
-      // setSearchError('Please enter a food item to search.');
+      toast({ title: t('nutritionDatabase.toastInputErrorTitle'), description: t('nutritionDatabase.toastInputErrorDescription'), variant: "default" });
+      // setSearchError(t('nutritionDatabase.toastInputErrorDescription'));
       setResults([]);
       return;
     }
     if (!apiKey) {
-      setSearchError('API key is missing. Please check your environment configuration.');
+      setSearchError(t('nutritionDatabase.toastApiKeyMissingSearch'));
       return;
     }
 
@@ -151,11 +153,11 @@ const NutritionDatabase = () => {
       if (response.data?.foods?.length > 0) {
         setResults(response.data.foods);
       } else {
-        setSearchError('No results found for your query.');
+        setSearchError(t('nutritionDatabase.toastNoResultsForQuery', { query: query }));
       }
     } catch (err) {
       console.error("Search API Error:", err);
-      setSearchError(axios.isAxiosError(err) ? `Search failed: ${err.response?.data?.message || err.message}` : 'An unexpected search error occurred.');
+      setSearchError(axios.isAxiosError(err) ? t('nutritionDatabase.searchFailedError', { errorMessage: err.response?.data?.message || err.message }) : t('nutritionDatabase.unexpectedSearchError'));
     } finally {
       setIsLoadingSearch(false);
     }
@@ -170,7 +172,7 @@ const NutritionDatabase = () => {
   // For now, it doesn't consume the 'nutrition_database' quota.
   const fetchFoodDetails = async (fdcId: number) => {
     if (!apiKey) {
-      setDetailError('API key is missing.');
+      setDetailError(t('nutritionDatabase.toastApiKeyMissingDetails'));
       return;
     }
     
@@ -188,7 +190,7 @@ const NutritionDatabase = () => {
       setSelectedFoodDetails(response.data);
     } catch (err) {
       console.error("Detail API Error:", err);
-      setDetailError(axios.isAxiosError(err) ? `Failed to fetch details: ${err.response?.data?.message || err.message}` : 'An unexpected error occurred fetching details.');
+      setDetailError(axios.isAxiosError(err) ? t('nutritionDatabase.fetchDetailsFailedError', { errorMessage: err.response?.data?.message || err.message }) : t('nutritionDatabase.unexpectedDetailError'));
     } finally {
       setIsLoadingDetails(false);
     }
@@ -209,8 +211,8 @@ const NutritionDatabase = () => {
   return (
     <>
       <PageHeader 
-        title="Nutrition Database" 
-        subtitle="Search the FoodData Central database for nutritional information"
+        title={t('nutritionDatabase.pageTitle')}
+        subtitle={t('nutritionDatabase.pageSubtitle')}
       />
       <div className="container max-w-7xl mx-auto px-4 py-12 space-y-6">
 
@@ -226,9 +228,9 @@ const NutritionDatabase = () => {
          {!(isCheckingInitialAccess || isLoadingToggles) && !initialAccessAllowed && (
             <Alert variant="destructive" className="mt-4">
               <Terminal className="h-4 w-4" />
-              <AlertTitle>Access Denied</AlertTitle>
+              <AlertTitle>{t('nutritionDatabase.accessDeniedTitle')}</AlertTitle>
               <AlertDescription>
-                {initialAccessMessage || 'You do not have permission to access this feature.'}
+                {initialAccessMessage || t('nutritionDatabase.accessDeniedDefaultDescription')}
               </AlertDescription>
             </Alert>
           )}
@@ -240,7 +242,7 @@ const NutritionDatabase = () => {
             <div className="flex w-full max-w-lg items-center space-x-2 mx-auto">
           <Input 
             type="text" 
-            placeholder="Search for a food item (e.g., Apple)" 
+            placeholder={t('nutritionDatabase.searchInputPlaceholder')}
             value={query}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
@@ -248,7 +250,7 @@ const NutritionDatabase = () => {
           />
           <Button onClick={handleSearch} disabled={isLoadingSearch}>
             {isLoadingSearch ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            {isLoadingSearch ? 'Searching...' : 'Search'}
+            {isLoadingSearch ? t('nutritionDatabase.searchingButton') : t('nutritionDatabase.searchButton')}
           </Button>
         </div>
 
@@ -256,13 +258,13 @@ const NutritionDatabase = () => {
         {searchError && (
            <Alert variant="destructive" className="max-w-lg mx-auto">
              <Terminal className="h-4 w-4" />
-             <AlertTitle>Search Error</AlertTitle>
+             <AlertTitle>{t('nutritionDatabase.searchErrorTitle')}</AlertTitle>
              <AlertDescription>{searchError}</AlertDescription>
            </Alert>
         )}
 
         {/* Search Loading Indicator */}
-        {isLoadingSearch && <p className="text-center">Loading search results...</p>}
+        {isLoadingSearch && <p className="text-center">{t('nutritionDatabase.loadingSearchResults')}</p>}
 
         {/* Search Results Grid */}
         {!isLoadingSearch && results.length > 0 && (
@@ -271,26 +273,26 @@ const NutritionDatabase = () => {
               <Card key={food.fdcId} className="flex flex-col">
                 <CardHeader>
                   <CardTitle>{food.description}</CardTitle>
-                  {food.brandOwner && <CardDescription>Brand: {food.brandOwner}</CardDescription>}
-                  {food.dataType && <CardDescription>Type: {food.dataType}</CardDescription>}
+                  {food.brandOwner && <CardDescription>{t('nutritionDatabase.brandLabel')}: {food.brandOwner}</CardDescription>}
+                  {food.dataType && <CardDescription>{t('nutritionDatabase.typeLabel')}: {food.dataType}</CardDescription>}
                 </CardHeader>
                 <CardContent className="flex-grow">
-                  {food.ingredients && <p className="text-sm text-muted-foreground">Ingredients: {food.ingredients.substring(0, 100)}{food.ingredients.length > 100 ? '...' : ''}</p>}
-                  <p className="text-xs text-muted-foreground mt-2">FDC ID: {food.fdcId}</p>
+                  {food.ingredients && <p className="text-sm text-muted-foreground">{t('nutritionDatabase.ingredientsLabel')}: {food.ingredients.substring(0, 100)}{food.ingredients.length > 100 ? '...' : ''}</p>}
+                  <p className="text-xs text-muted-foreground mt-2">{t('nutritionDatabase.fdcIdLabel')}: {food.fdcId}</p>
                 </CardContent>
                 <CardContent> 
                   {/* --- Detail Dialog Trigger --- */}
                   <Dialog>
                     <DialogTrigger asChild>
                       <Button variant="outline" className="w-full" onClick={() => fetchFoodDetails(food.fdcId)}>
-                        View Details
+                        {t('nutritionDatabase.viewDetailsButton')}
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[625px]">
                       <DialogHeader>
-                        <DialogTitle>{selectedFoodDetails?.description ?? 'Loading...'}</DialogTitle>
+                        <DialogTitle>{selectedFoodDetails?.description ?? t('nutritionDatabase.detailsDialogLoadingTitle')}</DialogTitle>
                         <DialogDescription>
-                          Nutritional information per 100g (unless otherwise specified).
+                          {t('nutritionDatabase.detailsDialogDescription')}
                         </DialogDescription>
                       </DialogHeader>
                       
@@ -299,7 +301,7 @@ const NutritionDatabase = () => {
                       {detailError && (
                         <Alert variant="destructive">
                           <Terminal className="h-4 w-4" />
-                          <AlertTitle>Error Loading Details</AlertTitle>
+                          <AlertTitle>{t('nutritionDatabase.errorLoadingDetailsTitle')}</AlertTitle>
                           <AlertDescription>{detailError}</AlertDescription>
                         </Alert>
                       )}
@@ -308,9 +310,9 @@ const NutritionDatabase = () => {
                           <Table>
                             <TableHeader>
                               <TableRow>
-                                <TableHead>Nutrient</TableHead>
-                                <TableHead className="text-right">Amount</TableHead>
-                                <TableHead>Unit</TableHead>
+                                <TableHead>{t('nutritionDatabase.nutrientColumnHeader')}</TableHead>
+                                <TableHead className="text-right">{t('nutritionDatabase.amountColumnHeader')}</TableHead>
+                                <TableHead>{t('nutritionDatabase.unitColumnHeader')}</TableHead>
                               </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -320,8 +322,8 @@ const NutritionDatabase = () => {
                                   .filter(fn => (fn.amount !== undefined && fn.amount !== null) || (fn.nutrient?.value !== undefined && fn.nutrient?.value !== null))
                                   .map((fn) => {
                                     // --- Attempt to find nutrient name from multiple potential properties ---
-                                    let nutrientNameDisplay = 'Name Missing'; // Default if name cannot be found
-                                    let unitNameDisplay = 'N/A'; // Default unit
+                                    let nutrientNameDisplay = t('nutritionDatabase.nutrientNameMissing'); // Default if name cannot be found
+                                    let unitNameDisplay = t('nutritionDatabase.unitNameMissing'); // Default unit
                                     
                                     if (fn.nutrient) { // Check if nutrient object exists
                                       // Try nutrientName, then name, then description
@@ -331,18 +333,18 @@ const NutritionDatabase = () => {
                                                               ? fn.nutrient.name
                                                               : (fn.nutrient.description && fn.nutrient.description.trim() !== '')
                                                                 ? fn.nutrient.description
-                                                                : 'Name Missing'; // Final fallback if all are missing/empty
+                                                                : t('nutritionDatabase.nutrientNameMissing'); // Final fallback if all are missing/empty
                                       
                                       // Check if unitName exists and is not empty
                                       unitNameDisplay = fn.nutrient.unitName && fn.nutrient.unitName.trim() !== '' 
                                                           ? fn.nutrient.unitName 
-                                                          : 'N/A'; // Fallback if unit is missing/empty
+                                                          : t('nutritionDatabase.unitNameMissing'); // Fallback if unit is missing/empty
                                     } else {
-                                      nutrientNameDisplay = 'Nutrient Data Missing'; // Fallback if nutrient object itself is missing
+                                      nutrientNameDisplay = t('nutritionDatabase.nutrientDataMissing'); // Fallback if nutrient object itself is missing
                                     }
 
                                     // Determine the amount to display
-                                    const displayAmount = (fn.amount ?? fn.nutrient?.value)?.toFixed(2) ?? 'N/A';
+                                    const displayAmount = (fn.amount ?? fn.nutrient?.value)?.toFixed(2) ?? t('nutritionDatabase.amountMissing');
 
                                     return (
                                       <TableRow key={fn.id || fn.nutrient?.nutrientId}>
@@ -354,7 +356,7 @@ const NutritionDatabase = () => {
                                   })
                               ) : (
                                 <TableRow>
-                                  <TableCell colSpan={3} className="text-center">No nutrient data available.</TableCell>
+                                  <TableCell colSpan={3} className="text-center">{t('nutritionDatabase.noNutrientData')}</TableCell>
                                 </TableRow>
                               )}
                             </TableBody>
@@ -364,7 +366,7 @@ const NutritionDatabase = () => {
                       <DialogFooter>
                         <DialogClose asChild>
                           <Button type="button" variant="secondary">
-                            Close
+                            {t('nutritionDatabase.closeButton')}
                           </Button>
                         </DialogClose>
                       </DialogFooter>
@@ -383,7 +385,7 @@ const NutritionDatabase = () => {
           <Link to="/tools">
             <Button variant="outline" className="inline-flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Tools
+              {t('nutritionDatabase.backToToolsButton')}
             </Button>
           </Link>
         </div>
