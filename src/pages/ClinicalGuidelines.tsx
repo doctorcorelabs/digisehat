@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import axios from 'axios';
 import PageHeader from '@/components/PageHeader';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,7 @@ interface GuidelineResult {
 const RESULTS_PER_PAGE = 30;
 
 const ClinicalGuidelines = () => {
+    const { t } = useTranslation(); // Instantiate t function
     const featureName: FeatureName = 'clinical_guidelines';
     // Get isLoadingToggles from the hook
     const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
@@ -67,17 +69,17 @@ const ClinicalGuidelines = () => {
                 const result = await checkAccess(featureName);
             if (result.quota === 0) {
                  setInitialAccessAllowed(false);
-                 setInitialAccessMessage(result.message || 'Access denied for your level.');
+                 setInitialAccessMessage(result.message || t('drugRef.accessDeniedDefault'));
             } else {
                  setInitialAccessAllowed(true);
             }
           } catch (error) {
             console.error("Error checking initial feature access:", error);
             setInitialAccessAllowed(false);
-            setInitialAccessMessage('Failed to check feature access.');
+            setInitialAccessMessage(t('drugRef.failedToCheckAccess'));
             toast({
-              title: "Error",
-              description: "Could not verify feature access at this time.",
+              title: t('toastErrorTitle', { ns: 'drugRef' }), // Assuming 'Error' is a common key
+              description: t('toastAccessCheckError', { ns: 'drugRef' }), // Assuming this is a common key
               variant: "destructive",
             });
           } finally {
@@ -97,8 +99,8 @@ const ClinicalGuidelines = () => {
         const accessResult = await checkAccess(featureName);
         if (!accessResult.allowed) {
           toast({
-            title: "Access Denied",
-            description: accessResult.message || 'You cannot load the next page at this time.',
+            title: t('toolsPage.accessDenied.title'),
+            description: accessResult.message || t('clinicalGuidelinesPage.cannotLoadNextPage'),
             variant: "destructive",
           });
           openUpgradeDialog(); // Open the upgrade dialog
@@ -166,8 +168,8 @@ const ClinicalGuidelines = () => {
         const accessResult = await checkAccess(featureName);
         if (!accessResult.allowed) {
           toast({
-            title: "Access Denied",
-          description: accessResult.message || 'You cannot perform a search at this time.',
+            title: t('toolsPage.accessDenied.title'),
+          description: accessResult.message || t('drugRef.toastCannotSearch'),
           variant: "destructive",
         });
         openUpgradeDialog(); // Open the upgrade dialog
@@ -177,7 +179,7 @@ const ClinicalGuidelines = () => {
 
         const trimmedKeywords = keywords.trim();
         if (trimmedKeywords === '') {
-            toast({ title: "Input Required", description: "Please enter keywords to search." }); // Use toast instead of alert
+            toast({ title: t('clinicalGuidelinesPage.toastKeywordsRequiredTitle'), description: t('clinicalGuidelinesPage.toastKeywordsRequiredDescription') });
             return;
         }
         
@@ -297,8 +299,8 @@ const ClinicalGuidelines = () => {
     return (
         <>
             <PageHeader
-                title="Clinical Guidelines"
-                subtitle="Search PubMed for clinical practice guidelines."
+                title={t('toolsPage.clinicalGuidelines.title')}
+                subtitle={t('toolsPage.clinicalGuidelines.description')}
             />
             <div className="container max-w-7xl mx-auto px-4 py-12">
 
@@ -314,9 +316,9 @@ const ClinicalGuidelines = () => {
                 {!(isCheckingInitialAccess || isLoadingToggles) && !initialAccessAllowed && (
                    <Alert variant="destructive" className="mt-4">
                      <Terminal className="h-4 w-4" />
-                     <AlertTitle>Access Denied</AlertTitle>
+                     <AlertTitle>{t('toolsPage.accessDenied.title')}</AlertTitle>
                      <AlertDescription>
-                       {initialAccessMessage || 'You do not have permission to access this feature.'}
+                       {initialAccessMessage || t('drugRef.accessDeniedDefault')}
                      </AlertDescription>
                    </Alert>
                  )}
@@ -328,7 +330,7 @@ const ClinicalGuidelines = () => {
                     <div className="pubmed-search-feature p-5 border border-gray-200 dark:border-gray-700 rounded-md mb-6 shadow-sm bg-card">
                      <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
                         <Search className="h-5 w-5 text-primary" />
-                        Search PubMed for Guidelines
+                        {t('clinicalGuidelinesPage.searchSectionTitle')}
                     </h3>
                     
                     {/* Search Input */}
@@ -336,7 +338,7 @@ const ClinicalGuidelines = () => {
                         <Input
                             type="text"
                             id="pubmedSearchInput"
-                            placeholder="Enter guideline keywords..."
+                            placeholder={t('clinicalGuidelinesPage.keywordsInputPlaceholder')}
                             className="flex-grow"
                             value={keywords}
                             onChange={(e) => setKeywords(e.target.value)}
@@ -350,7 +352,7 @@ const ClinicalGuidelines = () => {
                             disabled={isLoading || keywords.trim() === ''} 
                         >
                             {isLoading ? ( <Loader2 className="mr-2 h-4 w-4 animate-spin" /> ) : ( <Search className="mr-2 h-4 w-4" /> )}
-                            Search PubMed
+                            {t('clinicalGuidelinesPage.searchButtonText')}
                         </Button>
                     </div>
 
@@ -359,7 +361,7 @@ const ClinicalGuidelines = () => {
                     <div className="flex flex-col gap-y-4 mb-4"> 
                         {/* Date Filter */}
                         <div className="date-filter"> 
-                            <Label className="mb-2 block text-sm font-medium">Filter by Date:</Label>
+                            <Label className="mb-2 block text-sm font-medium">{t('clinicalGuidelinesPage.filterByDateLabel')}</Label>
                             <RadioGroup 
                                 defaultValue="none" 
                                 className="flex flex-row flex-wrap gap-4" 
@@ -367,27 +369,27 @@ const ClinicalGuidelines = () => {
                                 onValueChange={(value) => setDateFilter(value)}
                                 disabled={isLoading}
                             >
-                                <div className="flex items-center space-x-2"><RadioGroupItem value="none" id="date-none" /><Label htmlFor="date-none">All Time</Label></div>
-                                <div className="flex items-center space-x-2"><RadioGroupItem value="5years" id="date-5years" /><Label htmlFor="date-5years">Last 5 Years</Label></div>
-                                <div className="flex items-center space-x-2"><RadioGroupItem value="10years" id="date-10years" /><Label htmlFor="date-10years">Last 10 Years</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="none" id="date-none" /><Label htmlFor="date-none">{t('clinicalGuidelinesPage.dateFilterAllTime')}</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="5years" id="date-5years" /><Label htmlFor="date-5years">{t('clinicalGuidelinesPage.dateFilter5Years')}</Label></div>
+                                <div className="flex items-center space-x-2"><RadioGroupItem value="10years" id="date-10years" /><Label htmlFor="date-10years">{t('clinicalGuidelinesPage.dateFilter10Years')}</Label></div>
                             </RadioGroup>
                         </div>
 
                         {/* Sort By Filter */}
                         <div className="sort-filter">
-                            <Label htmlFor="sort-by-select" className="mb-2 block text-sm font-medium">Sort by:</Label>
+                            <Label htmlFor="sort-by-select" className="mb-2 block text-sm font-medium">{t('clinicalGuidelinesPage.sortByLabel')}</Label>
                             <Select 
                                 value={sortBy} 
                                 onValueChange={(value) => setSortBy(value)}
                                 disabled={isLoading}
                             >
                                 <SelectTrigger id="sort-by-select" className="w-full sm:w-[200px]"> 
-                                    <SelectValue placeholder="Sort by" />
+                                    <SelectValue placeholder={t('clinicalGuidelinesPage.sortByPlaceholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="relevance">Relevance</SelectItem>
-                                    <SelectItem value="pub_date_newest">Newest Date</SelectItem>
-                                    <SelectItem value="pub_date_oldest">Oldest Date First</SelectItem> 
+                                    <SelectItem value="relevance">{t('clinicalGuidelinesPage.sortByRelevance')}</SelectItem>
+                                    <SelectItem value="pub_date_newest">{t('clinicalGuidelinesPage.sortByNewestDate')}</SelectItem>
+                                    <SelectItem value="pub_date_oldest">{t('clinicalGuidelinesPage.sortByOldestDate')}</SelectItem> 
                                 </SelectContent>
                             </Select>
                         </div>
@@ -401,7 +403,7 @@ const ClinicalGuidelines = () => {
                                 disabled={isLoading}
                             />
                             <Label htmlFor="free-text-checkbox" className="text-sm font-medium">
-                                Free Full Text Only
+                                {t('clinicalGuidelinesPage.freeFullTextLabel')}
                             </Label>
                         </div>
                     </div>
@@ -410,17 +412,17 @@ const ClinicalGuidelines = () => {
                     {/* Results Section */}
                 <div className="results-section mt-8">
                     {/* Loading/Error/No Results States */}
-                    {isLoading && ( <div className="flex justify-center items-center gap-2 text-muted-foreground py-4"><Loader2 className="h-5 w-5 animate-spin" /><span>Searching PubMed...</span></div> )}
-                    {error && ( <div className="flex justify-center items-center gap-2 text-destructive bg-destructive/10 p-3 rounded-md"><AlertCircle className="h-5 w-5" /><span>Error: {error}</span></div> )}
-                    {!isLoading && !error && searchPerformed && results.length === 0 && ( <p className="text-center text-muted-foreground">No guidelines found matching your criteria.</p> )}
+                    {isLoading && ( <div className="flex justify-center items-center gap-2 text-muted-foreground py-4"><Loader2 className="h-5 w-5 animate-spin" /><span>{t('clinicalGuidelinesPage.searchingText')}</span></div> )}
+                    {error && ( <div className="flex justify-center items-center gap-2 text-destructive bg-destructive/10 p-3 rounded-md"><AlertCircle className="h-5 w-5" /><span>{t('clinicalGuidelinesPage.errorPrefix')}{error}</span></div> )}
+                    {!isLoading && !error && searchPerformed && results.length === 0 && ( <p className="text-center text-muted-foreground">{t('clinicalGuidelinesPage.noResultsText')}</p> )}
 
                     {/* Results Display */}
                     {!isLoading && !error && results.length > 0 && (
                         <>
                             {/* Result Count and Pagination Info */}
                             <div className="mb-4 text-sm text-muted-foreground flex justify-between items-center">
-                                <span>Found {totalResults} results.</span>
-                                {displayTotalPages > 1 && ( <span>Page {currentPage} of {displayTotalPages}</span> )}
+                                <span>{t('clinicalGuidelinesPage.resultsFoundText', { count: totalResults })}</span>
+                                {displayTotalPages > 1 && ( <span>{t('clinicalGuidelinesPage.pageIndicatorText', { currentPage, totalPages: displayTotalPages })}</span> )}
                             </div>
 
                             {/* Results List */}
@@ -431,11 +433,11 @@ const ClinicalGuidelines = () => {
                                             <CardTitle className="text-base text-justify"> 
                                                 <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{result.title}</a>
                                             </CardTitle>
-                                            <CardDescription className="text-xs pt-1">PMID: {result.pmid}</CardDescription>
+                                            <CardDescription className="text-xs pt-1">{t('clinicalGuidelinesPage.pmidLabel')}{result.pmid}</CardDescription>
                                         </CardHeader>
                                         <CardContent className="text-sm text-muted-foreground space-y-1 text-justify"> 
-                                            <p><strong>Journal:</strong> {result.journal}</p>
-                                            <p><strong>Date:</strong> {result.pubDate}</p>
+                                            <p><strong>{t('clinicalGuidelinesPage.journalLabel')}</strong> {result.journal}</p>
+                                            <p><strong>{t('clinicalGuidelinesPage.dateLabel')}</strong> {result.pubDate}</p>
                                             {result.pmcid && (
                                                 <div className="mt-2"> 
                                                     <Button variant="outline" size="sm" asChild>
@@ -445,7 +447,7 @@ const ClinicalGuidelines = () => {
                                                             rel="noopener noreferrer"
                                                             className="text-blue-600" 
                                                         >
-                                                            View on PubMed Central (PMC)
+                                                            {t('clinicalGuidelinesPage.viewOnPmcButton')}
                                                         </a>
                                                     </Button>
                                                 </div>
@@ -458,9 +460,9 @@ const ClinicalGuidelines = () => {
                             {/* Pagination Controls */}
                             {displayTotalPages > 1 && (
                                 <div className="flex justify-center items-center gap-4 mt-6">
-                                    <Button variant="outline" size="icon" onClick={goToPreviousPage} disabled={isPrevDisabled}><ChevronLeft className="h-4 w-4" /><span className="sr-only">Previous Page</span></Button>
-                                    <span className="text-sm">Page {currentPage}</span>
-                                    <Button variant="outline" size="icon" onClick={goToNextPage} disabled={isNextDisabled}><ChevronRight className="h-4 w-4" /><span className="sr-only">Next Page</span></Button>
+                                    <Button variant="outline" size="icon" onClick={goToPreviousPage} disabled={isPrevDisabled}><ChevronLeft className="h-4 w-4" /><span className="sr-only">{t('clinicalGuidelinesPage.previousPageSr')}</span></Button>
+                                    <span className="text-sm">{t('clinicalGuidelinesPage.pageIndicatorText', { currentPage, totalPages: displayTotalPages }).split(' of ')[0]}</span> {/* Display only "Page X" part */}
+                                    <Button variant="outline" size="icon" onClick={goToNextPage} disabled={isNextDisabled}><ChevronRight className="h-4 w-4" /><span className="sr-only">{t('clinicalGuidelinesPage.nextPageSr')}</span></Button>
                                 </div>
                             )}
                         </>
@@ -472,7 +474,7 @@ const ClinicalGuidelines = () => {
                     <Button variant="outline" asChild>
                         <Link to="/tools" className="inline-flex items-center">
                             <ArrowLeft className="mr-2 h-4 w-4" /> {/* Added icon */}
-                            Back to Tools
+                            {t('drugRef.backToToolsButton')}
                         </Link>
                     </Button>
                  </div>
