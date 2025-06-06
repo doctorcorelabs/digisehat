@@ -24,16 +24,25 @@ const safetySettings = [
   { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
 ];
 
-const buildPrompt = (diseaseName: string): string => `
+const buildPrompt = (diseaseName: string, language: string = 'en'): string => {
+  const mainInstruction = language === 'id'
+    ? `**Tugas:** Hasilkan tinjauan komprehensif tentang kondisi medis yang ditentukan: **${diseaseName}** dalam Bahasa Indonesia.`
+    : `**Task:** Generate a comprehensive overview of the specified medical condition: **${diseaseName}**.`;
+
+  const contentRequirementInstruction = language === 'id'
+    ? `Susun respons Anda menggunakan judul-judul (headings) dalam Bahasa Inggris berikut ini. Di bawah setiap judul, berikan informasi yang detail dan spesifik dalam Bahasa Indonesia seperti yang dijelaskan:` // Added "dalam Bahasa Indonesia"
+    : `Structure your response using the following exact headings in English. Under each heading, provide detailed and specific information as described:`;
+
+  return `
 **SYSTEM INSTRUCTION**
 
 **Role:** You are an AI medical information assistant designed to provide comprehensive, accurate, and well-structured summaries of medical conditions for an audience with a medical background (e.g., medical students, healthcare professionals).
 
-**Task:** Generate a comprehensive overview of the specified medical condition: **${diseaseName}**.
+${mainInstruction}
 
 **Output Structure and Content Requirements:**
-Structure your response using the following exact headings in English. Under each heading, provide detailed and specific information as described:
-
+${contentRequirementInstruction}
+${language === 'id' ? `\nPENTING: Semua penjelasan dan konten di bawah setiap judul Bahasa Inggris HARUS dalam Bahasa Indonesia.\n` : ''}
 1.  **Etiology:**
     *   Clearly identify the primary cause(s) (e.g., infectious agents, genetic mutations, autoimmune processes, environmental factors, idiopathic).
     *   Be specific about pathogens, genes, or mechanisms where known.
@@ -82,6 +91,7 @@ Structure your response using the following exact headings in English. Under eac
 
 **Constraint:** Focus solely on providing the requested information structured under the specified headings. Do not include introductory/concluding remarks beyond the structured content unless essential for clarity within a section. Do not provide medical advice.
 `;
+};
 
 const handler: Handler = async (event: HandlerEvent, context: HandlerContext) => {
   if (event.httpMethod !== 'POST') {
@@ -89,20 +99,24 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
   }
 
   let diseaseName: string;
+  let language: string = 'en'; // Default to English
   try {
     const body = JSON.parse(event.body || '{}');
     diseaseName = body.diseaseName;
+    if (body.language && (body.language === 'id' || body.language === 'en')) {
+      language = body.language;
+    }
     if (!diseaseName || typeof diseaseName !== 'string' || diseaseName.trim() === '') {
       return { statusCode: 400, body: JSON.stringify({ error: 'Missing or invalid diseaseName in request body' }) };
     }
-    console.log(`[Netlify Function] Received request for disease: ${diseaseName}`); // Log received disease name
+    console.log(`[Netlify Function] Received request for disease: ${diseaseName} in language: ${language}`); // Log received disease name and language
   } catch (error) {
     console.error("[Netlify Function] Error parsing request body:", error);
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON in request body' }) };
   }
 
-  const prompt = buildPrompt(diseaseName.trim());
-  console.log("[Netlify Function] Generated prompt for Gemini."); // Log prompt generation
+  const prompt = buildPrompt(diseaseName.trim(), language);
+  console.log(`[Netlify Function] Generated prompt for Gemini in ${language}.`); // Log prompt generation
 
   try {
     console.log("[Netlify Function] Calling Gemini API..."); // Log before API call

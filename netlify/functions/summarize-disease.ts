@@ -24,9 +24,13 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
   }
 
   let query: string | undefined;
+  let language: string = 'en'; // Default to English
   try {
     const body = JSON.parse(event.body || '{}');
     query = body.query;
+    if (body.language && (body.language === 'id' || body.language === 'en')) {
+      language = body.language;
+    }
     if (!query || typeof query !== 'string' || query.trim() === '') {
       return { statusCode: 400, body: JSON.stringify({ error: "Missing or invalid 'query' parameter in request body." }) };
     }
@@ -34,10 +38,15 @@ const handler: Handler = async (event: HandlerEvent, context: HandlerContext) =>
     return { statusCode: 400, body: JSON.stringify({ error: "Invalid JSON body." }) };
   }
 
-  const prompt = `Provide a brief, neutral summary (around 2-4 sentences) about the medical condition: "${query}". Focus on what it is, common symptoms, and general causes. Do not provide medical advice or treatment recommendations. State that this information is for general knowledge only and users should consult healthcare professionals.`;
+  let prompt: string;
+  if (language === 'id') {
+    prompt = `Berikan ringkasan singkat dan netral (sekitar 2-4 kalimat) tentang kondisi medis: "${query}". Fokus pada apa itu, gejala umum, dan penyebab umum. Jangan berikan saran medis atau rekomendasi pengobatan. Nyatakan bahwa informasi ini hanya untuk pengetahuan umum dan pengguna harus berkonsultasi dengan profesional kesehatan. Hasilkan ringkasan dalam Bahasa Indonesia.`;
+  } else {
+    prompt = `Provide a brief, neutral summary (around 2-4 sentences) about the medical condition: "${query}". Focus on what it is, common symptoms, and general causes. Do not provide medical advice or treatment recommendations. State that this information is for general knowledge only and users should consult healthcare professionals.`;
+  }
 
   try {
-    console.log(`Generating summary for query: ${query}`);
+    console.log(`Generating summary for query: ${query} in language: ${language}`);
     const result = await model.generateContent(prompt);
     const response = result.response;
     // Add check for response existence before accessing text()

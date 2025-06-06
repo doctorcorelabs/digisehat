@@ -1,5 +1,6 @@
 import { useState, FormEvent, useEffect } from 'react'; // Added useEffect
 import { Link } from 'react-router-dom'; // Import Link
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import PageHeader from '@/components/PageHeader';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -29,6 +30,7 @@ const DiseaseLibrary = () => {
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
   const { toast } = useToast();
   const { openUpgradeDialog } = useAuth(); // Get the dialog function
+  const { t, i18n } = useTranslation(); // Initialize useTranslation and get i18n instance
 
   // State for initial access check
   const [isCheckingInitialAccess, setIsCheckingInitialAccess] = useState(true);
@@ -68,10 +70,10 @@ const DiseaseLibrary = () => {
        } catch (error) {
          console.error("Error checking initial feature access:", error);
          setInitialAccessAllowed(false);
-         setInitialAccessMessage('Failed to check feature access.');
+         setInitialAccessMessage(t('diseaseLibraryPage.errors.failedToCheckAccess'));
          toast({
-           title: "Error",
-           description: "Could not verify feature access at this time.",
+           title: t('diseaseLibraryPage.toast.errorTitle'),
+           description: t('diseaseLibraryPage.toast.initialAccessErrorDescription'),
            variant: "destructive",
          });
        } finally {
@@ -91,8 +93,8 @@ const DiseaseLibrary = () => {
      const accessResult = await checkAccess(featureName);
      if (!accessResult.allowed) {
        toast({
-         title: "Access Denied",
-         description: accessResult.message || 'You cannot perform a search at this time.',
+         title: t('diseaseLibraryPage.toast.accessDeniedTitle'),
+         description: accessResult.message || t('diseaseLibraryPage.toast.accessDeniedSearchDescription'),
          variant: "destructive",
        });
        openUpgradeDialog(); // Open the upgrade dialog
@@ -133,7 +135,7 @@ const DiseaseLibrary = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: trimmedQuery }),
+        body: JSON.stringify({ query: trimmedQuery, language: i18n.language }),
       });
 
       const data = await response.json();
@@ -143,23 +145,25 @@ const DiseaseLibrary = () => {
         throw new Error(data.error || `Function responded with status ${response.status}`);
       }
 
-      setAiSummary(data.summary || "No summary generated."); // Store summary
+      setAiSummary(data.summary || t('diseaseLibraryPage.results.noSummaryGenerated')); // Store summary
 
     } catch (error: any) {
       console.error("Error calling summarize function:", error);
-      setApiError(error.message || "Failed to fetch AI summary."); // Store error
+      setApiError(error.message || t('diseaseLibraryPage.errors.failedToFetchAiSummary')); // Store error
     } finally {
       setIsLoading(false);
     }
 
     // --- Increment Usage ---
-    // Increment only after confirming the search will proceed
+      // Increment only after confirming the search will proceed
     await incrementUsage(featureName);
-     // Optionally show remaining quota after successful search
-     // if (accessResult.remaining !== null) {
-     //    const remainingAfterIncrement = accessResult.remaining - 1;
-     //    toast({ title: "Info", description: `Remaining search quota for today: ${remainingAfterIncrement}` });
-     // }
+    // Optionally show remaining quota after successful search
+    if (accessResult.remaining !== null && accessResult.remaining > 0) { // Check if remaining is not null and greater than 0
+        const remainingAfterIncrement = accessResult.remaining - 1;
+        if (remainingAfterIncrement >= 0) { // Ensure remaining is not negative
+            toast({ title: t('diseaseLibraryPage.toast.infoTitle'), description: t('diseaseLibraryPage.toast.remainingQuota', { count: remainingAfterIncrement }) });
+        }
+    }
      // --- End Increment Usage ---
   };
 
@@ -179,7 +183,7 @@ const DiseaseLibrary = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ diseaseName: searchQuery.trim() }),
+        body: JSON.stringify({ diseaseName: searchQuery.trim(), language: i18n.language }),
       });
 
       if (!response.ok) {
@@ -195,11 +199,11 @@ const DiseaseLibrary = () => {
        }
 
       const data = await response.json();
-      setDetailedInfo(data.details || "No detailed information generated.");
+      setDetailedInfo(data.details || t('diseaseLibraryPage.results.noDetailedInformationGenerated'));
 
      } catch (error: any) {
       console.error("[Explore More] Error in handleExploreMore:", error);
-      setDetailedError(error.message || "Failed to fetch detailed information.");
+      setDetailedError(error.message || t('diseaseLibraryPage.errors.failedToFetchDetailedInfo'));
     } finally {
       setIsDetailedLoading(false);
     }
@@ -249,11 +253,22 @@ const DiseaseLibrary = () => {
 
   const detailedSections = parseDetailedInfo(detailedInfo);
 
+  // Helper to get the translation key for a given English heading title
+  const getHeadingTranslationKey = (englishTitle: string): string => {
+    // Convert to camelCase: "Risk Factors" -> "riskFactors"
+    const camelCaseTitle = englishTitle
+      .toLowerCase()
+      .replace(/\s+(.)/g, (match, group1) => group1.toUpperCase())
+      .replace(/\s/g, ''); // Remove any remaining spaces just in case
+    // Fallback to the original title if no specific key is found
+    return `diseaseLibraryPage.detailHeadings.${camelCaseTitle}` || englishTitle;
+  };
+
   return (
     <>
       <PageHeader
-        title="Disease Information Search"
-        subtitle="Search for disease information on Mayo Clinic and MedlinePlus."
+        title={t('diseaseLibraryPage.header.title')}
+        subtitle={t('diseaseLibraryPage.header.subtitle')}
       />
 
       <div className="container max-w-4xl mx-auto px-4 py-12">
@@ -270,9 +285,9 @@ const DiseaseLibrary = () => {
          {!(isCheckingInitialAccess || isLoadingToggles) && !initialAccessAllowed && (
             <Alert variant="destructive" className="mt-4">
               <Terminal className="h-4 w-4" />
-              <AlertTitle>Access Denied</AlertTitle>
+              <AlertTitle>{t('diseaseLibraryPage.accessDenied.alertTitle')}</AlertTitle>
               <AlertDescription>
-                {initialAccessMessage || 'You do not have permission to access this feature.'}
+                {initialAccessMessage || t('diseaseLibraryPage.accessDenied.alertDescriptionDefault')}
               </AlertDescription>
             </Alert>
           )}
@@ -282,19 +297,19 @@ const DiseaseLibrary = () => {
           <>
             {/* Disclaimer */}
             <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8 text-justify" role="alert">
-          <p className="font-bold">IMPORTANT DISCLAIMER:</p>
-          <p>This tool provides links to external search results on authoritative sources (Mayo Clinic, MedlinePlus) for general informational purposes ONLY. It DOES NOT constitute medical advice, diagnosis, or treatment recommendation. Always consult with a qualified healthcare professional for any health concerns or before making any decisions related to your health or treatment.</p>
+          <p className="font-bold">{t('diseaseLibraryPage.disclaimer.title')}</p>
+          <p>{t('diseaseLibraryPage.disclaimer.text')}</p>
         </div>
 
         {/* Search Form */}
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-2 mb-6">
           <Input
             type="text"
-            placeholder="Enter disease or condition name..."
+            placeholder={t('diseaseLibraryPage.searchForm.placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-grow"
-            aria-label="Search for disease information"
+            aria-label={t('diseaseLibraryPage.searchForm.ariaLabel')}
           />
           <Button type="submit" className="bg-medical-teal hover:bg-medical-blue">
             {isLoading ? (
@@ -302,7 +317,7 @@ const DiseaseLibrary = () => {
             ) : (
               <Search className="mr-2 h-4 w-4" />
             )}
-            {isLoading ? 'Searching...' : 'Search'}
+            {isLoading ? t('diseaseLibraryPage.searchForm.buttonTextSearching') : t('diseaseLibraryPage.searchForm.buttonTextSearch')}
           </Button>
         </form>
 
@@ -310,14 +325,14 @@ const DiseaseLibrary = () => {
         {isLoading && (
           <div className="flex justify-center items-center mt-6">
             <Loader2 className="h-6 w-6 animate-spin text-medical-teal" />
-            <span className="ml-2">Generating AI summary...</span>
+            <span className="ml-2">{t('diseaseLibraryPage.loading.aiSummary')}</span>
           </div>
         )}
 
         {/* Direct Search Results Links - MOVED HERE */}
         {searchResults && !isLoading && (
           <div className="mt-6 p-4 border rounded-md bg-gray-100">
-            <h3 className="text-lg font-semibold mb-3">Direct Search Links:</h3>
+            <h3 className="text-lg font-semibold mb-3">{t('diseaseLibraryPage.results.directLinksTitle')}</h3>
             <p className="mb-2">
               <a
                 href={searchResults.mayoClinic}
@@ -325,7 +340,7 @@ const DiseaseLibrary = () => {
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline font-medium"
               >
-                View search results on Mayo Clinic
+                {t('diseaseLibraryPage.results.mayoLinkText')}
               </a>
             </p>
             <p>
@@ -335,7 +350,7 @@ const DiseaseLibrary = () => {
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline font-medium"
               >
-                View search results on MedlinePlus
+                {t('diseaseLibraryPage.results.medlineLinkText')}
               </a>
             </p>
           </div>
@@ -344,9 +359,9 @@ const DiseaseLibrary = () => {
         {/* AI Summary or Error */}
         {!isLoading && (aiSummary || apiError) && (
           <div className="mt-6 p-4 border rounded-md bg-gray-50">
-            <h3 className="text-lg font-semibold mb-3">AI Generated Summary for "{searchQuery}":</h3>
+            <h3 className="text-lg font-semibold mb-3">{t('diseaseLibraryPage.results.aiSummaryTitle', { query: searchQuery })}</h3>
             {apiError ? (
-              <p className="text-red-600">Error: {apiError}</p>
+              <p className="text-red-600">{t('diseaseLibraryPage.errors.apiErrorText', { error: apiError })}</p>
             ) : (
               <>
                 {/* Render AI Summary using ReactMarkdown with justify */}
@@ -356,7 +371,7 @@ const DiseaseLibrary = () => {
                   </ReactMarkdown>
                 </div>
                 {/* Justify the summary disclaimer */}
-                <p className="text-xs text-gray-500 mt-3 italic text-justify">Disclaimer: This summary was generated by AI and is for informational purposes only. Always consult the original sources and a healthcare professional.</p>
+                <p className="text-xs text-gray-500 mt-3 italic text-justify">{t('diseaseLibraryPage.results.aiSummaryDisclaimer')}</p>
                 {/* Explore More Button */}
                 {aiSummary && !detailedInfo && !isDetailedLoading && !detailedError && ( // Show button only if summary exists
                    <Button
@@ -365,7 +380,7 @@ const DiseaseLibrary = () => {
                      className="mt-4"
                      disabled={isDetailedLoading}
                    >
-                     <Info className="mr-2 h-4 w-4" /> Explore More Details
+                     <Info className="mr-2 h-4 w-4" /> {t('diseaseLibraryPage.buttons.exploreMore')}
                    </Button>
                 )}
               </>
@@ -377,23 +392,23 @@ const DiseaseLibrary = () => {
         {isDetailedLoading && (
           <div className="flex justify-center items-center mt-6">
             <Loader2 className="h-6 w-6 animate-spin text-medical-teal" />
-            <span className="ml-2">Fetching detailed information...</span>
+            <span className="ml-2">{t('diseaseLibraryPage.loading.detailedInfo')}</span>
           </div>
         )}
 
          {/* Detailed Information Display or Error */}
          {!isDetailedLoading && (detailedInfo || detailedError) && (
            <div className="mt-6 p-4 border rounded-md bg-white">
-              <h3 className="text-lg font-semibold mb-3">Detailed Information for "{searchQuery}":</h3>
+              <h3 className="text-lg font-semibold mb-3">{t('diseaseLibraryPage.results.detailedInfoTitle', { query: searchQuery })}</h3>
               {detailedError ? (
-                <p className="text-red-600">Error: {detailedError}</p>
+                <p className="text-red-600">{t('diseaseLibraryPage.errors.detailedErrorText', { error: detailedError })}</p>
              ) : detailedSections && Object.keys(detailedSections).length > 0 ? (
                <Accordion type="single" collapsible className="w-full">
                  {Object.entries(detailedSections).map(([title, content], index) => (
                    <AccordionItem value={title} key={title}>
                      <AccordionTrigger className="text-base font-medium hover:no-underline">
-                       {/* Display the title from the object entry */}
-                       {title}
+                       {/* Display the translated title */}
+                       {t(getHeadingTranslationKey(title), title)}
                      </AccordionTrigger>
                      <AccordionContent className="text-sm text-gray-800 pt-2 pl-4">
                        {/* Restore ReactMarkdown and add text-justify class */}
@@ -407,10 +422,10 @@ const DiseaseLibrary = () => {
                  ))}
                </Accordion>
              ) : (
-                <p className="text-gray-600">Could not parse detailed information sections.</p>
+                <p className="text-gray-600">{t('diseaseLibraryPage.errors.parsingError')}</p>
              )}
              {/* Justify the detailed info disclaimer */}
-             <p className="text-xs text-gray-500 mt-4 italic text-justify">Disclaimer: This detailed information was generated by AI and is for informational purposes only. Always consult the original sources and a healthcare professional.</p>
+             <p className="text-xs text-gray-500 mt-4 italic text-justify">{t('diseaseLibraryPage.results.detailedInfoDisclaimer')}</p>
           </div>
         )}
           </>
@@ -422,7 +437,7 @@ const DiseaseLibrary = () => {
       <div className="flex justify-center mt-8 mb-12">
         <Link to="/tools">
           <Button variant="outline">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Tools
+            <ArrowLeft className="mr-2 h-4 w-4" /> {t('diseaseLibraryPage.buttons.backToTools')}
           </Button>
         </Link>
       </div>

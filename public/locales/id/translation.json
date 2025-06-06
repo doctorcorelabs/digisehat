@@ -356,5 +356,69 @@
     "unexpectedSearchError": "Terjadi kesalahan pencarian yang tidak terduga.",
     "fetchDetailsFailedError": "Gagal mengambil detail: {{errorMessage}}",
     "unexpectedDetailError": "Terjadi kesalahan tak terduga saat mengambil detail."
+  },
+  "diseaseLibraryPage": {
+    "header": {
+      "title": "Pencarian Informasi Penyakit",
+      "subtitle": "Cari informasi penyakit di Mayo Clinic dan MedlinePlus."
+    },
+    "disclaimer": {
+      "title": "PENAFIAN PENTING:",
+      "text": "Alat ini menyediakan tautan ke hasil pencarian eksternal pada sumber-sumber otoritatif (Mayo Clinic, MedlinePlus) untuk tujuan informasi umum SAJA. Ini TIDAK merupakan nasihat medis, diagnosis, atau rekomendasi pengobatan. Selalu konsultasikan dengan profesional kesehatan yang kvalifikasi untuk masalah kesehatan apa pun atau sebelum membuat keputusan apa pun terkait kesehatan atau pengobatan Anda."
+    },
+    "searchForm": {
+      "placeholder": "Masukkan nama penyakit atau kondisi...",
+      "ariaLabel": "Cari informasi penyakit",
+      "buttonTextSearch": "Cari",
+      "buttonTextSearching": "Mencari..."
+    },
+    "loading": {
+      "aiSummary": "Menghasilkan ringkasan AI...",
+      "detailedInfo": "Mengambil informasi detail..."
+    },
+    "results": {
+      "directLinksTitle": "Tautan Pencarian Langsung:",
+      "mayoLinkText": "Lihat hasil pencarian di Mayo Clinic",
+      "medlineLinkText": "Lihat hasil pencarian di MedlinePlus",
+      "aiSummaryTitle": "Ringkasan yang Dihasilkan AI untuk \"{{query}}\":",
+      "noSummaryGenerated": "Tidak ada ringkasan yang dihasilkan.",
+      "aiSummaryDisclaimer": "Peringatan: Ringkasan ini dihasilkan oleh AI dan hanya untuk tujuan informasi. Selalu konsultasikan sumber asli dan profesional kesehatan.",
+      "detailedInfoTitle": "Informasi Detail untuk \"{{query}}\":",
+      "noDetailedInformationGenerated": "Tidak ada informasi detail yang dihasilkan.",
+      "detailedInfoDisclaimer": "Peringatan: Informasi detail ini dihasilkan oleh AI dan hanya untuk tujuan informasi. Selalu konsultasikan sumber asli dan profesional kesehatan."
+    },
+    "buttons": {
+      "exploreMore": "Jelajahi Detail Lebih Lanjut",
+      "backToTools": "Kembali ke Alat"
+    },
+    "errors": {
+      "failedToCheckAccess": "Gagal memeriksa akses fitur.",
+      "failedToFetchAiSummary": "Gagal mengambil ringkasan AI.",
+      "failedToFetchDetailedInfo": "Gagal mengambil informasi detail.",
+      "apiErrorText": "Kesalahan: {{error}}",
+      "detailedErrorText": "Kesalahan: {{error}}",
+      "parsingError": "Tidak dapat mengurai bagian informasi detail."
+    },
+    "toast": {
+      "errorTitle": "Kesalahan",
+      "initialAccessErrorDescription": "Tidak dapat memverifikasi akses fitur saat ini.",
+      "accessDeniedTitle": "Akses Ditolak",
+      "accessDeniedSearchDescription": "Anda tidak dapat melakukan pencarian saat ini.",
+      "infoTitle": "Info",
+      "remainingQuota": "Sisa kuota pencarian untuk hari ini: {{count}}"
+    },
+    "accessDenied": {
+      "alertTitle": "Akses Ditolak",
+      "alertDescriptionDefault": "Anda tidak memiliki izin untuk mengakses fitur ini."
+    },
+    "detailHeadings": {
+      "etiology": "Etiologi",
+      "riskFactors": "Faktor Risiko",
+      "pathogenesis": "Patogenesis",
+      "clinicalManifestations": "Manifestasi Klinis",
+      "physicalExamination": "Pemeriksaan Fisik",
+      "supportingInvestigations": "Pemeriksaan Penunjang",
+      "management": "Tatalaksana"
+    }
   }
 }
