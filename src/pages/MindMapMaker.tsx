@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
+import i18n from '@/i18n'; // Import i18n instance
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -94,6 +96,7 @@ const MindMapMaker: React.FC = () => {
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
   const { toast } = useToast();
   const { openUpgradeDialog } = useAuth(); // Get the dialog function
+  const { t } = useTranslation(); // Initialize useTranslation
 
   // State for access check result
   const [isInitiallyLocked, setIsInitiallyLocked] = useState(false); // Track if locked on load
@@ -139,8 +142,8 @@ const MindMapMaker: React.FC = () => {
            console.error("Error checking initial feature access:", error);
            setIsInitiallyLocked(true);
            toast({
-             title: "Error",
-             description: "Could not verify feature access at this time.",
+             title: t('drugRef.toastErrorTitle'),
+             description: t('drugRef.toastAccessCheckError'),
              variant: "destructive",
            });
          }
@@ -171,7 +174,7 @@ const MindMapMaker: React.FC = () => {
   };
 
   const handleAddNode = () => {
-    const newNodeLabel = window.prompt("Enter label for the new node:");
+    const newNodeLabel = window.prompt(t('mindMapMakerPage.promptNewLabel'));
     if (newNodeLabel !== null && newNodeLabel.trim() !== '') {
       const newNodeId = `manual-node-${nodeCounter}`;
       setNodeCounter(nodeCounter + 1);
@@ -191,15 +194,15 @@ const MindMapMaker: React.FC = () => {
 
   const handleGenerate = async () => {
      if (!topic.trim()) {
-      setError('Please enter a topic.');
+      setError(t('mindMapMakerPage.errorEnterTopic'));
       return;
     }
 
      const accessResult = await checkAccess(featureName);
      if (!accessResult.allowed) {
        toast({
-         title: "Access Denied",
-         description: accessResult.message || 'You cannot create a mind map at this time.',
+         title: t('drugRef.toastAccessDeniedTitle'),
+         description: accessResult.message || t('mindMapMakerPage.toastCannotCreateMap'),
          variant: "destructive",
        });
        openUpgradeDialog();
@@ -212,11 +215,12 @@ const MindMapMaker: React.FC = () => {
     setSummary(null);
 
     try {
+      const currentLanguage = i18n.language; // Get current language
       const workerUrl = 'https://mindmap-generator-worker.daivanfebrijuansetiya.workers.dev';
       const response = await fetch(workerUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic }),
+        body: JSON.stringify({ topic, language: currentLanguage }), // Add language to request
       });
       if (!response.ok) {
         const errorText = await response.text();
@@ -225,14 +229,14 @@ const MindMapMaker: React.FC = () => {
       const data: WorkerResponse = await response.json();
       if (!data || typeof data.summary !== 'string' || typeof data.mindMap !== 'object' || !Array.isArray(data.mindMap.nodes) || !Array.isArray(data.mindMap.edges)) {
         console.error("Invalid response structure:", data);
-        throw new Error("Received invalid data structure from the server.");
+        throw new Error(t('mindMapMakerPage.toastInvalidDataError'));
       }
       const nodesWithTypes = assignNodeTypes(data.mindMap.nodes, data.mindMap.edges);
       setSummary(data.summary);
       setOriginalMindMapData({ nodes: nodesWithTypes, edges: data.mindMap.edges });
     } catch (err: any) {
       console.error('Error generating mind map:', err);
-      setError('Failed to generate mind map. Please try again.');
+      setError(err.message || t('mindMapMakerPage.toastGenericGenerationError'));
     } finally {
       setIsLoading(false);
     }
@@ -242,8 +246,8 @@ const MindMapMaker: React.FC = () => {
       const remainingAfterIncrement = accessResult.remaining - 1;
       const displayRemaining = Math.max(0, remainingAfterIncrement);
       toast({
-        title: "Usage Recorded",
-        description: `Remaining mind map generations for today: ${displayRemaining}`,
+        title: t('mindMapMakerPage.toastUsageRecordedTitle'),
+        description: t('mindMapMakerPage.toastUsageRecordedDescription', { count: displayRemaining }),
       });
       if (displayRemaining <= 0) {
         setIsInitiallyLocked(true);
@@ -254,8 +258,8 @@ const MindMapMaker: React.FC = () => {
   return (
     <>
       <PageHeader
-        title="AI Mind Map Generator"
-        subtitle="Generate visual mind maps from any topic using AI."
+        title={t('toolsPage.aiMindMapGenerator.title')}
+        subtitle={t('toolsPage.aiMindMapGenerator.description')}
       />
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
         {isLoadingToggles && (
@@ -270,48 +274,48 @@ const MindMapMaker: React.FC = () => {
             <Card>
               <CardContent className="mt-6">
                 <div className="flex flex-col sm:flex-row gap-2 mb-4 items-center flex-wrap">
-                  <Input type="text" placeholder="Enter topic..." value={topic} onChange={(e) => setTopic(e.target.value)} disabled={isLoading} className="flex-grow min-w-[200px]" />
-                  <Button onClick={handleGenerate} disabled={isLoading} className="whitespace-nowrap">{isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</> : 'Generate Mind Map'}</Button>
-                  <Button onClick={handleAddNode} variant="outline" className="whitespace-nowrap" disabled={isLoading}>Add Node</Button>
+                  <Input type="text" placeholder={t('mindMapMakerPage.topicInputPlaceholder')} value={topic} onChange={(e) => setTopic(e.target.value)} disabled={isLoading} className="flex-grow min-w-[200px]" />
+                  <Button onClick={handleGenerate} disabled={isLoading} className="whitespace-nowrap">{isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('mindMapMakerPage.generatingButton')}</> : t('mindMapMakerPage.generateButton')}</Button>
+                  <Button onClick={handleAddNode} variant="outline" className="whitespace-nowrap" disabled={isLoading}>{t('mindMapMakerPage.addNodeButton')}</Button>
                   <div className="flex items-center gap-2 ml-auto">
-                    <Label htmlFor="layout-direction" className="whitespace-nowrap">Layout:</Label>
+                    <Label htmlFor="layout-direction" className="whitespace-nowrap">{t('mindMapMakerPage.layoutLabel')}</Label>
                     <Select value={layoutDirection} onValueChange={(value: LayoutDirection) => setLayoutDirection(value)} disabled={!originalMindMapData || isLoading}>
-                      <SelectTrigger id="layout-direction" className="w-[150px]"><SelectValue placeholder="Select Layout" /></SelectTrigger>
-                      <SelectContent><SelectItem value="TB">Top to Bottom</SelectItem><SelectItem value="LR">Left to Right</SelectItem></SelectContent>
+                      <SelectTrigger id="layout-direction" className="w-[150px]"><SelectValue placeholder={t('mindMapMakerPage.layoutSelectPlaceholder')} /></SelectTrigger>
+                      <SelectContent><SelectItem value="TB">{t('mindMapMakerPage.layoutTb')}</SelectItem><SelectItem value="LR">{t('mindMapMakerPage.layoutLr')}</SelectItem></SelectContent>
                     </Select>
                   </div>
                 </div>
                 {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-                {isLoading && !summary && <div className="text-center p-4 text-muted-foreground">Generating summary and mind map...</div>}
+                {isLoading && !summary && <div className="text-center p-4 text-muted-foreground">{t('mindMapMakerPage.loadingSummaryAndMap')}</div>}
                 {!isLoading && summary && (
                   <div className="mb-6 p-4 border rounded-md bg-background shadow-sm">
-                    <h3 className="text-lg font-semibold mb-2 text-primary">AI Generated Summary</h3>
+                    <h3 className="text-lg font-semibold mb-2 text-primary">{t('mindMapMakerPage.aiSummaryTitle')}</h3>
                     <div className="prose prose-sm max-w-none text-foreground text-justify"><ReactMarkdown>{summary}</ReactMarkdown></div>
                   </div>
                 )}
                 {/* Adjusted height for responsiveness */}
                 <div className="mt-4 h-[400px] sm:h-[500px] md:h-[600px] border rounded-md">
-                  {!isLoading && !layoutedMindMapData && !summary && <div className="flex items-center justify-center h-full text-muted-foreground">Enter a topic and click Generate</div>}
+                  {!isLoading && !layoutedMindMapData && !summary && <div className="flex items-center justify-center h-full text-muted-foreground">{t('mindMapMakerPage.emptyStatePrompt')}</div>}
                   {!isLoading && layoutedMindMapData && (
                     <MindMapCanvas key={layoutDirection} initialNodes={layoutedMindMapData.nodes} initialEdges={layoutedMindMapData.edges} onNodeDoubleClick={handleNodeDoubleClick} nodeTypes={nodeTypes} />
                   )}
                   {!isLoading && summary && !layoutedMindMapData && error && <div className="flex items-center justify-center h-full text-red-500">{error}</div>}
                 </div>
               </CardContent>
-              <CardFooter><p className="text-xs text-muted-foreground">Powered by AI. Results may require review.</p></CardFooter>
+              <CardFooter><p className="text-xs text-muted-foreground">{t('mindMapMakerPage.footerDisclaimer')}</p></CardFooter>
             </Card>
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader><DialogTitle>Edit Node Label</DialogTitle><DialogDescription>Enter the new label. Click save.</DialogDescription></DialogHeader>
-                <div className="grid gap-4 py-4"><div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="node-label" className="text-right">Label</Label><Input id="node-label" value={dialogInputValue} onChange={(e) => setDialogInputValue(e.target.value)} className="col-span-3" onKeyDown={(e) => { if (e.key === 'Enter') handleSaveLabel(); }} /></div></div>
-                <DialogFooter><DialogClose asChild><Button type="button" variant="outline">Cancel</Button></DialogClose><Button type="button" onClick={handleSaveLabel}>Save changes</Button></DialogFooter>
+                <DialogHeader><DialogTitle>{t('mindMapMakerPage.editNodeDialogTitle')}</DialogTitle><DialogDescription>{t('mindMapMakerPage.editNodeDialogDescription')}</DialogDescription></DialogHeader>
+                <div className="grid gap-4 py-4"><div className="grid grid-cols-4 items-center gap-4"><Label htmlFor="node-label" className="text-right">{t('mindMapMakerPage.editNodeDialogLabel')}</Label><Input id="node-label" value={dialogInputValue} onChange={(e) => setDialogInputValue(e.target.value)} className="col-span-3" onKeyDown={(e) => { if (e.key === 'Enter') handleSaveLabel(); }} /></div></div>
+                <DialogFooter><DialogClose asChild><Button type="button" variant="outline">{t('mindMapMakerPage.buttonCancel')}</Button></DialogClose><Button type="button" onClick={handleSaveLabel}>{t('mindMapMakerPage.buttonSaveChanges')}</Button></DialogFooter>
               </DialogContent>
             </Dialog>
             <Dialog open={isAdvancedModalOpen} onOpenChange={setIsAdvancedModalOpen}>
               <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
-                <DialogHeader><DialogTitle>Advanced Mind Map Generator</DialogTitle><DialogDescription>Interact below. Close when finished.</DialogDescription></DialogHeader>
-                <div className="flex-grow border rounded-md overflow-hidden"><iframe src="https://medimind.daivanlabs.site/" title="Advanced Mind Map Generator" width="100%" height="100%" style={{ border: 'none' }} /></div>
-                <DialogFooter className="mt-4"><DialogClose asChild><Button type="button" variant="outline">Close</Button></DialogClose></DialogFooter>
+                <DialogHeader><DialogTitle>{t('mindMapMakerPage.advancedGeneratorDialogTitle')}</DialogTitle><DialogDescription>{t('mindMapMakerPage.advancedGeneratorDialogDescription')}</DialogDescription></DialogHeader>
+                <div className="flex-grow border rounded-md overflow-hidden"><iframe src="https://medimind.daivanlabs.site/" title={t('mindMapMakerPage.advancedGeneratorDialogTitle')} width="100%" height="100%" style={{ border: 'none' }} /></div>
+                <DialogFooter className="mt-4"><DialogClose asChild><Button type="button" variant="outline">{t('nutritionDatabase.closeButton')}</Button></DialogClose></DialogFooter>
               </DialogContent>
             </Dialog>
             <div className="flex flex-col items-center gap-4 mt-8 mb-4">
@@ -321,8 +325,8 @@ const MindMapMaker: React.FC = () => {
                 const accessResult = await checkAccess(featureName);
                 if (!accessResult.allowed) {
                   toast({
-                    title: "Access Denied",
-                    description: accessResult.message || 'You cannot access the Advanced Mind Map Generator at this time.',
+                    title: t('drugRef.toastAccessDeniedTitle'),
+                    description: accessResult.message || t('mindMapMakerPage.toastAdvancedAccessDenied'),
                     variant: "destructive",
                   });
                   openUpgradeDialog();
@@ -333,16 +337,16 @@ const MindMapMaker: React.FC = () => {
                   const remainingAfterIncrement = accessResult.remaining - 1;
                   const displayRemaining = Math.max(0, remainingAfterIncrement);
                   toast({
-                    title: "Usage Recorded",
-                    description: `Remaining mind map generations for today: ${displayRemaining}`,
+                    title: t('mindMapMakerPage.toastUsageRecordedTitle'),
+                    description: t('mindMapMakerPage.toastUsageRecordedDescription', { count: displayRemaining }),
                   });
                   if (displayRemaining <= 0) {
                     setIsInitiallyLocked(true);
                   }
                 }
                 setIsAdvancedModalOpen(true);
-              }}>Advanced Mind Map Generator</Button>
-              <Link to="/tools"><Button variant="outline" className="inline-flex items-center gap-2"><ArrowLeft className="h-4 w-4" /> Back to Tools</Button></Link>
+              }}>{t('mindMapMakerPage.advancedGeneratorDialogTitle')}</Button>
+              <Link to="/tools"><Button variant="outline" className="inline-flex items-center gap-2"><ArrowLeft className="h-4 w-4" /> {t('medicalCalculatorPage.common.backToToolsButton')}</Button></Link>
             </div>
           </>
         )}

@@ -652,5 +652,34 @@
       "accessDeniedInteractionCheck": "You cannot perform an interaction check at this time.",
       "cannotSummarizeEmpty": "The interaction description is empty and cannot be summarized."
     }
+  },
+  "mindMapMakerPage": {
+    "topicInputPlaceholder": "Enter topic...",
+    "generatingButton": "Generating...",
+    "generateButton": "Generate Mind Map",
+    "addNodeButton": "Add Node",
+    "layoutLabel": "Layout:",
+    "layoutSelectPlaceholder": "Select Layout",
+    "layoutTb": "Top to Bottom",
+    "layoutLr": "Left to Right",
+    "errorEnterTopic": "Please enter a topic.",
+    "loadingSummaryAndMap": "Generating summary and mind map...",
+    "aiSummaryTitle": "AI Generated Summary",
+    "emptyStatePrompt": "Enter a topic and click Generate",
+    "footerDisclaimer": "Powered by AI. Results may require review.",
+    "editNodeDialogTitle": "Edit Node Label",
+    "editNodeDialogDescription": "Enter the new label. Click save.",
+    "editNodeDialogLabel": "Label",
+    "buttonSaveChanges": "Save changes",
+    "buttonCancel": "Cancel",
+    "advancedGeneratorDialogTitle": "Advanced Mind Map Generator",
+    "advancedGeneratorDialogDescription": "Interact below. Close when finished.",
+    "toastCannotCreateMap": "You cannot create a mind map at this time.",
+    "toastInvalidDataError": "Received invalid data structure from the server.",
+    "toastGenericGenerationError": "Failed to generate mind map. Please try again.",
+    "toastUsageRecordedTitle": "Usage Recorded",
+    "toastUsageRecordedDescription": "Remaining mind map generations for today: {{count}}",
+    "promptNewLabel": "Enter label for the new node:",
+    "toastAdvancedAccessDenied": "You cannot access the Advanced Mind Map Generator at this time."
   }
 }

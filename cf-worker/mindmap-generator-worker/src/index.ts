@@ -8,6 +8,7 @@ export interface Env {
 // Define the expected request body structure
 interface RequestBody {
 	topic?: string;
+	language?: string; // Added language field
 }
 
 // Define the structure for MindMap data (matching React Flow)
@@ -83,6 +84,8 @@ export default {
 		}
 
 		const topic = requestBody.topic;
+		const language = requestBody.language || 'en'; // Default to 'en' if not provided
+
 		if (!topic || typeof topic !== 'string' || topic.trim() === '') {
 			return new Response('Missing or invalid "topic" in request body', { status: 400, headers: corsHeaders() });
 		}
@@ -94,12 +97,17 @@ export default {
 
 		try {
 			// --- Stage 1: Generate Summary ---
+			const languageInstruction = language === 'id'
+				? "Please provide the summary in Indonesian."
+				: "Please provide the summary in English.";
+
 			const summaryPrompt = `
 Generate a concise and informative summary (around 100-150 words) about the medical topic: "${topic}".
+${languageInstruction}
 Focus on key aspects like definition, main causes or types, common symptoms, and general treatment principles if applicable.
 Ensure the summary is clear and easy to understand. Output only the summary text.`;
 
-			console.log("Requesting summary for:", topic);
+			console.log(`Requesting summary for: "${topic}" in language: ${language}`);
 			const summaryText = await callGemini(env.GEMINI_API_KEY, summaryPrompt);
 			if (!summaryText || summaryText.trim() === '') {
 				throw new Error('Received empty summary from AI.');
