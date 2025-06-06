@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Terminal } from 'lucide-react'; // Added Terminal
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess'; // Import hook
 import { FeatureName } from '@/lib/quotas'; // Import FeatureName from quotas.ts
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 const AIChatbot = () => {
+  const { t } = useTranslation();
   const featureName: FeatureName = 'ai_chatbot';
   // Get isLoadingToggles from the hook
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
@@ -62,8 +64,8 @@ const AIChatbot = () => {
   return (
     <>
       <PageHeader
-        title="AI Chatbot"
-         subtitle="Engage with an AI assistant for medical information and queries" 
+        title={t('aiChatbotPage.title')}
+        subtitle={t('aiChatbotPage.subtitle')}
        />
        {/* Make this container grow and use flexbox for the iframe */}
        <div className="container max-w-7xl mx-auto px-4 flex flex-col flex-grow">
@@ -80,9 +82,9 @@ const AIChatbot = () => {
            {!isLoading && !accessAllowed && (
               <Alert variant="destructive" className="mt-4">
                 <Terminal className="h-4 w-4" />
-                <AlertTitle>Access Denied</AlertTitle>
+                <AlertTitle>{t('aiChatbotPage.accessDenied.title')}</AlertTitle>
                 <AlertDescription>
-                  {accessMessage || 'You do not have permission to access this feature.'}
+                  {accessMessage || t('aiChatbotPage.accessDenied.defaultMessage')}
                 </AlertDescription>
               </Alert>
             )}
@@ -102,7 +104,7 @@ const AIChatbot = () => {
             <Link to="/tools">
               <Button variant="outline" className="flex items-center gap-2">
                 <ArrowLeft size={16} />
-                Back to Tools
+                {t('aiChatbotPage.backToTools')}
               </Button>
             </Link>
           </div>

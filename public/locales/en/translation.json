@@ -205,6 +205,15 @@
     "adverseReactionsLabel": "Adverse Reactions",
     "accessDeniedDefault": "You do not have permission to access this feature."
   },
+  "aiChatbotPage": {
+    "title": "AI Chatbot",
+    "subtitle": "Engage with an AI assistant for medical information and queries",
+    "accessDenied": {
+      "title": "Access Denied",
+      "defaultMessage": "You do not have permission to access this feature."
+    },
+    "backToTools": "Back to Tools"
+  },
   "medicalCalculatorPage": {
     "pageTitle": "Medical Calculator",
     "pageSubtitle": "Calculate common clinical values. For informational purposes only.",
@@ -448,7 +457,25 @@
       "clinicalManifestations": "Clinical Manifestations",
       "physicalExamination": "Physical Examination",
       "supportingInvestigations": "Supporting Investigations",
-      "management": "Management"
+    "management": "Management"
+    }
+  },
+  "aiPeerReviewPage": {
+    "title": "AI Peer-Review",
+    "subtitle": "Get AI-powered feedback on your clinical notes or case studies",
+    "accessDenied": {
+      "title": "Access Denied",
+      "defaultMessage": "You do not have permission to access this feature.",
+      "failedToVerify": "Failed to check feature access.",
+      "couldNotVerify": "Could not verify feature access at this time."
+    },
+    "buttons": {
+      "backToTools": "Back to Tools"
+    },
+    "toasts": {
+      "infoTitle": "Info",
+      "errorTitle": "Error",
+      "quotaRemaining": "Remaining quota for AI Peer Review: {{count}}"
     }
   }
 }

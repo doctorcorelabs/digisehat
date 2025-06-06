@@ -1,5 +1,6 @@
 import PageHeader from '@/components/PageHeader';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Terminal } from 'lucide-react'; // Added Terminal
 import { useEffect, useState } from 'react';
@@ -10,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const AIPeerReview = () => {
+  const { t } = useTranslation(); // Initialize useTranslation
   const featureName: FeatureName = 'ai_peer_review';
   // Get isLoadingToggles from the hook
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
@@ -31,18 +33,18 @@ const AIPeerReview = () => {
           await incrementUsage(featureName);
           // Optionally show remaining quota
           // if (result.remaining !== null) {
-          //   toast({ title: "Info", description: `Remaining quota for ${featureName.replace(/_/g, ' ')}: ${result.remaining}` });
+          //   toast({ title: t('aiPeerReviewPage.toasts.infoTitle'), description: t('aiPeerReviewPage.toasts.quotaRemaining', { count: result.remaining }) });
           // }
         } else {
-          setAccessMessage(result.message || 'Access denied.');
+          setAccessMessage(result.message || t('aiPeerReviewPage.accessDenied.defaultMessage'));
         }
       } catch (error) {
         console.error("Error checking feature access:", error);
         setAccessAllowed(false);
-        setAccessMessage('Failed to check feature access.');
+        setAccessMessage(t('aiPeerReviewPage.accessDenied.failedToVerify'));
         toast({
-          title: "Error",
-          description: "Could not verify feature access at this time.",
+          title: t('aiPeerReviewPage.toasts.errorTitle'),
+          description: t('aiPeerReviewPage.accessDenied.couldNotVerify'),
           variant: "destructive",
         });
       } finally {
@@ -60,8 +62,8 @@ const AIPeerReview = () => {
   return (
     <>
       <PageHeader
-        title="AI Peer-Review"
-        subtitle="Get AI-powered feedback on your clinical notes or case studies"
+        title={t('aiPeerReviewPage.title')}
+        subtitle={t('aiPeerReviewPage.subtitle')}
       />
       <div className="container max-w-7xl mx-auto px-4 py-8 flex flex-col flex-grow">
 
@@ -77,9 +79,9 @@ const AIPeerReview = () => {
         {!isLoading && !accessAllowed && (
            <Alert variant="destructive" className="mt-4">
              <Terminal className="h-4 w-4" />
-             <AlertTitle>Access Denied</AlertTitle>
+             <AlertTitle>{t('aiPeerReviewPage.accessDenied.title')}</AlertTitle>
              <AlertDescription>
-               {accessMessage || 'You do not have permission to access this feature.'}
+               {accessMessage || t('aiPeerReviewPage.accessDenied.defaultMessage')}
              </AlertDescription>
            </Alert>
          )}
@@ -100,7 +102,7 @@ const AIPeerReview = () => {
         <Link to="/tools">
           <Button variant="outline" className="inline-flex items-center gap-2"> {/* Use inline-flex for button content alignment */}
             <ArrowLeft className="h-4 w-4" />
-            Back to Tools
+            {t('aiPeerReviewPage.buttons.backToTools')}
           </Button>
         </Link>
       </div>

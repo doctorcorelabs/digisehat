@@ -205,6 +205,15 @@
     "adverseReactionsLabel": "Reaksi Merugikan",
     "accessDeniedDefault": "Anda tidak memiliki izin untuk mengakses fitur ini."
   },
+  "aiChatbotPage": {
+    "title": "AI Chatbot",
+    "subtitle": "Berinteraksi dengan asisten AI untuk informasi dan pertanyaan medis",
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "defaultMessage": "Anda tidak memiliki izin untuk mengakses fitur ini."
+    },
+    "backToTools": "Kembali ke Alat"
+  },
   "medicalCalculatorPage": {
     "pageTitle": "Kalkulator Medis",
     "pageSubtitle": "Hitung nilai klinis umum. Hanya untuk tujuan informasi.",
@@ -448,7 +457,25 @@
       "clinicalManifestations": "Manifestasi Klinis",
       "physicalExamination": "Pemeriksaan Fisik",
       "supportingInvestigations": "Pemeriksaan Penunjang",
-      "management": "Tatalaksana"
+    "management": "Tatalaksana"
+    }
+  },
+  "aiPeerReviewPage": {
+    "title": "AI Peer-Review",
+    "subtitle": "Dapatkan umpan balik bertenaga AI tentang catatan klinis atau studi kasus Anda.",
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "defaultMessage": "Anda tidak memiliki izin untuk mengakses fitur ini.",
+      "failedToVerify": "Gagal memeriksa akses fitur.",
+      "couldNotVerify": "Tidak dapat memverifikasi akses fitur saat ini."
+    },
+    "buttons": {
+      "backToTools": "Kembali ke Alat"
+    },
+    "toasts": {
+      "infoTitle": "Info",
+      "errorTitle": "Kesalahan",
+      "quotaRemaining": "Sisa kuota untuk AI Peer Review: {{count}}"
     }
   }
 }
