@@ -136,6 +136,7 @@ module.exports.handler = async function(event, context) {
 
     // Process fields: structure as { text: '...', source: 'fda'/'ai' }
     const processedResult = { ...resultData }; // Clone the result
+    const supplementPromises = [];
 
     for (const field of FIELDS_TO_SUPPLEMENT) {
       const fdaValue = resultData[field]?.[0]; // Get the first item if array exists
@@ -144,19 +145,32 @@ module.exports.handler = async function(event, context) {
         // Field exists in FDA data
         processedResult[field] = [{ text: fdaValue, source: 'fda' }];
       } else if (geminiModel) {
-        // Field missing or empty in FDA data, try AI supplement
-        console.log(`[drug-search] Field '${field}' missing in FDA data for ${drugIdentifier}. Attempting AI supplement.`);
-        const aiText = await getAiSupplement(drugIdentifier, field);
-        if (aiText) {
-          processedResult[field] = [{ text: aiText, source: 'ai' }];
-        } else {
-           // AI failed or returned null, mark as unavailable
-           processedResult[field] = [{ text: 'Information not available from FDA or AI.', source: 'unavailable' }];
-        }
+        // Field missing or empty in FDA data, schedule AI supplement
+        console.log(`[drug-search] Field '${field}' missing in FDA data for ${drugIdentifier}. Scheduling AI supplement.`);
+        supplementPromises.push(
+          getAiSupplement(drugIdentifier, field).then(aiText => {
+            // This assignment happens once the promise resolves
+            if (aiText && !aiText.toLowerCase().startsWith('error') && !aiText.toLowerCase().includes('blocked')) {
+              processedResult[field] = [{ text: aiText, source: 'ai' }];
+            } else {
+              processedResult[field] = [{ text: aiText || 'Information not available from FDA or AI.', source: 'unavailable' }]; // Use aiText if it's an error message
+            }
+          }).catch(err => {
+            console.error(`[drug-search] Error during AI supplement for ${field}:`, err);
+            processedResult[field] = [{ text: 'Error during AI supplementation.', source: 'unavailable' }];
+          })
+        );
       } else {
          // Field missing and AI disabled/unavailable
          processedResult[field] = [{ text: 'Information not available from FDA.', source: 'unavailable' }];
       }
+    }
+
+    // Wait for all supplementations to complete
+    if (supplementPromises.length > 0) {
+      console.log(`[drug-search] Waiting for ${supplementPromises.length} AI supplementation(s) to complete...`);
+      await Promise.all(supplementPromises);
+      console.log("[drug-search] All AI supplementations completed.");
     }
     
     // Also ensure openfda fields are structured if they exist, default source 'fda'
@@ -174,35 +188,49 @@ module.exports.handler = async function(event, context) {
     // 3. Translate fields if targetLang is 'id'
     if (targetLang === 'id' && geminiModel) {
       console.log(`[drug-search] Translating content to Indonesian for: ${drugIdentifier}`);
+      const translationPromises = [];
+
       for (const field of FIELDS_TO_SUPPLEMENT) {
         if (processedResult[field] && processedResult[field][0] && processedResult[field][0].text) {
           const originalText = processedResult[field][0].text;
           const originalSource = processedResult[field][0].source;
 
           // Skip translation if source is 'unavailable' or text is a known "not available" message
-          if (originalSource === 'unavailable' || originalText.toLowerCase().includes('not available')) {
+          if (originalSource === 'unavailable' || originalText.toLowerCase().includes('not available') || originalText.toLowerCase().includes('information not available')) {
             console.log(`[drug-search] Skipping translation for '${field}' as it's marked unavailable or has no content.`);
             continue;
           }
           
           // Also skip translation for AI error messages
-          if (originalText.toLowerCase().startsWith('error fetching ai supplement') || originalText.toLowerCase().startsWith('ai response blocked')) {
-            console.log(`[drug-search] Skipping translation for '${field}' as it contains an AI error message.`);
+          if (originalText.toLowerCase().startsWith('error') || originalText.toLowerCase().includes('blocked')) {
+            console.log(`[drug-search] Skipping translation for '${field}' as it contains an AI error/blocked message.`);
             continue;
           }
 
           const translationPrompt = `Translate the following medical text from English to Indonesian: "${originalText}"`;
-          const translatedText = await callGemini(translationPrompt, `translation for ${field} of ${drugIdentifier}`);
-          
-          if (translatedText && !translatedText.toLowerCase().startsWith('error during translation') && !translatedText.toLowerCase().startsWith('ai response blocked')) {
-            processedResult[field] = [{ text: translatedText, source: originalSource }]; // Keep original source, update text
-            console.log(`[drug-search] Successfully translated '${field}' to Indonesian.`);
-          } else {
-            console.warn(`[drug-search] Failed to translate '${field}' for ${drugIdentifier}. Original text will be used. Reason: ${translatedText}`);
-            // Keep original text if translation fails
-          }
+          translationPromises.push(
+            callGemini(translationPrompt, `translation for ${field} of ${drugIdentifier}`).then(translatedText => {
+              if (translatedText && !translatedText.toLowerCase().startsWith('error') && !translatedText.toLowerCase().includes('blocked')) {
+                processedResult[field] = [{ text: translatedText, source: originalSource }];
+                console.log(`[drug-search] Successfully translated '${field}' to Indonesian.`);
+              } else {
+                console.warn(`[drug-search] Failed to translate '${field}' for ${drugIdentifier}. Original text will be used. Reason: ${translatedText}`);
+                // Keep original text if translation fails or is an error message
+              }
+            }).catch(err => {
+              console.error(`[drug-search] Error during translation for ${field}:`, err);
+              // Keep original text if an unexpected error occurs in the promise itself
+            })
+          );
         }
       }
+      // Wait for all translations to complete
+      if (translationPromises.length > 0) {
+        console.log(`[drug-search] Waiting for ${translationPromises.length} translation(s) to complete...`);
+        await Promise.all(translationPromises);
+        console.log("[drug-search] All translations completed.");
+      }
+
     } else if (targetLang === 'id' && !geminiModel) {
       console.warn(`[drug-search] Translation to Indonesian requested for ${drugIdentifier}, but Gemini model is not available. Returning English content.`);
     }
