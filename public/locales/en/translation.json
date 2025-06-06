@@ -544,5 +544,68 @@
       "httpError": "HTTP error! status: {{status}}",
       "genericError": "An error occurred."
     }
+  },
+  "exploreDeepSeekPage": {
+    "header": {
+      "title": "Explore DeepSeek",
+      "subtitle": "Leverage DeepSeek AI for advanced medical insights"
+    },
+    "interactCard": {
+      "title": "Start New Exploration",
+      "promptLabel": "Enter your prompt (or upload a TXT/PDF):",
+      "promptPlaceholder": "Ask DeepSeek...",
+      "promptPlaceholderWithFile": "Using content from {{fileName}}. Add additional instructions here...",
+      "attachFileButtonTitle": "Attach File (TXT/PDF)",
+      "attachFileSrOnly": "Attach File",
+      "removeFileButtonTitle": "Remove file",
+      "removeFileSrOnly": "Remove file",
+      "selectModelLabel": "Select Model:",
+      "modelChatLabel": "Chat (V3)",
+      "modelReasonerLabel": "Reasoner (R1)",
+      "submitButton": "Submit Prompt",
+      "generatingButton": "Generating..."
+    },
+    "responseCard": {
+      "title": "Current Response from {{modelName}}",
+      "generatingText": "Generating response...",
+      "exploreTopicButton": "Explore Topic"
+    },
+    "history": {
+      "sectionTitle": "Exploration Threads",
+      "threadTitle": "Exploration Thread",
+      "startedLabel": "Started: {{dateTime}}",
+      "modelLabel": "Model: {{modelName}}",
+      "followUpPlaceholder": "Follow-up prompt...",
+      "followUpPlaceholderWithFile": "Using content from {{fileName}}. Add follow-up...",
+      "sendButtonSrOnly": "Send"
+    },
+    "buttons": {
+      "backToTools": "Back to Tools"
+    },
+    "alerts": {
+      "errorTitle": "Error",
+      "quotaReachedError": "Quota limit reached for Explore DeepSeek.",
+      "accessDeniedTitle": "Access Denied",
+      "workerUrlError": "DeepSeek Worker URL not configured (VITE_DEEPSEEK_WORKER_URL).",
+      "emptyResponseError": "Received an empty or invalid response from the AI.",
+      "unknownError": "An unknown error occurred.",
+      "promptOrFileRequiredError": "Please enter a prompt or upload a file with text content.",
+      "threadPromptOrFileRequiredError": "Follow-up prompt or uploaded file content is required.",
+      "workerRequestFailedError": "Worker request failed: {{status}} {{statusText}} - {{errorText}}",
+      "noAdditionalPrompt": "(No additional prompt)",
+      "systemMessage": "You are a helpful medical assistant."
+    },
+    "toasts": {
+      "fileLoadedSuccess": "{{fileType}} file loaded successfully.",
+      "pdfExtractedSuccess": "PDF text extracted successfully.",
+      "fileProcessingErrorTitle": "File Processing Error",
+      "unsupportedFileTypeError": "Unsupported file type. Please upload TXT or PDF.",
+      "errorProcessingFile": "Error processing file: {{errorMessage}}",
+      "unknownFileProcessingError": "Unknown error processing file.",
+      "threadFileLoadedSuccess": "{{fileType}} loaded for thread.",
+      "threadPdfExtractedSuccess": "PDF text extracted for thread.",
+      "addedToHistory": "Added to Exploration History",
+      "errorSendingMessageTitle": "Error Sending Message"
+    }
   }
 }

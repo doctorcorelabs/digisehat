@@ -544,5 +544,68 @@
       "httpError": "Kesalahan HTTP! status: {{status}}",
       "genericError": "Terjadi kesalahan."
     }
+  },
+  "exploreDeepSeekPage": {
+    "header": {
+      "title": "Jelajahi DeepSeek",
+      "subtitle": "Manfaatkan DeepSeek AI untuk wawasan medis tingkat lanjut"
+    },
+    "interactCard": {
+      "title": "Mulai Eksplorasi Baru",
+      "promptLabel": "Masukkan prompt Anda (atau unggah TXT/PDF):",
+      "promptPlaceholder": "Tanya DeepSeek...",
+      "promptPlaceholderWithFile": "Menggunakan konten dari {{fileName}}. Tambahkan instruksi tambahan di sini...",
+      "attachFileButtonTitle": "Lampirkan File (TXT/PDF)",
+      "attachFileSrOnly": "Lampirkan File",
+      "removeFileButtonTitle": "Hapus file",
+      "removeFileSrOnly": "Hapus file",
+      "selectModelLabel": "Pilih Model:",
+      "modelChatLabel": "Chat (V3)",
+      "modelReasonerLabel": "Reasoner (R1)",
+      "submitButton": "Kirim Prompt",
+      "generatingButton": "Menghasilkan..."
+    },
+    "responseCard": {
+      "title": "Respons Saat Ini dari {{modelName}}",
+      "generatingText": "Menghasilkan respons...",
+      "exploreTopicButton": "Jelajahi Topik"
+    },
+    "history": {
+      "sectionTitle": "Utas Eksplorasi",
+      "threadTitle": "Utas Eksplorasi",
+      "startedLabel": "Dimulai: {{dateTime}}",
+      "modelLabel": "Model: {{modelName}}",
+      "followUpPlaceholder": "Prompt tindak lanjut...",
+      "followUpPlaceholderWithFile": "Menggunakan konten dari {{fileName}}. Tambahkan tindak lanjut...",
+      "sendButtonSrOnly": "Kirim"
+    },
+    "buttons": {
+      "backToTools": "Kembali ke Alat"
+    },
+    "alerts": {
+      "errorTitle": "Kesalahan",
+      "quotaReachedError": "Batas kuota untuk Jelajahi DeepSeek telah tercapai.",
+      "accessDeniedTitle": "Akses Ditolak",
+      "workerUrlError": "URL Worker DeepSeek tidak dikonfigurasi (VITE_DEEPSEEK_WORKER_URL).",
+      "emptyResponseError": "Menerima respons kosong atau tidak valid dari AI.",
+      "unknownError": "Terjadi kesalahan yang tidak diketahui.",
+      "promptOrFileRequiredError": "Harap masukkan prompt atau unggah file dengan konten teks.",
+      "threadPromptOrFileRequiredError": "Prompt tindak lanjut atau konten file yang diunggah diperlukan.",
+      "workerRequestFailedError": "Permintaan worker gagal: {{status}} {{statusText}} - {{errorText}}",
+      "noAdditionalPrompt": "(Tidak ada prompt tambahan)",
+      "systemMessage": "Anda adalah asisten medis yang membantu."
+    },
+    "toasts": {
+      "fileLoadedSuccess": "File {{fileType}} berhasil dimuat.",
+      "pdfExtractedSuccess": "Teks PDF berhasil diekstrak.",
+      "fileProcessingErrorTitle": "Kesalahan Pemrosesan File",
+      "unsupportedFileTypeError": "Jenis file tidak didukung. Harap unggah TXT atau PDF.",
+      "errorProcessingFile": "Kesalahan memproses file: {{errorMessage}}",
+      "unknownFileProcessingError": "Kesalahan tidak diketahui saat memproses file.",
+      "threadFileLoadedSuccess": "{{fileType}} berhasil dimuat untuk utas.",
+      "threadPdfExtractedSuccess": "Teks PDF berhasil diekstrak untuk utas.",
+      "addedToHistory": "Ditambahkan ke Riwayat Eksplorasi",
+      "errorSendingMessageTitle": "Kesalahan Mengirim Pesan"
+    }
   }
 }

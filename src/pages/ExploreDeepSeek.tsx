@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"; // Added AlertDialog imports
 import { Terminal, Sparkles, SendHorizonal, Loader2, Paperclip, X, ArrowLeft } from "lucide-react";
+import { useTranslation } from 'react-i18next'; // Added for i18n
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Link } from 'react-router-dom'; // Added Link import
@@ -22,6 +23,10 @@ import { FeatureName } from '@/lib/quotas'; // Added FeatureName
 
 // Configure the worker source for pdfjs-dist
 // Make sure the worker file is copied to your public directory during build
+
+// i18n hook
+// const { t } = useTranslation(); // This will be moved inside the component
+
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
   import.meta.url,
@@ -43,6 +48,7 @@ interface ExplorationThread {
 }
 
 const ExploreDeepSeek: React.FC = () => {
+  const { t } = useTranslation(); // i18n hook
   const { toast } = useToast();
   // Get user, level, and the function to open the global dialog (will be added to context later)
   const { user, level, openUpgradeDialog } = useAuth(); 
@@ -75,7 +81,7 @@ const ExploreDeepSeek: React.FC = () => {
 
     // Check if there's either a prompt or a file with extracted text
     if (!prompt.trim() && !extractedText) {
-      setError('Please enter a prompt or upload a file with text content.');
+      setError(t('exploreDeepSeekPage.alerts.promptOrFileRequiredError'));
       return;
     }
 
@@ -85,11 +91,11 @@ const ExploreDeepSeek: React.FC = () => {
 
     if (!access.allowed) { // Corrected property check based on hook definition
       toast({
-        title: "Access Denied",
-        description: access.message || 'Quota limit reached for Explore DeepSeek.',
+        title: t('exploreDeepSeekPage.alerts.accessDeniedTitle'),
+        description: access.message || t('exploreDeepSeekPage.alerts.quotaReachedError'),
         variant: "destructive"
       });
-      setError(access.message || 'Quota limit reached for Explore DeepSeek.');
+      setError(access.message || t('exploreDeepSeekPage.alerts.quotaReachedError'));
       openUpgradeDialog(); // Open the global dialog
       setIsLoading(false); // Stop loading indicator
       return; // Stop execution if no access
@@ -102,7 +108,7 @@ const ExploreDeepSeek: React.FC = () => {
 
     const workerUrl = import.meta.env.VITE_DEEPSEEK_WORKER_URL;
     if (!workerUrl) {
-      setError('DeepSeek Worker URL not configured (VITE_DEEPSEEK_WORKER_URL).');
+      setError(t('exploreDeepSeekPage.alerts.workerUrlError'));
       setIsLoading(false);
       return;
     }
@@ -110,15 +116,15 @@ const ExploreDeepSeek: React.FC = () => {
     // Combine prompt and extracted text if available
     let finalUserContent = prompt;
     if (extractedText && selectedFile) {
-        finalUserContent = `[Content from ${selectedFile.name}]:\n\n${extractedText}\n\n[User Prompt]:\n\n${prompt || '(No additional prompt)'}`;
+        finalUserContent = `[Content from ${selectedFile.name}]:\n\n${extractedText}\n\n[User Prompt]:\n\n${prompt || t('exploreDeepSeekPage.noAdditionalPrompt')}`; // Assuming a key for "(No additional prompt)"
     } else if (!prompt.trim() && !selectedFile) { // Redundant check, handled above, but safe
-        setError('Please enter a prompt or upload a file with text content.');
+        setError(t('exploreDeepSeekPage.alerts.promptOrFileRequiredError'));
         setIsLoading(false);
         return;
     }
 
     const messages: Omit<Message, 'id' | 'timestamp'>[] = [
-      { role: 'system', content: 'You are a helpful medical assistant.' },
+      { role: 'system', content: t('exploreDeepSeekPage.systemMessage') }, // Assuming a key for "You are a helpful medical assistant."
       { role: 'user', content: finalUserContent }, // Use combined content
     ];
 
@@ -139,7 +145,7 @@ const ExploreDeepSeek: React.FC = () => {
 
       if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(`Worker request failed: ${res.status} ${res.statusText} - ${errorText}`);
+        throw new Error(t('exploreDeepSeekPage.alerts.workerRequestFailedError', { status: res.status, statusText: res.statusText, errorText }));
       }
 
       const data = await res.json();
@@ -147,13 +153,13 @@ const ExploreDeepSeek: React.FC = () => {
         setResponse(data.responseText);
       } else {
         console.warn("Received response without responseText:", data);
-        setError("Received an empty or invalid response from the AI.");
+        setError(t('exploreDeepSeekPage.alerts.emptyResponseError'));
         setResponse('');
       }
 
     } catch (err) {
       console.error('Error fetching from worker or parsing JSON:', err);
-      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+      setError(err instanceof Error ? err.message : t('exploreDeepSeekPage.alerts.unknownError'));
       setResponse('');
     } finally {
       setIsLoading(false);
@@ -181,7 +187,7 @@ const ExploreDeepSeek: React.FC = () => {
       if (file.type === 'text/plain') {
         const text = await file.text();
         setExtractedText(text);
-        toast({ title: "Text file loaded successfully." });
+        toast({ title: t('exploreDeepSeekPage.toasts.fileLoadedSuccess', { fileType: 'TXT' }) });
       } else if (file.type === 'application/pdf') {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -193,15 +199,15 @@ const ExploreDeepSeek: React.FC = () => {
           fullText += textContent.items.map((item: any) => item.str || '').join(' ') + '\n';
         }
         setExtractedText(fullText.trim());
-        toast({ title: "PDF text extracted successfully." });
+        toast({ title: t('exploreDeepSeekPage.toasts.pdfExtractedSuccess') });
       } else {
-        throw new Error('Unsupported file type. Please upload TXT or PDF.');
+        throw new Error(t('exploreDeepSeekPage.toasts.unsupportedFileTypeError'));
       }
     } catch (err) {
       console.error("Error processing file:", err);
-      const errorMsg = err instanceof Error ? `Error processing file: ${err.message}` : 'Unknown error processing file.';
+      const errorMsg = err instanceof Error ? t('exploreDeepSeekPage.toasts.errorProcessingFile', { errorMessage: err.message }) : t('exploreDeepSeekPage.toasts.unknownFileProcessingError');
       setError(errorMsg);
-      toast({ title: "File Processing Error", description: errorMsg, variant: "destructive" });
+      toast({ title: t('exploreDeepSeekPage.toasts.fileProcessingErrorTitle'), description: errorMsg, variant: "destructive" });
       setSelectedFile(null); // Clear invalid file
       setExtractedText(null);
     } finally {
@@ -240,7 +246,7 @@ const ExploreDeepSeek: React.FC = () => {
       let extractedThreadText = '';
       if (file.type === 'text/plain') {
         extractedThreadText = await file.text();
-        toast({ title: `TXT loaded for thread.` });
+        toast({ title: t('exploreDeepSeekPage.toasts.threadFileLoadedSuccess', { fileType: 'TXT' }) });
       } else if (file.type === 'application/pdf') {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -252,16 +258,16 @@ const ExploreDeepSeek: React.FC = () => {
           fullText += textContent.items.map((item: any) => item.str || '').join(' ') + '\n';
         }
         extractedThreadText = fullText.trim();
-        toast({ title: `PDF text extracted for thread.` });
+        toast({ title: t('exploreDeepSeekPage.toasts.threadPdfExtractedSuccess') });
       } else {
-        throw new Error('Unsupported file type. Please upload TXT or PDF.');
+        throw new Error(t('exploreDeepSeekPage.toasts.unsupportedFileTypeError'));
       }
       setThreadExtractedTexts(prev => ({ ...prev, [threadId]: extractedThreadText }));
     } catch (err) {
       console.error(`Error processing file for thread ${threadId}:`, err);
-      const errorMsg = err instanceof Error ? `Error processing file: ${err.message}` : 'Unknown error processing file.';
+      const errorMsg = err instanceof Error ? t('exploreDeepSeekPage.toasts.errorProcessingFile', { errorMessage: err.message }) : t('exploreDeepSeekPage.toasts.unknownFileProcessingError');
       setThreadErrors(prev => ({ ...prev, [threadId]: errorMsg }));
-      toast({ title: "File Processing Error", description: errorMsg, variant: "destructive" });
+      toast({ title: t('exploreDeepSeekPage.toasts.fileProcessingErrorTitle'), description: errorMsg, variant: "destructive" });
       setThreadFiles(prev => ({ ...prev, [threadId]: null })); // Clear invalid file for this thread
       setThreadExtractedTexts(prev => ({ ...prev, [threadId]: null }));
     } finally {
@@ -293,12 +299,12 @@ const ExploreDeepSeek: React.FC = () => {
     // Include extracted text if available when creating the history
     let userContent = prompt;
     if (extractedText && selectedFile) {
-        userContent = `[Content from ${selectedFile.name}]:\n\n${extractedText}\n\n[User Prompt]:\n\n${prompt || '(No additional prompt)'}`;
+        userContent = `[Content from ${selectedFile.name}]:\n\n${extractedText}\n\n[User Prompt]:\n\n${prompt || t('exploreDeepSeekPage.noAdditionalPrompt')}`;
     }
 
     if (!response && !userContent) return; // Check combined content
 
-    const systemMessage: Message = { id: crypto.randomUUID(), role: 'system', content: 'You are a helpful medical assistant.', timestamp: new Date(Date.now() - 2000) };
+    const systemMessage: Message = { id: crypto.randomUUID(), role: 'system', content: t('exploreDeepSeekPage.systemMessage'), timestamp: new Date(Date.now() - 2000) };
     const userMessage: Message = { id: crypto.randomUUID(), role: 'user', content: userContent, timestamp: new Date(Date.now() - 1000) };
     const assistantMessage: Message = { id: crypto.randomUUID(), role: 'assistant', content: response, timestamp: new Date() };
 
@@ -318,7 +324,7 @@ const ExploreDeepSeek: React.FC = () => {
         fileInputRef.current.value = '';
     }
     setError(null);
-    toast({ title: "Added to Exploration History" });
+    toast({ title: t('exploreDeepSeekPage.toasts.addedToHistory') });
   };
 
   // --- Thread Input Change Handler ---
@@ -335,7 +341,7 @@ const ExploreDeepSeek: React.FC = () => {
 
     // Check if there's either a prompt or a file with extracted text for the thread
     if (!thread || (!threadPrompt && !threadFileText)) {
-      setThreadErrors(prev => ({ ...prev, [threadId]: "Follow-up prompt or uploaded file content is required." }));
+      setThreadErrors(prev => ({ ...prev, [threadId]: t('exploreDeepSeekPage.alerts.threadPromptOrFileRequiredError') }));
       return;
     }
 
@@ -345,11 +351,11 @@ const ExploreDeepSeek: React.FC = () => {
 
     if (!access.allowed) { // Corrected property check based on hook definition
       toast({
-        title: "Access Denied",
-        description: access.message || 'Quota limit reached for Explore DeepSeek.',
+        title: t('exploreDeepSeekPage.alerts.accessDeniedTitle'),
+        description: access.message || t('exploreDeepSeekPage.alerts.quotaReachedError'),
         variant: "destructive"
       });
-      setThreadErrors(prev => ({ ...prev, [threadId]: access.message || 'Quota limit reached for Explore DeepSeek.' }));
+      setThreadErrors(prev => ({ ...prev, [threadId]: access.message || t('exploreDeepSeekPage.alerts.quotaReachedError') }));
       openUpgradeDialog(); // Open the global dialog
       setThreadLoading(prev => ({ ...prev, [threadId]: false })); // Stop loading for this thread
       return; // Stop execution
@@ -363,7 +369,7 @@ const ExploreDeepSeek: React.FC = () => {
     // Combine thread prompt and extracted text if available
     let finalThreadUserContent = threadPrompt;
     if (threadFileText && threadFile) {
-        finalThreadUserContent = `[Content from ${threadFile.name}]:\n\n${threadFileText}\n\n[User Prompt]:\n\n${threadPrompt || '(No additional prompt)'}`;
+        finalThreadUserContent = `[Content from ${threadFile.name}]:\n\n${threadFileText}\n\n[User Prompt]:\n\n${threadPrompt || t('exploreDeepSeekPage.noAdditionalPrompt')}`;
     }
 
     const newUserMessage: Message = {
@@ -380,12 +386,12 @@ const ExploreDeepSeek: React.FC = () => {
     // Add the new combined user message
     messagesForApi.push({ role: newUserMessage.role, content: newUserMessage.content });
     // Prepend the original system message (if needed by API, often good practice)
-    messagesForApi.unshift({ role: 'system', content: 'You are a helpful medical assistant.' });
+    messagesForApi.unshift({ role: 'system', content: t('exploreDeepSeekPage.systemMessage') });
 
 
     const workerUrl = import.meta.env.VITE_DEEPSEEK_WORKER_URL;
     if (!workerUrl) {
-      setThreadErrors(prev => ({ ...prev, [threadId]: 'Worker URL not configured.' }));
+      setThreadErrors(prev => ({ ...prev, [threadId]: t('exploreDeepSeekPage.alerts.workerUrlError') }));
       setThreadLoading(prev => ({ ...prev, [threadId]: false }));
       return;
     }
@@ -406,7 +412,7 @@ const ExploreDeepSeek: React.FC = () => {
 
       if (!res.ok) {
         const errorText = await res.text();
-        throw new Error(`Worker request failed: ${res.status} ${res.statusText} - ${errorText}`);
+        throw new Error(t('exploreDeepSeekPage.alerts.workerRequestFailedError', { status: res.status, statusText: res.statusText, errorText }));
       }
 
       const data = await res.json();
@@ -415,7 +421,7 @@ const ExploreDeepSeek: React.FC = () => {
         modelResponseContent = data.responseText;
       } else {
         console.warn("Received thread response without responseText:", data);
-        throw new Error("Received an empty or invalid response from the AI for the thread.");
+        throw new Error(t('exploreDeepSeekPage.alerts.emptyResponseError')); // Re-use generic empty response error
       }
 
       const newAssistantMessage: Message = {
@@ -453,9 +459,9 @@ const ExploreDeepSeek: React.FC = () => {
 
     } catch (err) {
       console.error("Error in handleSendInThread or parsing JSON:", err);
-      const errorMsg = err instanceof Error ? err.message : 'An unknown error occurred.';
+      const errorMsg = err instanceof Error ? err.message : t('exploreDeepSeekPage.alerts.unknownError');
       setThreadErrors(prev => ({ ...prev, [threadId]: errorMsg }));
-      toast({ title: "Error Sending Message", description: errorMsg, variant: "destructive" });
+      toast({ title: t('exploreDeepSeekPage.toasts.errorSendingMessageTitle'), description: errorMsg, variant: "destructive" });
     } finally {
       setThreadLoading(prev => ({ ...prev, [threadId]: false }));
     }
@@ -466,31 +472,31 @@ const ExploreDeepSeek: React.FC = () => {
   return (
     <>
       <PageHeader
-        title="Explore DeepSeek"
-        subtitle="Leverage DeepSeek AI for advanced medical insights"
+        title={t('exploreDeepSeekPage.header.title')}
+        subtitle={t('exploreDeepSeekPage.header.subtitle')}
       />
       <div className="container max-w-4xl mx-auto px-4 py-12 space-y-6">
         {/* Main Interaction Area */}
         <img src="/deep fix.png" alt="DeepSeek" style={{ display: 'block', margin: '0 auto', width: '300px', marginBottom: '10px' }} />
         <Card>
-          <CardHeader><CardTitle>Start New Exploration</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{t('exploreDeepSeekPage.interactCard.title')}</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {error && ( // Show main error here
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>{t('exploreDeepSeekPage.alerts.errorTitle')}</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
             {/* Prompt Input & File Upload */}
             <div className="space-y-2">
-              <Label htmlFor="prompt">Enter your prompt (or upload a TXT/PDF):</Label>
+              <Label htmlFor="prompt">{t('exploreDeepSeekPage.interactCard.promptLabel')}</Label>
               <div className="relative">
                  <Textarea
                    id="prompt"
                    value={prompt}
                    onChange={(e) => setPrompt(e.target.value)}
-                   placeholder={selectedFile ? `Using content from ${selectedFile.name}. Add additional instructions here...` : "Ask DeepSeek..."}
+                   placeholder={selectedFile ? t('exploreDeepSeekPage.interactCard.promptPlaceholderWithFile', { fileName: selectedFile.name }) : t('exploreDeepSeekPage.interactCard.promptPlaceholder')}
                    rows={5}
                    disabled={isLoading} // Use general isLoading here
                    className="pr-10" // Add padding for the button
@@ -500,11 +506,11 @@ const ExploreDeepSeek: React.FC = () => {
                     size="icon"
                     className="absolute bottom-2 right-2 h-7 w-7"
                     onClick={triggerFileSelect}
-                    title="Attach File (TXT/PDF)"
+                    title={t('exploreDeepSeekPage.interactCard.attachFileButtonTitle')}
                     disabled={isLoading} // Use general isLoading
                  >
                     <Paperclip className="h-4 w-4" />
-                    <span className="sr-only">Attach File</span>
+                    <span className="sr-only">{t('exploreDeepSeekPage.interactCard.attachFileSrOnly')}</span>
                  </Button>
                  <input
                     type="file"
@@ -522,9 +528,9 @@ const ExploreDeepSeek: React.FC = () => {
                      <Paperclip className="h-3 w-3" />
                      {selectedFile.name}
                    </Badge>
-                   <Button variant="ghost" size="icon" onClick={removeSelectedFile} className="h-6 w-6" title="Remove file" disabled={isLoading}>
+                   <Button variant="ghost" size="icon" onClick={removeSelectedFile} className="h-6 w-6" title={t('exploreDeepSeekPage.interactCard.removeFileButtonTitle')} disabled={isLoading}>
                      <X className="h-4 w-4" />
-                     <span className="sr-only">Remove file</span>
+                     <span className="sr-only">{t('exploreDeepSeekPage.interactCard.removeFileSrOnly')}</span>
                    </Button>
                  </div>
                )}
@@ -532,15 +538,15 @@ const ExploreDeepSeek: React.FC = () => {
 
             {/* Model Selection */}
             <div className="space-y-2">
-              <Label>Select Model:</Label>
+              <Label>{t('exploreDeepSeekPage.interactCard.selectModelLabel')}</Label>
               <RadioGroup value={selectedModel} onValueChange={(value: string) => setSelectedModel(value as DeepSeekModel)} className="flex space-x-4" disabled={isLoading}>
-                <div className="flex items-center space-x-2"><RadioGroupItem value="deepseek-chat" id="model-chat" /><Label htmlFor="model-chat">Chat (V3)</Label></div>
-                <div className="flex items-center space-x-2"><RadioGroupItem value="deepseek-reasoner" id="model-reasoner" /><Label htmlFor="model-reasoner">Reasoner (R1)</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="deepseek-chat" id="model-chat" /><Label htmlFor="model-chat">{t('exploreDeepSeekPage.interactCard.modelChatLabel')}</Label></div>
+                <div className="flex items-center space-x-2"><RadioGroupItem value="deepseek-reasoner" id="model-reasoner" /><Label htmlFor="model-reasoner">{t('exploreDeepSeekPage.interactCard.modelReasonerLabel')}</Label></div>
               </RadioGroup>
             </div>
             {/* Submit Button - Disable if no prompt AND no file */}
             <Button onClick={handleSubmit} disabled={isLoading || (!prompt.trim() && !selectedFile)}>
-              {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</> : 'Submit Prompt'}
+              {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('exploreDeepSeekPage.interactCard.generatingButton')}</> : t('exploreDeepSeekPage.interactCard.submitButton')}
             </Button>
           </CardContent>
         </Card>
@@ -548,7 +554,7 @@ const ExploreDeepSeek: React.FC = () => {
         {/* Current Response Area */}
         {(response || (isLoading && !error)) && (
           <Card>
-             <CardHeader><CardTitle>Current Response from {selectedModel}</CardTitle></CardHeader>
+             <CardHeader><CardTitle>{t('exploreDeepSeekPage.responseCard.title', { modelName: selectedModel })}</CardTitle></CardHeader>
              <CardContent>
                {/* Added prose classes */}
                <div className="p-4 border rounded-md bg-gray-50 text-justify min-h-[50px] gemini-response-container prose prose-sm dark:prose-invert max-w-none">
@@ -557,13 +563,13 @@ const ExploreDeepSeek: React.FC = () => {
                      {response}
                    </ReactMarkdown>
                  ) : (
-                   isLoading && <span className="text-gray-500">Generating response...</span> // Show loading text for non-streaming
+                   isLoading && <span className="text-gray-500">{t('exploreDeepSeekPage.responseCard.generatingText')}</span> // Show loading text for non-streaming
                  )}
                </div>
              </CardContent>
              {response && !isLoading && (
                <CardFooter className="flex justify-end p-4 border-t">
-                 <Button variant="secondary" onClick={handleExploreClick}><Sparkles className="mr-2 h-4 w-4" /> Explore Topic</Button>
+                 <Button variant="secondary" onClick={handleExploreClick}><Sparkles className="mr-2 h-4 w-4" /> {t('exploreDeepSeekPage.responseCard.exploreTopicButton')}</Button>
                </CardFooter>
              )}
           </Card>
@@ -572,12 +578,12 @@ const ExploreDeepSeek: React.FC = () => {
         {/* History Section */}
         {history.length > 0 && (
           <div className="mt-10 space-y-6">
-            <h2 className="text-2xl font-semibold tracking-tight text-center border-t pt-6">Exploration Threads</h2>
+            <h2 className="text-2xl font-semibold tracking-tight text-center border-t pt-6">{t('exploreDeepSeekPage.history.sectionTitle')}</h2>
             {history.map((thread) => (
               <Card key={thread.id} className="bg-muted/50 shadow-md"> {/* Removed id */}
                 <CardHeader> {/* Reverted header */}
-                  <CardTitle className="text-lg">Exploration Thread</CardTitle>
-                  <p className="text-xs text-muted-foreground">Started: {thread.createdAt.toLocaleString()} | Model: {thread.initialModel}</p>
+                  <CardTitle className="text-lg">{t('exploreDeepSeekPage.history.threadTitle')}</CardTitle>
+                  <p className="text-xs text-muted-foreground">{t('exploreDeepSeekPage.history.startedLabel', { dateTime: thread.createdAt.toLocaleString() })} | {t('exploreDeepSeekPage.history.modelLabel', { modelName: thread.initialModel })}</p>
                 </CardHeader>
                 <CardContent className="space-y-4 max-h-[500px] overflow-y-auto pr-4"> {/* Removed id */}
                   {/* Render messages within the thread, filtering out system messages */}
@@ -608,7 +614,7 @@ const ExploreDeepSeek: React.FC = () => {
                   {threadErrors[thread.id] && (
                     <Alert variant="destructive" className="mt-2">
                       <Terminal className="h-4 w-4" />
-                      <AlertTitle>Error</AlertTitle>
+                      <AlertTitle>{t('exploreDeepSeekPage.alerts.errorTitle')}</AlertTitle>
                       <AlertDescription>{threadErrors[thread.id]}</AlertDescription>
                     </Alert>
                   )}
@@ -622,15 +628,15 @@ const ExploreDeepSeek: React.FC = () => {
                          <Paperclip className="h-3 w-3" />
                          {threadFiles[thread.id]?.name}
                        </Badge>
-                       <Button variant="ghost" size="icon" onClick={() => removeThreadFile(thread.id)} className="h-6 w-6" title="Remove file" disabled={threadLoading[thread.id]}>
+                       <Button variant="ghost" size="icon" onClick={() => removeThreadFile(thread.id)} className="h-6 w-6" title={t('exploreDeepSeekPage.interactCard.removeFileButtonTitle')} disabled={threadLoading[thread.id]}>
                          <X className="h-4 w-4" />
-                         <span className="sr-only">Remove file</span>
+                         <span className="sr-only">{t('exploreDeepSeekPage.interactCard.removeFileSrOnly')}</span>
                        </Button>
                      </div>
                    )}
                   <div className="flex items-center gap-2 w-full relative"> {/* Added relative positioning */}
                      <Textarea
-                       placeholder={threadFiles[thread.id] ? `Using content from ${threadFiles[thread.id]?.name}. Add follow-up...` : "Follow-up prompt..."}
+                       placeholder={threadFiles[thread.id] ? t('exploreDeepSeekPage.history.followUpPlaceholderWithFile', { fileName: threadFiles[thread.id]?.name }) : t('exploreDeepSeekPage.history.followUpPlaceholder')}
                        value={threadInputs[thread.id] || ''}
                        onChange={(e) => handleThreadInputChange(thread.id, e.target.value)}
                        rows={2}
@@ -644,11 +650,11 @@ const ExploreDeepSeek: React.FC = () => {
                         size="icon"
                         className="absolute bottom-1 right-12 h-7 w-7" // Position near send button
                         onClick={() => triggerThreadFileSelect(thread.id)}
-                        title="Attach File (TXT/PDF)"
+                        title={t('exploreDeepSeekPage.interactCard.attachFileButtonTitle')}
                         disabled={threadLoading[thread.id]}
                      >
                         <Paperclip className="h-4 w-4" />
-                        <span className="sr-only">Attach File</span>
+                        <span className="sr-only">{t('exploreDeepSeekPage.interactCard.attachFileSrOnly')}</span>
                      </Button>
                      <input
                         type="file"
@@ -666,7 +672,7 @@ const ExploreDeepSeek: React.FC = () => {
                        className="shrink-0"
                      >
                        <SendHorizonal className="h-4 w-4" />
-                       <span className="sr-only">Send</span>
+                       <span className="sr-only">{t('exploreDeepSeekPage.history.sendButtonSrOnly')}</span>
                      </Button>
                   </div>
                 </CardFooter>
@@ -681,7 +687,7 @@ const ExploreDeepSeek: React.FC = () => {
           <Button asChild variant="outline">
             <Link to="/tools" className="inline-flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Tools
+              {t('exploreDeepSeekPage.buttons.backToTools')}
             </Link>
           </Button>
         </div>
