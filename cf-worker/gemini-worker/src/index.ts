@@ -171,16 +171,42 @@ addEventListener('fetch', (event: FetchEvent) => {
   event.respondWith(handleRequest(event.request));
 });
 
+const allowedOrigins = [
+  "https://digisehat.daivanlabs.com",
+  "http://localhost:8888",
+  "https://nucleai.daivanlabs.com" // Removed trailing slash
+];
+
+function getCorsHeaders(requestOrigin: string | null): HeadersInit {
+  console.log(`[CORS Debug] Received Origin: ${requestOrigin}`);
+  const headers: HeadersInit = {
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    console.log(`[CORS Debug] Origin ${requestOrigin} is in allowedOrigins. Setting Access-Control-Allow-Origin.`);
+    headers["Access-Control-Allow-Origin"] = requestOrigin;
+  } else {
+    console.log(`[CORS Debug] Origin ${requestOrigin} is NOT in allowedOrigins or is null.`);
+    if (allowedOrigins.length > 0) {
+      // For debugging, let's see what happens if we try to set a default or log more.
+      // However, for strict CORS, not setting the header if origin is not in the list is correct.
+      console.log(`[CORS Debug] Not setting Access-Control-Allow-Origin as origin is not explicitly allowed.`);
+    }
+  }
+  console.log(`[CORS Debug] Returning headers: ${JSON.stringify(headers)}`);
+  return headers;
+}
+
 async function handleRequest(request: Request): Promise<Response> {
+  const requestOrigin = request.headers.get("Origin");
+  const corsHeaders = getCorsHeaders(requestOrigin);
+
   // Handle CORS preflight requests
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      }
+      headers: corsHeaders,
     });
   }
 
@@ -189,9 +215,7 @@ async function handleRequest(request: Request): Promise<Response> {
       status: 405,
       headers: { 
         'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        ...corsHeaders 
       },
     });
   }
@@ -203,9 +227,7 @@ async function handleRequest(request: Request): Promise<Response> {
       status: 500,
       headers: { 
         'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        ...corsHeaders
       },
     });
   }
@@ -232,9 +254,7 @@ async function handleRequest(request: Request): Promise<Response> {
       status: 400,
       headers: { 
         'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        ...corsHeaders
       },
     });
   }
@@ -467,9 +487,7 @@ async function handleRequest(request: Request): Promise<Response> {
     return new Response(json, {
       headers: {
         "content-type": "application/json;charset=UTF-8",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        ...corsHeaders
       },
     });
     // --- End Standard Non-Streaming Implementation ---
@@ -481,9 +499,7 @@ async function handleRequest(request: Request): Promise<Response> {
       status: 500,
       headers: {
         'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*", // Add CORS header
-        "Access-Control-Allow-Methods": "POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
+        ...corsHeaders
       },
     });
   }
