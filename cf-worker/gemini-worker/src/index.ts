@@ -339,7 +339,7 @@ async function handleRequest(request: Request): Promise<Response> {
       temperature: 0.9,
       topK: 1,
       topP: 1,
-      maxOutputTokens: 8192, // Keep other configs
+      maxOutputTokens: 20000, // Keep other configs
     };
 
     const safetySettings = [

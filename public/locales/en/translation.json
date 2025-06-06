@@ -475,7 +475,74 @@
     "toasts": {
       "infoTitle": "Info",
       "errorTitle": "Error",
-      "quotaRemaining": "Remaining quota for AI Peer Review: {{count}}"
+    "quotaRemaining": "Remaining quota for AI Peer Review: {{count}}"
+    }
+  },
+  "exploreGeminiPage": {
+    "header": {
+      "title": "Explore GEMINI",
+      "subtitle": "Leverage Google's advanced AI for medical insights"
+    },
+    "interactCard": {
+      "title": "Interact with Gemini",
+      "selectModelLabel": "Select Model",
+      "selectModelPlaceholder": "Select a model",
+      "enableThinkingLabel": "Enable Thinking Mode",
+      "systemInstructionLabel": "System Instruction (Optional)",
+      "systemInstructionPlaceholder": "Select instruction",
+      "customSystemInstructionPlaceholder": "Enter custom system instructions...",
+      "promptLabel": "Enter your prompt",
+      "promptPlaceholder": "Ask Gemini...",
+      "fileUploadLabel": "Upload File (Optional)",
+      "chooseFileButton": "Choose File",
+      "removeFileButtonTitle": "Remove file",
+      "submitButton": "Submit Prompt",
+      "generatingButton": "Generating..."
+    },
+    "alerts": {
+      "authRequired": {
+        "title": "Authentication Required",
+        "description": "Please <1>Sign In</1> or <3>Sign Up</3> to use this feature.",
+        "signInLink": "Sign In",
+        "signUpLink": "Sign Up"
+      },
+      "errorTitle": "Error"
+    },
+    "responseCard": {
+      "title": "Gemini Response",
+      "thinkingMode": {
+        "title": "Generated with Thinking Mode",
+        "description": "This response was created using Gemini's advanced thinking capabilities, which helps improve reasoning and accuracy."
+      },
+      "exploreTopicButton": "Explore Topic"
+    },
+    "history": {
+      "sectionTitle": "Exploration Threads",
+      "threadTitle": "Exploration Thread",
+      "startedLabel": "Started",
+      "initialModelLabel": "Initial Model",
+      "followUpPlaceholder": "Follow-up prompt...",
+      "sendButton": "Send"
+    },
+    "buttons": {
+      "backToTools": "Back to Tools"
+    },
+    "systemInstructions": {
+      "none": "None",
+      "medicalResearchAssistant": "Medical Research Exploration Assistant",
+      "manuscriptPeerReviewAssistant": "Manuscript Peer Review Assistant",
+      "custom": "Custom..."
+    },
+    "toasts": {
+      "addedToHistory": "Added to Exploration History"
+    },
+    "errors": {
+      "unsupportedFileType": "Unsupported file type: {{fileType}}.",
+      "failedToReadFile": "Failed to read file.",
+      "emptyResponse": "Received an empty response (no text, image, or thoughts generated flag).",
+      "promptOrFileRequired": "Prompt or file is required.",
+      "httpError": "HTTP error! status: {{status}}",
+      "genericError": "An error occurred."
     }
   }
 }

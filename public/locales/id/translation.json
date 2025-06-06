@@ -475,7 +475,74 @@
     "toasts": {
       "infoTitle": "Info",
       "errorTitle": "Kesalahan",
-      "quotaRemaining": "Sisa kuota untuk AI Peer Review: {{count}}"
+    "quotaRemaining": "Sisa kuota untuk AI Peer Review: {{count}}"
+    }
+  },
+  "exploreGeminiPage": {
+    "header": {
+      "title": "Jelajahi GEMINI",
+      "subtitle": "Manfaatkan AI canggih Google untuk wawasan medis"
+    },
+    "interactCard": {
+      "title": "Berinteraksi dengan Gemini",
+      "selectModelLabel": "Pilih Model",
+      "selectModelPlaceholder": "Pilih model",
+      "enableThinkingLabel": "Aktifkan Mode Berpikir",
+      "systemInstructionLabel": "Instruksi Sistem (Opsional)",
+      "systemInstructionPlaceholder": "Pilih instruksi",
+      "customSystemInstructionPlaceholder": "Masukkan instruksi sistem kustom...",
+      "promptLabel": "Masukkan prompt Anda",
+      "promptPlaceholder": "Tanya Gemini...",
+      "fileUploadLabel": "Unggah File (Opsional)",
+      "chooseFileButton": "Pilih File",
+      "removeFileButtonTitle": "Hapus file",
+      "submitButton": "Kirim Prompt",
+      "generatingButton": "Menghasilkan..."
+    },
+    "alerts": {
+      "authRequired": {
+        "title": "Autentikasi Diperlukan",
+        "description": "Silakan <1>Masuk</1> atau <3>Daftar</3> untuk menggunakan fitur ini.",
+        "signInLink": "Masuk",
+        "signUpLink": "Daftar"
+      },
+      "errorTitle": "Kesalahan"
+    },
+    "responseCard": {
+      "title": "Respons Gemini",
+      "thinkingMode": {
+        "title": "Dihasilkan dengan Mode Berpikir",
+        "description": "Respons ini dibuat menggunakan kemampuan berpikir canggih Gemini, yang membantu meningkatkan penalaran dan akurasi."
+      },
+      "exploreTopicButton": "Jelajahi Topik"
+    },
+    "history": {
+      "sectionTitle": "Utas Eksplorasi",
+      "threadTitle": "Utas Eksplorasi",
+      "startedLabel": "Dimulai",
+      "initialModelLabel": "Model Awal",
+      "followUpPlaceholder": "Prompt tindak lanjut...",
+      "sendButton": "Kirim"
+    },
+    "buttons": {
+      "backToTools": "Kembali ke Alat"
+    },
+    "systemInstructions": {
+      "none": "Tidak Ada",
+      "medicalResearchAssistant": "Asisten Eksplorasi Riset Medis",
+      "manuscriptPeerReviewAssistant": "Asisten Tinjauan Sejawat Naskah",
+      "custom": "Kustom..."
+    },
+    "toasts": {
+      "addedToHistory": "Ditambahkan ke Riwayat Eksplorasi"
+    },
+    "errors": {
+      "unsupportedFileType": "Jenis file tidak didukung: {{fileType}}.",
+      "failedToReadFile": "Gagal membaca file.",
+      "emptyResponse": "Menerima respons kosong (tidak ada teks, gambar, atau tanda proses berpikir).",
+      "promptOrFileRequired": "Prompt atau file diperlukan.",
+      "httpError": "Kesalahan HTTP! status: {{status}}",
+      "genericError": "Terjadi kesalahan."
     }
   }
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation, Trans } from 'react-i18next'; // Import useTranslation and Trans
 import PageHeader from '@/components/PageHeader';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -110,10 +111,10 @@ const processTableBuffer = (buffer: string[]): string[] => {
 };
 
 // --- System Instructions ---
-const systemInstructions = {
-  "none": { label: "None", text: "" },
+const getSystemInstructions = (t: any) => ({ // Function to get translated instructions
+  "none": { label: t('exploreGeminiPage.systemInstructions.none'), text: "" },
   "medical-research-assistant": {
-    label: "Medical Research Exploration Assistant",
+    label: t('exploreGeminiPage.systemInstructions.medicalResearchAssistant'),
     text: `Core Role:
 You are an AI assistant specialized in Medical Research Exploration. Your primary function is to assist researchers, clinicians, students, and other professionals in navigating, understanding, synthesizing, and analyzing the vast landscape of medical and biomedical research information.
 
@@ -268,8 +269,8 @@ Confidentiality: Treat the manuscript content as strictly confidential. Do not r
 
 Transparency: When flagging an issue, explain why it's being flagged (e.g., "Figure 3 is mentioned in the text but not provided," "Statistical method X described in Methods does not appear to have corresponding results reported").`
   },
-  "custom": { label: "Custom...", text: "" }
-};
+  "custom": { label: t('exploreGeminiPage.systemInstructions.custom'), text: "" }
+});
 // --- End System Instructions ---
 
 const modelOptions = [
@@ -318,6 +319,7 @@ const allowedFileTypesString = allowedMimeTypes.join(',');
 
 // Update component signature to accept props
 const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAuthenticated }) => {
+  const { t } = useTranslation(); // Initialize useTranslation
   const featureName: FeatureName = 'explore_gemini';
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
   const { toast } = useToast();
@@ -338,6 +340,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
   const [selectedSystemInstructionId, setSelectedSystemInstructionId] = useState<string>("none");
   const [customSystemInstruction, setCustomSystemInstruction] = useState<string>('');
   const [uploadedFile, setUploadedFile] = useState<FileData | null>(null);
+  const translatedSystemInstructions = getSystemInstructions(t); // Get translated instructions
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const [responseText, setResponseText] = useState<string>('');
   const [responseImage, setResponseImage] = useState<ResponseImageData | null>(null);
@@ -430,6 +433,8 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
     if (selectedSystemInstructionId === "custom" && customSystemInstruction.trim()) {
       payload.customSystemInstruction = customSystemInstruction;
     } else if (selectedSystemInstructionId !== "none") {
+      // The API expects the key/ID of the system instruction, not the translated label or the full text.
+      // The `selectedSystemInstructionId` already holds this key.
       payload.systemInstructionId = selectedSystemInstructionId;
     }
 
@@ -526,7 +531,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
     // Clear the main response area state, including thoughts flag
     setPrompt(''); setResponseText(''); setResponseImage(null); setResponseThoughtsGenerated(null); setUploadedFile(null); setUploadedFileName(null); setError(null);
     if (mainFileInputRef.current) mainFileInputRef.current.value = "";
-    toast({ title: "Added to Exploration History" });
+    toast({ title: t('exploreGeminiPage.toasts.addedToHistory') });
   };
 
   const handleThreadInputChange = (threadId: string, value: string) => { setThreadInputs(prev => ({ ...prev, [threadId]: value })); };
@@ -535,13 +540,13 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
     const file = event.target.files?.[0];
     if (file) {
       if (!allowedMimeTypes.includes(file.type)) {
-         setThreadErrors(prev => ({ ...prev, [threadId]: `Unsupported file type.` })); setThreadFiles(prev => ({ ...prev, [threadId]: null })); setThreadFileNames(prev => ({ ...prev, [threadId]: null }));
+         setThreadErrors(prev => ({ ...prev, [threadId]: t('exploreGeminiPage.errors.unsupportedFileType', { fileType: file.type || 'unknown' }) })); setThreadFiles(prev => ({ ...prev, [threadId]: null })); setThreadFileNames(prev => ({ ...prev, [threadId]: null }));
          if (threadFileInputRefs.current[threadId]) threadFileInputRefs.current[threadId]!.value = ""; return;
       }
       setThreadErrors(prev => ({ ...prev, [threadId]: null })); setThreadFileNames(prev => ({ ...prev, [threadId]: file.name }));
       const reader = new FileReader();
       reader.onloadend = () => { const base64String = (reader.result as string).split(',')[1]; setThreadFiles(prev => ({ ...prev, [threadId]: { mimeType: file.type, data: base64String } })); };
-      reader.onerror = () => { setThreadErrors(prev => ({ ...prev, [threadId]: "Failed to read file." })); setThreadFiles(prev => ({ ...prev, [threadId]: null })); setThreadFileNames(prev => ({ ...prev, [threadId]: null })); };
+      reader.onerror = () => { setThreadErrors(prev => ({ ...prev, [threadId]: t('exploreGeminiPage.errors.failedToReadFile') })); setThreadFiles(prev => ({ ...prev, [threadId]: null })); setThreadFileNames(prev => ({ ...prev, [threadId]: null })); };
       reader.readAsDataURL(file);
     }
   };
@@ -572,7 +577,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
     const fileData = threadFiles[threadId];
 
     if (!thread || (!promptText && !fileData)) {
-      setThreadErrors(prev => ({ ...prev, [threadId]: "Prompt or file is required." }));
+      setThreadErrors(prev => ({ ...prev, [threadId]: t('exploreGeminiPage.errors.promptOrFileRequired') }));
       return; // Nothing to send
     }
 
@@ -696,7 +701,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
 
   return (
     <>
-      <PageHeader title="Explore GEMINI" subtitle="Leverage Google's advanced AI for medical insights" />
+      <PageHeader title={t('exploreGeminiPage.header.title')} subtitle={t('exploreGeminiPage.header.subtitle')} />
       <img
         src="/gemini logo.png"
         alt="Gemini"
@@ -721,15 +726,15 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
         {!isLoadingToggles && (
           <>
             <Card>
-              <CardHeader><CardTitle>Interact with Gemini</CardTitle></CardHeader>
+              <CardHeader><CardTitle>{t('exploreGeminiPage.interactCard.title')}</CardTitle></CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Model Selection */}
                   <div className="space-y-2">
-                    <Label htmlFor="model-select">Select Model</Label>
+                    <Label htmlFor="model-select">{t('exploreGeminiPage.interactCard.selectModelLabel')}</Label>
                     {/* Made model select responsive */}
                     <Select value={selectedModel} onValueChange={setSelectedModel} disabled={isLoading}>
-                      <SelectTrigger id="model-select" className="w-full md:w-[280px]"><SelectValue placeholder="Select a model" /></SelectTrigger>
+                      <SelectTrigger id="model-select" className="w-full md:w-[280px]"><SelectValue placeholder={t('exploreGeminiPage.interactCard.selectModelPlaceholder')} /></SelectTrigger>
                       <SelectContent>{modelOptions.map((option) => (<SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>))}</SelectContent>
                     </Select>
                     {/* Conditionally render Thinking Checkbox */}
@@ -742,62 +747,64 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
                           disabled={isLoading}
                         />
                         <Label htmlFor="enable-thinking" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Enable Thinking Mode
+                          {t('exploreGeminiPage.interactCard.enableThinkingLabel')}
                         </Label>
                       </div>
                     )}
                   </div>
                   {/* System Instruction */}
                   <div className="space-y-2">
-                    <Label htmlFor="system-instruction-select">System Instruction (Optional)</Label>
+                    <Label htmlFor="system-instruction-select">{t('exploreGeminiPage.interactCard.systemInstructionLabel')}</Label>
                     <Select value={selectedSystemInstructionId} onValueChange={setSelectedSystemInstructionId} disabled={isLoading}>
-                      <SelectTrigger id="system-instruction-select" className="w-full md:w-[350px]"><SelectValue placeholder="Select instruction" /></SelectTrigger>
-                      <SelectContent>{Object.entries(systemInstructions).map(([key, value]) => (<SelectItem key={key} value={key}>{value.label}</SelectItem>))}</SelectContent>
+                      <SelectTrigger id="system-instruction-select" className="w-full md:w-[350px]"><SelectValue placeholder={t('exploreGeminiPage.interactCard.systemInstructionPlaceholder')} /></SelectTrigger>
+                      <SelectContent>{Object.entries(translatedSystemInstructions).map(([key, value]) => (<SelectItem key={key} value={key}>{value.label}</SelectItem>))}</SelectContent>
                     </Select>
-                    {selectedSystemInstructionId === "custom" && (<Textarea placeholder="Enter custom system instructions..." value={customSystemInstruction} onChange={(e) => setCustomSystemInstruction(e.target.value)} rows={4} className="mt-2 resize-none" disabled={isLoading} />)}
+                    {selectedSystemInstructionId === "custom" && (<Textarea placeholder={t('exploreGeminiPage.interactCard.customSystemInstructionPlaceholder')} value={customSystemInstruction} onChange={(e) => setCustomSystemInstruction(e.target.value)} rows={4} className="mt-2 resize-none" disabled={isLoading} />)}
                   </div>
                   {/* Prompt */}
                   <div className="space-y-2">
-                     <Label htmlFor="prompt-input">Enter your prompt</Label>
-                     <Textarea id="prompt-input" placeholder="Ask Gemini..." value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={5} className="resize-none" disabled={isLoading} />
+                     <Label htmlFor="prompt-input">{t('exploreGeminiPage.interactCard.promptLabel')}</Label>
+                     <Textarea id="prompt-input" placeholder={t('exploreGeminiPage.interactCard.promptPlaceholder')} value={prompt} onChange={(e) => setPrompt(e.target.value)} rows={5} className="resize-none" disabled={isLoading} />
                   </div>
                   {/* File Upload */}
                   <div className="space-y-2">
-                     <Label htmlFor="file-upload">Upload File (Optional)</Label>
+                     <Label htmlFor="file-upload">{t('exploreGeminiPage.interactCard.fileUploadLabel')}</Label>
                      <div className="flex items-center gap-2">
                         <Input id="file-upload" type="file" accept={allowedFileTypesString} ref={mainFileInputRef} onChange={handleFileChange} className="hidden" disabled={isLoading} />
-                        <Button type="button" variant="outline" onClick={() => mainFileInputRef.current?.click()} disabled={isLoading}><Upload className="mr-2 h-4 w-4" /> Choose File</Button>
-                        {uploadedFileName && (<><div className="flex items-center gap-2 text-sm p-2 border rounded-md bg-muted"><FileIcon className="h-4 w-4" /><span className="truncate">{uploadedFileName}</span></div><Button type="button" variant="ghost" size="icon" onClick={() => clearUploadedFile()} disabled={isLoading} title="Remove file"><X className="h-4 w-4" /></Button></>)}
+                        <Button type="button" variant="outline" onClick={() => mainFileInputRef.current?.click()} disabled={isLoading}><Upload className="mr-2 h-4 w-4" /> {t('exploreGeminiPage.interactCard.chooseFileButton')}</Button>
+                        {uploadedFileName && (<><div className="flex items-center gap-2 text-sm p-2 border rounded-md bg-muted"><FileIcon className="h-4 w-4" /><span className="truncate">{uploadedFileName}</span></div><Button type="button" variant="ghost" size="icon" onClick={() => clearUploadedFile()} disabled={isLoading} title={t('exploreGeminiPage.interactCard.removeFileButtonTitle')}><X className="h-4 w-4" /></Button></>)}
                       </div>
                   </div>
                   {/* Submit */}
-                  <Button type="submit" disabled={isLoading || (!prompt.trim() && !uploadedFile)}>{isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating...</> : 'Submit Prompt'}</Button>
+                  <Button type="submit" disabled={isLoading || (!prompt.trim() && !uploadedFile)}>{isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('exploreGeminiPage.interactCard.generatingButton')}</> : t('exploreGeminiPage.interactCard.submitButton')}</Button>
 
                   {/* Conditionally render login prompt */}
                   {showLoginPrompt && (
                     <Alert variant="default" className="mt-4 bg-blue-50 border border-blue-200">
                       <LogIn className="h-4 w-4 text-blue-600" />
-                      <AlertTitle className="text-blue-800">Authentication Required</AlertTitle>
+                      <AlertTitle className="text-blue-800">{t('exploreGeminiPage.alerts.authRequired.title')}</AlertTitle>
                       <AlertDescription className="text-blue-700">
-                        Please{' '}
-                        <Link to="/signin" className="font-semibold underline hover:text-blue-800">
-                          Sign In
-                        </Link>{' '}
-                        or{' '}
-                        <Link to="/signup" className="font-semibold underline hover:text-blue-800">
-                          Sign Up
-                        </Link>{' '}
-                        to use this feature.
+                        <Trans i18nKey="exploreGeminiPage.alerts.authRequired.description">
+                          Please{' '}
+                          <Link to="/signin" className="font-semibold underline hover:text-blue-800">
+                            Sign In
+                          </Link>{' '}
+                          or{' '}
+                          <Link to="/signup" className="font-semibold underline hover:text-blue-800">
+                            Sign Up
+                          </Link>{' '}
+                          to use this feature.
+                        </Trans>
                       </AlertDescription>
                     </Alert>
                   )}
                 </form>
               </CardContent>
             </Card>
-            {error && (<Alert variant="destructive"><Terminal className="h-4 w-4" /><AlertTitle>Error</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>)}
+            {error && (<Alert variant="destructive"><Terminal className="h-4 w-4" /><AlertTitle>{t('exploreGeminiPage.alerts.errorTitle')}</AlertTitle><AlertDescription>{error}</AlertDescription></Alert>)}
             {(responseText || responseImage) && !error && (
               <Card>
-                <CardHeader><CardTitle>Gemini Response</CardTitle></CardHeader>
+                <CardHeader><CardTitle>{t('exploreGeminiPage.responseCard.title')}</CardTitle></CardHeader>
                 <CardContent className="space-y-4 overflow-x-auto">
                   {responseText && (
                     <div className="overflow-x-auto">
@@ -812,9 +819,9 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
                     <div className="mt-4 p-3 border-2 border-yellow-200 rounded-md bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700/50 flex items-start gap-3">
                       <Sparkles className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
                       <div>
-                        <h4 className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">Generated with Thinking Mode</h4>
+                        <h4 className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">{t('exploreGeminiPage.responseCard.thinkingMode.title')}</h4>
                         <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-                          This response was created using Gemini's advanced thinking capabilities, which helps improve reasoning and accuracy.
+                          {t('exploreGeminiPage.responseCard.thinkingMode.description')}
                         </p>
                       </div>
                     </div>
@@ -824,7 +831,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
                 {(responseText || responseImage || responseThoughtsGenerated) && !error && !isLoading && ( // Include thoughts generated flag in condition
                   <CardFooter className="flex justify-end p-4 border-t">
                     <Button variant="secondary" onClick={handleExploreClick} className="w-full sm:w-auto">
-                      <Sparkles className="mr-2 h-4 w-4" /> Explore Topic
+                      <Sparkles className="mr-2 h-4 w-4" /> {t('exploreGeminiPage.responseCard.exploreTopicButton')}
                     </Button>
                   </CardFooter>
                 )}
@@ -833,10 +840,10 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
             {/* History Section */}
             {history.length > 0 && (
               <div className="mt-10 space-y-6">
-                <h2 className="text-2xl font-semibold tracking-tight text-center border-t pt-6">Exploration Threads</h2>
+                <h2 className="text-2xl font-semibold tracking-tight text-center border-t pt-6">{t('exploreGeminiPage.history.sectionTitle')}</h2>
                 {history.map((thread) => (
                   <Card key={thread.id} className="bg-muted/50 shadow-md">
-                    <CardHeader><CardTitle className="text-lg">Exploration Thread</CardTitle><p className="text-xs text-muted-foreground">Started: {thread.createdAt.toLocaleString()} | Initial Model: {modelOptions.find(m => m.value === thread.initialModel)?.label || thread.initialModel}</p></CardHeader>
+                    <CardHeader><CardTitle className="text-lg">{t('exploreGeminiPage.history.threadTitle')}</CardTitle><p className="text-xs text-muted-foreground">{t('exploreGeminiPage.history.startedLabel')}: {thread.createdAt.toLocaleString()} | {t('exploreGeminiPage.history.initialModelLabel')}: {modelOptions.find(m => m.value === thread.initialModel)?.label || thread.initialModel}</p></CardHeader>
                     {/* Adjusted max-h for responsiveness */}
                     <CardContent className="space-y-4 max-h-[300px] sm:max-h-[400px] md:max-h-[500px] overflow-y-auto pr-4">
                       {thread.messages.map((message) => (
@@ -852,7 +859,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
                               <div className="mt-2 p-2 border-2 border-yellow-200 rounded-md bg-yellow-50 dark:bg-yellow-900/20 dark:border-yellow-700/50 flex items-start gap-2">
                                 <Sparkles className="h-4 w-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
                                 <div>
-                                  <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300">Generated with Thinking Mode</p>
+                                  <p className="text-xs font-medium text-yellow-700 dark:text-yellow-300">{t('exploreGeminiPage.responseCard.thinkingMode.title')}</p>
                                 </div>
                               </div>
                             )}
@@ -877,13 +884,13 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
                     <CardFooter className="border-t pt-4 flex flex-col items-end">
                        <div className="flex items-center gap-2 w-full">
                          <Input id={`file-upload-${thread.id}`} type="file" accept={allowedFileTypesString} ref={el => threadFileInputRefs.current[thread.id] = el} onChange={(e) => handleThreadFileChange(thread.id, e)} className="hidden" disabled={threadLoading[thread.id]} />
-                         <Button type="button" variant="outline" size="sm" onClick={() => threadFileInputRefs.current[thread.id]?.click()} disabled={threadLoading[thread.id]} className="shrink-0"><Paperclip className="mr-2 h-4 w-4" /> Choose File</Button>
-                         {threadFileNames[thread.id] && (<><div className="flex-grow flex items-center gap-2 text-sm p-2 border rounded-md bg-background overflow-hidden"><FileIcon className="h-4 w-4 flex-shrink-0" /><span className="truncate">{threadFileNames[thread.id]}</span></div><Button type="button" variant="ghost" size="icon" onClick={() => clearThreadFile(thread.id)} disabled={threadLoading[thread.id]} title="Remove file"><X className="h-4 w-4" /></Button></>)}
+                         <Button type="button" variant="outline" size="sm" onClick={() => threadFileInputRefs.current[thread.id]?.click()} disabled={threadLoading[thread.id]} className="shrink-0"><Paperclip className="mr-2 h-4 w-4" /> {t('exploreGeminiPage.interactCard.chooseFileButton')}</Button>
+                         {threadFileNames[thread.id] && (<><div className="flex-grow flex items-center gap-2 text-sm p-2 border rounded-md bg-background overflow-hidden"><FileIcon className="h-4 w-4 flex-shrink-0" /><span className="truncate">{threadFileNames[thread.id]}</span></div><Button type="button" variant="ghost" size="icon" onClick={() => clearThreadFile(thread.id)} disabled={threadLoading[thread.id]} title={t('exploreGeminiPage.interactCard.removeFileButtonTitle')}><X className="h-4 w-4" /></Button></>)}
                        </div>
-                       <Textarea placeholder="Follow-up prompt..." value={threadInputs[thread.id] || ''} onChange={(e) => handleThreadInputChange(thread.id, e.target.value)} rows={2} className="mt-3 resize-none w-full" disabled={threadLoading[thread.id]} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendInThread(thread.id); } }} />
+                       <Textarea placeholder={t('exploreGeminiPage.history.followUpPlaceholder')} value={threadInputs[thread.id] || ''} onChange={(e) => handleThreadInputChange(thread.id, e.target.value)} rows={2} className="mt-3 resize-none w-full" disabled={threadLoading[thread.id]} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendInThread(thread.id); } }} />
                        {/* Apply responsive class to Send button */}
                        <Button onClick={() => handleSendInThread(thread.id)} disabled={threadLoading[thread.id] || (!threadInputs[thread.id]?.trim() && !threadFiles[thread.id])} className="mt-3 w-full sm:w-auto sm:shrink-0">
-                         <SendHorizonal className="mr-2 h-4 w-4" /> Send
+                         <SendHorizonal className="mr-2 h-4 w-4" /> {t('exploreGeminiPage.history.sendButton')}
                        </Button>
                     </CardFooter>
                   </Card>
@@ -896,7 +903,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
         {/* Back to Tools Button */}
         <div className="flex justify-center pt-6">
           <Link to="/tools">
-            <Button variant="outline" className="inline-flex items-center gap-2"><ArrowLeft className="h-4 w-4" /> Back to Tools</Button>
+            <Button variant="outline" className="inline-flex items-center gap-2"><ArrowLeft className="h-4 w-4" /> {t('exploreGeminiPage.buttons.backToTools')}</Button>
           </Link>
         </div>
       </div>
