@@ -1,5 +1,6 @@
-import React from 'react'; // Removed useEffect, useState
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -54,13 +55,14 @@ const resources = [
 ];
 
 const LearningResources: React.FC = () => {
+  const { t } = useTranslation();
   // Removed feature access check logic
 
   return (
     <>
       <PageHeader
-        title="Learning Resources"
-        subtitle="Curated educational materials and resources" // Simplified subtitle
+        title={t('learningResourcesPage.header.title')}
+        subtitle={t('learningResourcesPage.header.subtitle')}
       />
       <div className="container max-w-7xl mx-auto px-4 py-12">
         {/* Always render the cards */}
@@ -93,7 +95,7 @@ const LearningResources: React.FC = () => {
           <Link to="/tools">
             <Button variant="outline" className="inline-flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
-              Back to Tools
+              {t('learningResourcesPage.buttons.backToTools')}
             </Button>
           </Link>
         </div>

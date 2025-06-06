@@ -894,5 +894,14 @@
     "disclaimerTitle": "Disclaimer",
     "disclaimerText": "This tool is for educational purposes. MELD score calculation follows specific UNOS/OPTN rules. Consult official guidelines for clinical use, especially regarding transplant allocation.",
     "resetButton": "Reset"
+  },
+  "learningResourcesPage": {
+    "header": {
+      "title": "Learning Resources",
+      "subtitle": "Curated educational materials and resources"
+    },
+    "buttons": {
+      "backToTools": "Back to Tools"
+    }
   }
 }

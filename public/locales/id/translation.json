@@ -894,5 +894,14 @@
     "disclaimerTitle": "Sanggahan",
     "disclaimerText": "Alat ini untuk tujuan pendidikan. Perhitungan skor MELD mengikuti aturan spesifik UNOS/OPTN. Konsultasikan panduan resmi untuk penggunaan klinis, terutama terkait alokasi transplantasi.",
     "resetButton": "Atur Ulang"
+  },
+  "learningResourcesPage": {
+    "header": {
+      "title": "Sumber Belajar",
+      "subtitle": "Materi dan sumber daya pendidikan yang dikurasi"
+    },
+    "buttons": {
+      "backToTools": "Kembali ke Alat"
+    }
   }
 }
