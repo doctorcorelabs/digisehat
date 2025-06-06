@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Added useNavigate
+import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { TFunction } from 'i18next'; // Import TFunction
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,12 +23,12 @@ const calculateBMI = (weightKg: number, heightM: number): number | null => {
 };
 
 // BMI Interpretation
-const interpretBMI = (bmi: number | null): { text: string; color: string } => {
+const interpretBMI = (bmi: number | null, t: TFunction): { text: string; color: string } => {
   if (bmi === null) return { text: '', color: 'text-gray-500' };
-  if (bmi < 18.5) return { text: 'Underweight', color: 'text-blue-600' };
-  if (bmi < 25) return { text: 'Normal range', color: 'text-green-600' };
-  if (bmi < 30) return { text: 'Overweight', color: 'text-yellow-600' };
-  return { text: 'Obese', color: 'text-red-600' };
+  if (bmi < 18.5) return { text: t('medicalCalculatorPage.bmi.interpretation.underweight'), color: 'text-blue-600' };
+  if (bmi < 25) return { text: t('medicalCalculatorPage.bmi.interpretation.normal'), color: 'text-green-600' };
+  if (bmi < 30) return { text: t('medicalCalculatorPage.bmi.interpretation.overweight'), color: 'text-yellow-600' };
+  return { text: t('medicalCalculatorPage.bmi.interpretation.obese'), color: 'text-red-600' };
 };
 
 // BSA Calculation (Mosteller)
@@ -36,10 +38,10 @@ const calculateBSA = (weightKg: number, heightCm: number): number | null => {
 };
 
 // BSA Interpretation
-const interpretBSA = (bsa: number | null): { text: string; color: string } => {
+const interpretBSA = (bsa: number | null, t: TFunction): { text: string; color: string } => {
   if (bsa === null) return { text: '', color: 'text-gray-500' };
   return {
-    text: `BSA is often used by clinicians for drug dosing or physiological assessments. Typical adult values range from 1.5 to 2.2 m².`,
+    text: t('medicalCalculatorPage.bsa.interpretation.typical'),
     color: 'text-gray-600'
   };
 };
@@ -59,14 +61,14 @@ const calculateGFR_CKDEPI = (creatinineMgDl: number, age: number, sex: 'male' | 
 };
 
 // eGFR Interpretation (KDIGO Stages)
-const interpretGFR = (gfr: number | null): { text: string; stage: string; color: string } => {
+const interpretGFR = (gfr: number | null, t: TFunction): { text: string; stage: string; color: string } => {
   if (gfr === null) return { text: '', stage: '', color: 'text-gray-500' };
-  if (gfr >= 90) return { text: 'Normal or high kidney function (check for kidney damage if other signs present).', stage: 'Stage 1', color: 'text-green-600' };
-  if (gfr >= 60) return { text: 'Mildly decreased kidney function.', stage: 'Stage 2', color: 'text-lime-600' };
-  if (gfr >= 45) return { text: 'Mild to moderately decreased kidney function.', stage: 'Stage 3a', color: 'text-yellow-600' };
-  if (gfr >= 30) return { text: 'Moderate to severely decreased kidney function.', stage: 'Stage 3b', color: 'text-orange-600' };
-  if (gfr >= 15) return { text: 'Severely decreased kidney function.', stage: 'Stage 4', color: 'text-red-600' };
-  return { text: 'Kidney failure.', stage: 'Stage 5', color: 'text-red-800' };
+  if (gfr >= 90) return { text: t('medicalCalculatorPage.egfr.interpretation.stage1_desc'), stage: t('medicalCalculatorPage.egfr.interpretation.stage1'), color: 'text-green-600' };
+  if (gfr >= 60) return { text: t('medicalCalculatorPage.egfr.interpretation.stage2_desc'), stage: t('medicalCalculatorPage.egfr.interpretation.stage2'), color: 'text-lime-600' };
+  if (gfr >= 45) return { text: t('medicalCalculatorPage.egfr.interpretation.stage3a_desc'), stage: t('medicalCalculatorPage.egfr.interpretation.stage3a'), color: 'text-yellow-600' };
+  if (gfr >= 30) return { text: t('medicalCalculatorPage.egfr.interpretation.stage3b_desc'), stage: t('medicalCalculatorPage.egfr.interpretation.stage3b'), color: 'text-orange-600' };
+  if (gfr >= 15) return { text: t('medicalCalculatorPage.egfr.interpretation.stage4_desc'), stage: t('medicalCalculatorPage.egfr.interpretation.stage4'), color: 'text-red-600' };
+  return { text: t('medicalCalculatorPage.egfr.interpretation.stage5_desc'), stage: t('medicalCalculatorPage.egfr.interpretation.stage5'), color: 'text-red-800' };
 };
 
 // IBW Calculation (Devine)
@@ -82,10 +84,10 @@ const calculateIBW_Devine = (heightCm: number, sex: 'male' | 'female'): number |
 };
 
 // IBW Interpretation
-const interpretIBW = (ibw: number | null): { text: string; color: string } => {
+const interpretIBW = (ibw: number | null, t: TFunction): { text: string; color: string } => {
   if (ibw === null) return { text: '', color: 'text-gray-500' };
   return {
-    text: `This is an estimation using the Devine formula. IBW is often used for ventilator settings or certain drug dosages.`,
+    text: t('medicalCalculatorPage.ibw.interpretation.devine'),
     color: 'text-gray-600'
   };
 };
@@ -100,15 +102,15 @@ const calculateAdjBW = (actualWeightKg: number, idealWeightKg: number): number |
 };
 
 // AdjBW Interpretation
-const interpretAdjBW = (adjbw: number | null, abw: number, ibw: number): { text: string; color: string } => {
+const interpretAdjBW = (adjbw: number | null, abw: number, ibw: number, t: TFunction): { text: string; color: string } => {
   if (adjbw === null) {
     if (abw > 0 && ibw > 0 && abw <= ibw * 1.2) {
-      return { text: 'Adjusted Body Weight is typically calculated when Actual Body Weight significantly exceeds Ideal Body Weight (e.g., >120%).', color: 'text-gray-500' };
+      return { text: t('medicalCalculatorPage.adjbw.interpretation.notTypicallyCalculated'), color: 'text-gray-500' };
     }
     return { text: '', color: 'text-gray-500' };
   }
   return {
-    text: `AdjBW estimates a relevant body mass for dosing certain drugs in obese patients. It's used when Actual Weight significantly exceeds Ideal Weight.`,
+    text: t('medicalCalculatorPage.adjbw.interpretation.purpose'),
     color: 'text-gray-600'
   };
 };
@@ -122,10 +124,10 @@ const calculateBMR_MifflinStJeor = (weightKg: number, heightCm: number, age: num
 };
 
 // BMR Interpretation
-const interpretBMR = (bmr: number | null): { text: string; color: string } => {
+const interpretBMR = (bmr: number | null, t: TFunction): { text: string; color: string } => {
   if (bmr === null) return { text: '', color: 'text-gray-500' };
   return {
-    text: `This is the estimated minimum calories your body needs at rest. Total daily energy needs depend on activity levels.`,
+    text: t('medicalCalculatorPage.bmr.interpretation.definition'),
     color: 'text-gray-600'
   };
 };
@@ -137,18 +139,20 @@ const calculateCorrectedCalcium = (totalCalciumMgDl: number, albuminGdl: number)
 };
 
 // Corrected Calcium Interpretation
-const interpretCorrectedCalcium = (correctedCa: number | null, totalCa: number, albumin: number): { text: string; color: string } => {
+const interpretCorrectedCalcium = (correctedCa: number | null, totalCa: number, albumin: number, t: TFunction): { text: string; color: string } => {
   if (correctedCa === null) return { text: '', color: 'text-gray-500' };
-  let interpretation = `Corrected for Albumin (${albumin.toFixed(1)} g/dL). This estimates calcium if albumin were normal (4.0 g/dL). `;
+  
+  let interpretation = t('medicalCalculatorPage.correctedCalcium.interpretation.prefix', { albumin: albumin.toFixed(1) });
   let color = 'text-gray-600';
+
   if (correctedCa < 8.5) {
-    interpretation += 'Result is below the typical normal range (approx. 8.5-10.5 mg/dL).';
+    interpretation += ` ${t('medicalCalculatorPage.correctedCalcium.interpretation.belowRange')}`;
     color = 'text-blue-600';
   } else if (correctedCa > 10.5) {
-    interpretation += 'Result is above the typical normal range (approx. 8.5-10.5 mg/dL).';
+    interpretation += ` ${t('medicalCalculatorPage.correctedCalcium.interpretation.aboveRange')}`;
     color = 'text-red-600';
   } else {
-    interpretation += 'Result is within the typical normal range (approx. 8.5-10.5 mg/dL).';
+    interpretation += ` ${t('medicalCalculatorPage.correctedCalcium.interpretation.withinRange')}`;
     color = 'text-green-600';
   }
   return { text: interpretation, color: color };
@@ -156,6 +160,7 @@ const interpretCorrectedCalcium = (correctedCa: number | null, totalCa: number, 
 
 // --- Component ---
 const MedicalCalculator = () => {
+  const { t } = useTranslation(); // Initialize useTranslation
   const featureName: FeatureName = 'medical_calculator';
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
   const { toast } = useToast();
@@ -248,12 +253,12 @@ const MedicalCalculator = () => {
     const weightNum = parseFloat(bmiWeight);
     const heightNum = parseFloat(bmiHeight);
     if (isNaN(weightNum) || isNaN(heightNum) || weightNum <= 0 || heightNum <= 0) {
-      setError('BMI: Please enter valid positive numbers for weight (kg) and height (cm).');
+      setError(t('medicalCalculatorPage.error.bmiInputs'));
       setBmiResult(null); setBmiInterpretation({ text: '', color: '' }); return;
     }
     const heightM = heightNum / 100;
     const result = calculateBMI(weightNum, heightM);
-    setBmiResult(result); setBmiInterpretation(interpretBMI(result));
+    setBmiResult(result); setBmiInterpretation(interpretBMI(result, t));
     await incrementUsage(featureName);
   };
 
@@ -266,11 +271,11 @@ const MedicalCalculator = () => {
     const weightNum = parseFloat(bsaWeight);
     const heightNum = parseFloat(bsaHeight);
     if (isNaN(weightNum) || isNaN(heightNum) || weightNum <= 0 || heightNum <= 0) {
-      setError('BSA: Please enter valid positive numbers for weight (kg) and height (cm).');
+      setError(t('medicalCalculatorPage.error.bsaInputs'));
       setBsaResult(null); setBsaInterpretation({ text: '', color: '' }); return;
     }
     const result = calculateBSA(weightNum, heightNum);
-    setBsaResult(result); setBsaInterpretation(interpretBSA(result));
+    setBsaResult(result); setBsaInterpretation(interpretBSA(result, t));
     await incrementUsage(featureName);
   };
 
@@ -283,11 +288,11 @@ const MedicalCalculator = () => {
     const creatinineNum = parseFloat(gfrCreatinine);
     const ageNum = parseInt(gfrAge, 10);
     if (isNaN(creatinineNum) || isNaN(ageNum) || creatinineNum <= 0 || ageNum <= 0 || !gfrSex) {
-      setError('eGFR: Please enter valid positive numbers for creatinine (mg/dL), age, and select sex.');
+      setError(t('medicalCalculatorPage.error.egfrInputs'));
       setGfrResult(null); setGfrInterpretation({ text: '', stage: '', color: '' }); return;
     }
     const result = calculateGFR_CKDEPI(creatinineNum, ageNum, gfrSex);
-    setGfrResult(result); setGfrInterpretation(interpretGFR(result));
+    setGfrResult(result); setGfrInterpretation(interpretGFR(result, t));
     await incrementUsage(featureName);
   };
 
@@ -299,11 +304,11 @@ const MedicalCalculator = () => {
     setError('');
     const heightNum = parseFloat(ibwHeight);
     if (isNaN(heightNum) || heightNum <= 0 || !ibwSex) {
-      setError('IBW: Please enter a valid positive height (cm) and select sex.');
+      setError(t('medicalCalculatorPage.error.ibwInputs'));
       setIbwResult(null); setIbwInterpretation({ text: '', color: '' }); return;
     }
     const result = calculateIBW_Devine(heightNum, ibwSex);
-    setIbwResult(result); setIbwInterpretation(interpretIBW(result));
+    setIbwResult(result); setIbwInterpretation(interpretIBW(result, t));
     await incrementUsage(featureName);
   };
 
@@ -316,15 +321,15 @@ const MedicalCalculator = () => {
     const actualWeightNum = parseFloat(adjBwActualWeight);
     const ibwNum = ibwResult;
     if (isNaN(actualWeightNum) || actualWeightNum <= 0) {
-       setError('AdjBW: Please enter a valid positive Actual Body Weight (kg).');
+       setError(t('medicalCalculatorPage.error.adjbwActualWeightInput'));
        setAdjBwResult(null); setAdjBwInterpretation({ text: '', color: '' }); return;
     }
     if (ibwNum === null || ibwNum <= 0) {
-       setError('AdjBW: Please calculate Ideal Body Weight (IBW) first.');
+       setError(t('medicalCalculatorPage.error.adjbwIbwRequired'));
        setAdjBwResult(null); setAdjBwInterpretation({ text: '', color: '' }); return;
     }
     const result = calculateAdjBW(actualWeightNum, ibwNum);
-    setAdjBwResult(result); setAdjBwInterpretation(interpretAdjBW(result, actualWeightNum, ibwNum));
+    setAdjBwResult(result); setAdjBwInterpretation(interpretAdjBW(result, actualWeightNum, ibwNum, t));
     if (result !== null) {
         await incrementUsage(featureName);
     }
@@ -340,11 +345,11 @@ const MedicalCalculator = () => {
      const heightNum = parseFloat(bmrHeight);
      const ageNum = parseInt(bmrAge, 10);
      if (isNaN(weightNum) || isNaN(heightNum) || isNaN(ageNum) || weightNum <= 0 || heightNum <= 0 || ageNum <= 0 || !bmrSex) {
-       setError('BMR: Please enter valid positive numbers for weight (kg), height (cm), age, and select sex.');
+       setError(t('medicalCalculatorPage.error.bmrInputs'));
        setBmrResult(null); setBmrInterpretation({ text: '', color: '' }); return;
      }
      const result = calculateBMR_MifflinStJeor(weightNum, heightNum, ageNum, bmrSex);
-     setBmrResult(result); setBmrInterpretation(interpretBMR(result));
+     setBmrResult(result); setBmrInterpretation(interpretBMR(result, t));
      await incrementUsage(featureName);
   };
 
@@ -357,19 +362,19 @@ const MedicalCalculator = () => {
      const totalCaNum = parseFloat(ccTotalCalcium);
      const albuminNum = parseFloat(ccAlbumin);
      if (isNaN(totalCaNum) || isNaN(albuminNum) || totalCaNum <= 0 || albuminNum <= 0) {
-       setError('Corrected Ca: Please enter valid positive numbers for Total Calcium (mg/dL) and Albumin (g/dL).');
+       setError(t('medicalCalculatorPage.error.correctedCaInputs'));
        setCcResult(null); setCcInterpretation({ text: '', color: '' }); return;
      }
      const result = calculateCorrectedCalcium(totalCaNum, albuminNum);
-     setCcResult(result); setCcInterpretation(interpretCorrectedCalcium(result, totalCaNum, albuminNum));
+     setCcResult(result); setCcInterpretation(interpretCorrectedCalcium(result, totalCaNum, albuminNum, t));
      await incrementUsage(featureName);
   };
 
   return (
     <div>
       <PageHeader
-        title="Medical Calculator"
-        subtitle="Calculate common clinical values. For informational purposes only."
+        title={t('medicalCalculatorPage.pageTitle')}
+        subtitle={t('medicalCalculatorPage.pageSubtitle')}
       />
 
       <div className="container-custom">
@@ -387,9 +392,9 @@ const MedicalCalculator = () => {
         {!isLoadingToggles && !initialAccessAllowed && (
            <Alert variant="destructive" className="mt-8">
              <Terminal className="h-4 w-4" />
-             <AlertTitle>Access Denied</AlertTitle>
+             <AlertTitle>{t('medicalCalculatorPage.accessDenied.title')}</AlertTitle>
              <AlertDescription>
-               {initialAccessMessage || 'Anda tidak memiliki izin untuk mengakses fitur ini.'}
+               {initialAccessMessage || t('medicalCalculatorPage.accessDenied.defaultMessage')}
              </AlertDescription>
            </Alert>
          )}
@@ -400,16 +405,16 @@ const MedicalCalculator = () => {
             {/* Disclaimer */}
         <Alert variant="destructive" className="mb-8 bg-red-50 border-red-500 text-red-800">
           <AlertTriangle className="h-4 w-4 !text-red-800" />
-          <AlertTitle className="font-bold">Disclaimer</AlertTitle>
+          <AlertTitle className="font-bold">{t('medicalCalculatorPage.disclaimer.title')}</AlertTitle>
           <AlertDescription>
-            This calculator is intended for informational and educational purposes only and does not substitute for professional medical diagnosis, advice, or treatment. Normal values can vary. Always consult with a qualified healthcare professional for accurate interpretation and recommendations.
+            {t('medicalCalculatorPage.disclaimer.text')}
           </AlertDescription>
         </Alert>
 
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
+            <AlertTitle>{t('medicalCalculatorPage.error.title')}</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
@@ -419,24 +424,24 @@ const MedicalCalculator = () => {
           {/* BMI Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>BMI Calculator</CardTitle>
-              <CardDescription>Body Mass Index</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.bmi.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.bmi.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="bmi-weight">Weight (kg)</Label>
-                <Input id="bmi-weight" type="number" value={bmiWeight} onChange={(e) => setBmiWeight(e.target.value)} placeholder="e.g., 70" />
+                <Label htmlFor="bmi-weight">{t('medicalCalculatorPage.bmi.labelWeight')}</Label>
+                <Input id="bmi-weight" type="number" value={bmiWeight} onChange={(e) => setBmiWeight(e.target.value)} placeholder={t('medicalCalculatorPage.bmi.placeholderWeight')} />
               </div>
               <div>
-                <Label htmlFor="bmi-height">Height (cm)</Label>
-                <Input id="bmi-height" type="number" value={bmiHeight} onChange={(e) => setBmiHeight(e.target.value)} placeholder="e.g., 175" />
+                <Label htmlFor="bmi-height">{t('medicalCalculatorPage.bmi.labelHeight')}</Label>
+                <Input id="bmi-height" type="number" value={bmiHeight} onChange={(e) => setBmiHeight(e.target.value)} placeholder={t('medicalCalculatorPage.bmi.placeholderHeight')} />
               </div>
-              <Button onClick={handleBmiCalculate} className="w-full">Calculate BMI</Button>
+              <Button onClick={handleBmiCalculate} className="w-full">{t('medicalCalculatorPage.bmi.buttonCalculate')}</Button>
               {bmiResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{bmiResult.toFixed(1)} kg/m²</p>
-                  <p className={`mt-1 font-semibold ${bmiInterpretation.color}`}>{bmiInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{bmiResult.toFixed(1)} {t('medicalCalculatorPage.bmi.unit')}</p>
+                  <p className={`mt-1 font-semibold text-justify ${bmiInterpretation.color}`}>{bmiInterpretation.text}</p>
                 </div>
               )}
             </CardContent>
@@ -445,24 +450,24 @@ const MedicalCalculator = () => {
           {/* BSA Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>BSA Calculator</CardTitle>
-              <CardDescription>Body Surface Area (Mosteller)</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.bsa.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.bsa.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="bsa-weight">Weight (kg)</Label>
-                <Input id="bsa-weight" type="number" value={bsaWeight} onChange={(e) => setBsaWeight(e.target.value)} placeholder="e.g., 70" />
+                <Label htmlFor="bsa-weight">{t('medicalCalculatorPage.bsa.labelWeight')}</Label>
+                <Input id="bsa-weight" type="number" value={bsaWeight} onChange={(e) => setBsaWeight(e.target.value)} placeholder={t('medicalCalculatorPage.bsa.placeholderWeight')} />
               </div>
               <div>
-                <Label htmlFor="bsa-height">Height (cm)</Label>
-                <Input id="bsa-height" type="number" value={bsaHeight} onChange={(e) => setBsaHeight(e.target.value)} placeholder="e.g., 175" />
+                <Label htmlFor="bsa-height">{t('medicalCalculatorPage.bsa.labelHeight')}</Label>
+                <Input id="bsa-height" type="number" value={bsaHeight} onChange={(e) => setBsaHeight(e.target.value)} placeholder={t('medicalCalculatorPage.bsa.placeholderHeight')} />
               </div>
-              <Button onClick={handleBsaCalculate} className="w-full">Calculate BSA</Button>
+              <Button onClick={handleBsaCalculate} className="w-full">{t('medicalCalculatorPage.bsa.buttonCalculate')}</Button>
               {bsaResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{bsaResult.toFixed(2)} m²</p>
-                  <p className={`mt-1 text-sm ${bsaInterpretation.color}`}>{bsaInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{bsaResult.toFixed(2)} {t('medicalCalculatorPage.bsa.unit')}</p>
+                  <p className={`mt-1 text-sm text-justify ${bsaInterpretation.color}`}>{bsaInterpretation.text}</p>
                 </div>
               )}
             </CardContent>
@@ -471,32 +476,32 @@ const MedicalCalculator = () => {
           {/* eGFR Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>eGFR Calculator</CardTitle>
-              <CardDescription>CKD-EPI 2021 (No Race)</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.egfr.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.egfr.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="gfr-creatinine">Serum Creatinine (mg/dL)</Label>
-                <Input id="gfr-creatinine" type="number" value={gfrCreatinine} onChange={(e) => setGfrCreatinine(e.target.value)} placeholder="e.g., 1.1" />
+                <Label htmlFor="gfr-creatinine">{t('medicalCalculatorPage.egfr.labelCreatinine')}</Label>
+                <Input id="gfr-creatinine" type="number" value={gfrCreatinine} onChange={(e) => setGfrCreatinine(e.target.value)} placeholder={t('medicalCalculatorPage.egfr.placeholderCreatinine')} />
               </div>
               <div>
-                <Label htmlFor="gfr-age">Age (years)</Label>
-                <Input id="gfr-age" type="number" value={gfrAge} onChange={(e) => setGfrAge(e.target.value)} placeholder="e.g., 50" />
+                <Label htmlFor="gfr-age">{t('medicalCalculatorPage.egfr.labelAge')}</Label>
+                <Input id="gfr-age" type="number" value={gfrAge} onChange={(e) => setGfrAge(e.target.value)} placeholder={t('medicalCalculatorPage.egfr.placeholderAge')} />
               </div>
               <div>
-                 <Label>Sex</Label>
+                 <Label>{t('medicalCalculatorPage.common.labelSex')}</Label>
                  <Select onValueChange={(value: 'male' | 'female') => setGfrSex(value)} value={gfrSex}>
-                   <SelectTrigger> <SelectValue placeholder="Select sex" /> </SelectTrigger>
-                   <SelectContent> <SelectItem value="male">Male</SelectItem> <SelectItem value="female">Female</SelectItem> </SelectContent>
+                   <SelectTrigger> <SelectValue placeholder={t('medicalCalculatorPage.common.placeholderSelectSex')} /> </SelectTrigger>
+                   <SelectContent> <SelectItem value="male">{t('medicalCalculatorPage.common.sexMale')}</SelectItem> <SelectItem value="female">{t('medicalCalculatorPage.common.sexFemale')}</SelectItem> </SelectContent>
                  </Select>
               </div>
-              <Button onClick={handleGfrCalculate} className="w-full">Calculate eGFR</Button>
+              <Button onClick={handleGfrCalculate} className="w-full">{t('medicalCalculatorPage.egfr.buttonCalculate')}</Button>
               {gfrResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{gfrResult.toFixed(0)} mL/min/1.73 m²</p>
-                  <p className={`mt-1 font-semibold ${gfrInterpretation.color}`}>{gfrInterpretation.stage}</p>
-                  <p className={`mt-1 text-sm ${gfrInterpretation.color}`}>{gfrInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{gfrResult.toFixed(0)} {t('medicalCalculatorPage.egfr.unit')}</p>
+                  <p className={`mt-1 font-semibold text-justify ${gfrInterpretation.color}`}>{gfrInterpretation.stage}</p>
+                  <p className={`mt-1 text-sm text-justify ${gfrInterpretation.color}`}>{gfrInterpretation.text}</p>
                 </div>
               )}
             </CardContent>
@@ -505,27 +510,27 @@ const MedicalCalculator = () => {
           {/* IBW Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>IBW Calculator</CardTitle>
-              <CardDescription>Ideal Body Weight (Devine)</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.ibw.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.ibw.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="ibw-height">Height (cm)</Label>
-                <Input id="ibw-height" type="number" value={ibwHeight} onChange={(e) => setIbwHeight(e.target.value)} placeholder="e.g., 175" />
+                <Label htmlFor="ibw-height">{t('medicalCalculatorPage.ibw.labelHeight')}</Label>
+                <Input id="ibw-height" type="number" value={ibwHeight} onChange={(e) => setIbwHeight(e.target.value)} placeholder={t('medicalCalculatorPage.ibw.placeholderHeight')} />
               </div>
               <div>
-                 <Label>Sex</Label>
+                 <Label>{t('medicalCalculatorPage.common.labelSex')}</Label>
                  <Select onValueChange={(value: 'male' | 'female') => setIbwSex(value)} value={ibwSex}>
-                   <SelectTrigger> <SelectValue placeholder="Select sex" /> </SelectTrigger>
-                   <SelectContent> <SelectItem value="male">Male</SelectItem> <SelectItem value="female">Female</SelectItem> </SelectContent>
+                   <SelectTrigger> <SelectValue placeholder={t('medicalCalculatorPage.common.placeholderSelectSex')} /> </SelectTrigger>
+                   <SelectContent> <SelectItem value="male">{t('medicalCalculatorPage.common.sexMale')}</SelectItem> <SelectItem value="female">{t('medicalCalculatorPage.common.sexFemale')}</SelectItem> </SelectContent>
                  </Select>
               </div>
-              <Button onClick={handleIbwCalculate} className="w-full">Calculate IBW</Button>
+              <Button onClick={handleIbwCalculate} className="w-full">{t('medicalCalculatorPage.ibw.buttonCalculate')}</Button>
               {ibwResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{ibwResult.toFixed(1)} kg</p>
-                  <p className={`mt-1 text-sm ${ibwInterpretation.color}`}>{ibwInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{ibwResult.toFixed(1)} {t('medicalCalculatorPage.ibw.unit')}</p>
+                  <p className={`mt-1 text-sm text-justify ${ibwInterpretation.color}`}>{ibwInterpretation.text}</p>
                 </div>
               )}
             </CardContent>
@@ -534,30 +539,30 @@ const MedicalCalculator = () => {
           {/* AdjBW Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>AdjBW Calculator</CardTitle>
-              <CardDescription>Adjusted Body Weight</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.adjbw.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.adjbw.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="adjbw-actual-weight">Actual Body Weight (kg)</Label>
-                <Input id="adjbw-actual-weight" type="number" value={adjBwActualWeight} onChange={(e) => setAdjBwActualWeight(e.target.value)} placeholder="e.g., 90" />
+                <Label htmlFor="adjbw-actual-weight">{t('medicalCalculatorPage.adjbw.labelActualWeight')}</Label>
+                <Input id="adjbw-actual-weight" type="number" value={adjBwActualWeight} onChange={(e) => setAdjBwActualWeight(e.target.value)} placeholder={t('medicalCalculatorPage.adjbw.placeholderActualWeight')} />
               </div>
                <div>
-                 <Label>Ideal Body Weight (kg)</Label>
-                 <Input type="number" value={ibwResult !== null ? ibwResult.toFixed(1) : ''} readOnly disabled placeholder="Calculate IBW first" />
+                 <Label>{t('medicalCalculatorPage.adjbw.labelIdealWeight')}</Label>
+                 <Input type="number" value={ibwResult !== null ? ibwResult.toFixed(1) : ''} readOnly disabled placeholder={t('medicalCalculatorPage.adjbw.placeholderIdealWeight')} />
                </div>
-              <Button onClick={handleAdjBwCalculate} className="w-full" disabled={ibwResult === null}>Calculate AdjBW</Button>
+              <Button onClick={handleAdjBwCalculate} className="w-full" disabled={ibwResult === null}>{t('medicalCalculatorPage.adjbw.buttonCalculate')}</Button>
               {adjBwResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{adjBwResult.toFixed(1)} kg</p>
-                  <p className={`mt-1 text-sm ${adjBwInterpretation.color}`}>{adjBwInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{adjBwResult.toFixed(1)} {t('medicalCalculatorPage.adjbw.unit')}</p>
+                  <p className={`mt-1 text-sm text-justify ${adjBwInterpretation.color}`}>{adjBwInterpretation.text}</p>
                 </div>
               )}
                {/* Show interpretation even if AdjBW is null but calculation was attempted */}
                {adjBwResult === null && adjBwInterpretation.text && ibwResult !== null && (
                  <div className="mt-4 p-4 bg-gray-50 rounded">
-                   <p className={`mt-1 text-sm ${adjBwInterpretation.color}`}>{adjBwInterpretation.text}</p>
+                   <p className={`mt-1 text-sm text-justify ${adjBwInterpretation.color}`}>{adjBwInterpretation.text}</p>
                  </div>
                )}
             </CardContent>
@@ -566,35 +571,35 @@ const MedicalCalculator = () => {
           {/* BMR Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>BMR Calculator</CardTitle>
-              <CardDescription>Basal Metabolic Rate (Mifflin-St Jeor)</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.bmr.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.bmr.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="bmr-weight">Weight (kg)</Label>
-                <Input id="bmr-weight" type="number" value={bmrWeight} onChange={(e) => setBmrWeight(e.target.value)} placeholder="e.g., 70" />
+                <Label htmlFor="bmr-weight">{t('medicalCalculatorPage.bmr.labelWeight')}</Label>
+                <Input id="bmr-weight" type="number" value={bmrWeight} onChange={(e) => setBmrWeight(e.target.value)} placeholder={t('medicalCalculatorPage.bmr.placeholderWeight')} />
               </div>
               <div>
-                <Label htmlFor="bmr-height">Height (cm)</Label>
-                <Input id="bmr-height" type="number" value={bmrHeight} onChange={(e) => setBmrHeight(e.target.value)} placeholder="e.g., 175" />
+                <Label htmlFor="bmr-height">{t('medicalCalculatorPage.bmr.labelHeight')}</Label>
+                <Input id="bmr-height" type="number" value={bmrHeight} onChange={(e) => setBmrHeight(e.target.value)} placeholder={t('medicalCalculatorPage.bmr.placeholderHeight')} />
               </div>
               <div>
-                <Label htmlFor="bmr-age">Age (years)</Label>
-                <Input id="bmr-age" type="number" value={bmrAge} onChange={(e) => setBmrAge(e.target.value)} placeholder="e.g., 30" />
+                <Label htmlFor="bmr-age">{t('medicalCalculatorPage.bmr.labelAge')}</Label>
+                <Input id="bmr-age" type="number" value={bmrAge} onChange={(e) => setBmrAge(e.target.value)} placeholder={t('medicalCalculatorPage.bmr.placeholderAge')} />
               </div>
               <div>
-                 <Label>Sex</Label>
+                 <Label>{t('medicalCalculatorPage.common.labelSex')}</Label>
                  <Select onValueChange={(value: 'male' | 'female') => setBmrSex(value)} value={bmrSex}>
-                   <SelectTrigger> <SelectValue placeholder="Select sex" /> </SelectTrigger>
-                   <SelectContent> <SelectItem value="male">Male</SelectItem> <SelectItem value="female">Female</SelectItem> </SelectContent>
+                   <SelectTrigger> <SelectValue placeholder={t('medicalCalculatorPage.common.placeholderSelectSex')} /> </SelectTrigger>
+                   <SelectContent> <SelectItem value="male">{t('medicalCalculatorPage.common.sexMale')}</SelectItem> <SelectItem value="female">{t('medicalCalculatorPage.common.sexFemale')}</SelectItem> </SelectContent>
                  </Select>
               </div>
-              <Button onClick={handleBmrCalculate} className="w-full">Calculate BMR</Button>
+              <Button onClick={handleBmrCalculate} className="w-full">{t('medicalCalculatorPage.bmr.buttonCalculate')}</Button>
               {bmrResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{bmrResult.toFixed(0)} kcal/day</p>
-                  <p className={`mt-1 text-sm ${bmrInterpretation.color}`}>{bmrInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{bmrResult.toFixed(0)} {t('medicalCalculatorPage.bmr.unit')}</p>
+                  <p className={`mt-1 text-sm text-justify ${bmrInterpretation.color}`}>{bmrInterpretation.text}</p>
                 </div>
               )}
             </CardContent>
@@ -603,24 +608,24 @@ const MedicalCalculator = () => {
           {/* Corrected Calcium Calculator */}
           <Card className="flex flex-col">
             <CardHeader>
-              <CardTitle>Corrected Calcium</CardTitle>
-              <CardDescription>Adjusts for Albumin Level</CardDescription>
+              <CardTitle>{t('medicalCalculatorPage.correctedCalcium.cardTitle')}</CardTitle>
+              <CardDescription>{t('medicalCalculatorPage.correctedCalcium.cardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
               <div>
-                <Label htmlFor="cc-calcium">Total Calcium (mg/dL)</Label>
-                <Input id="cc-calcium" type="number" value={ccTotalCalcium} onChange={(e) => setCcTotalCalcium(e.target.value)} placeholder="e.g., 9.5" />
+                <Label htmlFor="cc-calcium">{t('medicalCalculatorPage.correctedCalcium.labelTotalCalcium')}</Label>
+                <Input id="cc-calcium" type="number" value={ccTotalCalcium} onChange={(e) => setCcTotalCalcium(e.target.value)} placeholder={t('medicalCalculatorPage.correctedCalcium.placeholderTotalCalcium')} />
               </div>
               <div>
-                <Label htmlFor="cc-albumin">Serum Albumin (g/dL)</Label>
-                <Input id="cc-albumin" type="number" value={ccAlbumin} onChange={(e) => setCcAlbumin(e.target.value)} placeholder="e.g., 3.5" />
+                <Label htmlFor="cc-albumin">{t('medicalCalculatorPage.correctedCalcium.labelAlbumin')}</Label>
+                <Input id="cc-albumin" type="number" value={ccAlbumin} onChange={(e) => setCcAlbumin(e.target.value)} placeholder={t('medicalCalculatorPage.correctedCalcium.placeholderAlbumin')} />
               </div>
-              <Button onClick={handleCorrectedCalciumCalculate} className="w-full">Calculate Corrected Ca</Button>
+              <Button onClick={handleCorrectedCalciumCalculate} className="w-full">{t('medicalCalculatorPage.correctedCalcium.buttonCalculate')}</Button>
               {ccResult !== null && (
                 <div className="mt-4 p-4 bg-gray-50 rounded">
-                  <p className="text-sm text-gray-600">Result:</p>
-                  <p className="text-2xl font-bold text-medical-blue">{ccResult.toFixed(1)} mg/dL</p>
-                  <p className={`mt-1 text-sm ${ccInterpretation.color}`}>{ccInterpretation.text}</p>
+                  <p className="text-sm text-gray-600">{t('medicalCalculatorPage.common.resultLabel')}</p>
+                  <p className="text-2xl font-bold text-medical-blue">{ccResult.toFixed(1)} {t('medicalCalculatorPage.correctedCalcium.unit')}</p>
+                  <p className={`mt-1 text-sm text-justify ${ccInterpretation.color}`}>{ccInterpretation.text}</p>
                 </div>
               )}
             </CardContent>
@@ -633,7 +638,7 @@ const MedicalCalculator = () => {
           <Link to="/tools">
             <Button variant="outline" className="flex items-center gap-2">
               <ArrowLeft size={16} />
-              Back to Tools
+              {t('medicalCalculatorPage.common.backToToolsButton')}
             </Button>
           </Link>
         </div>

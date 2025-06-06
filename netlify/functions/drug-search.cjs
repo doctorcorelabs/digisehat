@@ -42,9 +42,32 @@ if (GEMINI_API_KEY) {
   console.warn("[drug-search] GEMINI_API_KEY environment variable not set. AI supplementation disabled.");
 }
 
-// Helper function to call Gemini
+// Generic helper function to call Gemini
+async function callGemini(prompt, purpose = "AI operation") {
+  if (!geminiModel) {
+    console.log(`[drug-search] Gemini model not available, skipping ${purpose}.`);
+    return null;
+  }
+  console.log(`[drug-search] Calling Gemini for ${purpose}. Prompt: "${prompt.substring(0,100)}..."`);
+  try {
+    const result = await geminiModel.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+    console.log(`[drug-search] Gemini response received for ${purpose}.`);
+    return text.trim();
+  } catch (error) {
+    console.error(`[drug-search] Gemini API error during ${purpose}:`, error);
+    if (error.message && error.message.includes('response was blocked')) {
+      return `AI response blocked due to safety settings during ${purpose}.`;
+    }
+    return `Error during ${purpose}: ${error.message}`;
+  }
+}
+
+// Helper function to call Gemini for supplementation
 async function getAiSupplement(drugIdentifier, fieldName) {
   if (!geminiModel) {
+    // This check is now redundant due to callGemini, but kept for clarity in this specific function's log
     console.log(`[drug-search] Gemini model not available, skipping AI supplement for ${fieldName}.`);
     return null;
   }
@@ -61,28 +84,16 @@ async function getAiSupplement(drugIdentifier, fieldName) {
 
   const description = fieldDescriptionMap[fieldName] || fieldName.replace(/_/g, ' ');
   const prompt = `What is the ${description} for the drug "${drugIdentifier}"? Provide a concise summary suitable for a drug reference. If no specific information is typically available for this field (e.g., boxed warning for a drug without one), state that clearly. Focus on factual medical information.`;
-
-  console.log(`[drug-search] Calling Gemini for ${fieldName} of ${drugIdentifier}`);
-  try {
-    const result = await geminiModel.generateContent(prompt);
-    const response = result.response; // Use await result.response for v1beta
-    const text = response.text(); // Use await response.text() for v1beta
-    console.log(`[drug-search] Gemini response received for ${fieldName}`);
-    return text.trim();
-  } catch (error) {
-    console.error(`[drug-search] Gemini API error for ${fieldName} of ${drugIdentifier}:`, error);
-    // Check for specific blocked content errors
-     if (error.message && error.message.includes('response was blocked')) {
-        return "AI response blocked due to safety settings.";
-     }
-    return `Error fetching AI supplement: ${error.message}`; // Return error message
-  }
+  return callGemini(prompt, `supplementation for ${fieldName} of ${drugIdentifier}`);
 }
 
 
 // Main handler function
 module.exports.handler = async function(event, context) {
   const drugName = event.queryStringParameters.term;
+  const targetLang = event.queryStringParameters.lang || 'en'; // Default to English if lang is not provided
+
+  console.log(`[drug-search] Received request for drug: "${drugName}", target language: "${targetLang}"`);
 
   if (!drugName) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing search term' }) };
@@ -152,17 +163,54 @@ module.exports.handler = async function(event, context) {
     if (processedResult.openfda) {
         for (const key in processedResult.openfda) {
             if (Array.isArray(processedResult.openfda[key])) {
-                 // Assuming openfda fields don't need AI supplement, mark as fda
-                 processedResult.openfda[key] = processedResult.openfda[key].map(text => ({ text, source: 'fda' }));
+                 processedResult.openfda[key] = processedResult.openfda[key].map(item => {
+                    // If it's already an object with text/source, keep it, otherwise structure it
+                    return (typeof item === 'object' && item.text !== undefined) ? item : { text: item, source: 'fda' };
+                 });
             }
         }
     }
 
+    // 3. Translate fields if targetLang is 'id'
+    if (targetLang === 'id' && geminiModel) {
+      console.log(`[drug-search] Translating content to Indonesian for: ${drugIdentifier}`);
+      for (const field of FIELDS_TO_SUPPLEMENT) {
+        if (processedResult[field] && processedResult[field][0] && processedResult[field][0].text) {
+          const originalText = processedResult[field][0].text;
+          const originalSource = processedResult[field][0].source;
 
-    console.log(`[drug-search] Returning processed result for: ${drugName}`);
+          // Skip translation if source is 'unavailable' or text is a known "not available" message
+          if (originalSource === 'unavailable' || originalText.toLowerCase().includes('not available')) {
+            console.log(`[drug-search] Skipping translation for '${field}' as it's marked unavailable or has no content.`);
+            continue;
+          }
+          
+          // Also skip translation for AI error messages
+          if (originalText.toLowerCase().startsWith('error fetching ai supplement') || originalText.toLowerCase().startsWith('ai response blocked')) {
+            console.log(`[drug-search] Skipping translation for '${field}' as it contains an AI error message.`);
+            continue;
+          }
+
+          const translationPrompt = `Translate the following medical text from English to Indonesian: "${originalText}"`;
+          const translatedText = await callGemini(translationPrompt, `translation for ${field} of ${drugIdentifier}`);
+          
+          if (translatedText && !translatedText.toLowerCase().startsWith('error during translation') && !translatedText.toLowerCase().startsWith('ai response blocked')) {
+            processedResult[field] = [{ text: translatedText, source: originalSource }]; // Keep original source, update text
+            console.log(`[drug-search] Successfully translated '${field}' to Indonesian.`);
+          } else {
+            console.warn(`[drug-search] Failed to translate '${field}' for ${drugIdentifier}. Original text will be used. Reason: ${translatedText}`);
+            // Keep original text if translation fails
+          }
+        }
+      }
+    } else if (targetLang === 'id' && !geminiModel) {
+      console.warn(`[drug-search] Translation to Indonesian requested for ${drugIdentifier}, but Gemini model is not available. Returning English content.`);
+    }
+
+    console.log(`[drug-search] Returning processed (and potentially translated) result for: ${drugName}`);
     return {
       statusCode: 200,
-      body: JSON.stringify(processedResult), // Return the modified result
+      body: JSON.stringify(processedResult),
     };
 
   } catch (error) {

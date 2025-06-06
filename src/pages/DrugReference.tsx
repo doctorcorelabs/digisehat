@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'; // Added useEffect
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +40,7 @@ interface DrugResult {
 
 
 const DrugReference = () => {
+  const { t, i18n } = useTranslation(); // Initialize useTranslation and get i18n instance
   const featureName: FeatureName = 'drug_reference';
   // Get isLoadingToggles from the hook
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
@@ -69,17 +71,17 @@ const DrugReference = () => {
          // Check if quota is explicitly 0 (denied by level)
          if (result.quota === 0) {
               setInitialAccessAllowed(false);
-              setInitialAccessMessage(result.message || 'Access denied for your level.');
+              setInitialAccessMessage(result.message || t('drugRef.accessDeniedLevel'));
          } else {
               setInitialAccessAllowed(true); // Allow rendering the search UI
          }
        } catch (error) {
          console.error("Error checking initial feature access:", error);
          setInitialAccessAllowed(false);
-         setInitialAccessMessage('Failed to check feature access.');
+         setInitialAccessMessage(t('drugRef.failedToCheckAccess'));
          toast({
-           title: "Error",
-           description: "Could not verify feature access at this time.",
+           title: t('drugRef.toastErrorTitle'),
+           description: t('drugRef.toastAccessCheckError'),
            variant: "destructive",
          });
        } finally {
@@ -97,8 +99,8 @@ const DrugReference = () => {
      const accessResult = await checkAccess(featureName);
      if (!accessResult.allowed) {
        toast({
-         title: "Access Denied",
-         description: accessResult.message || 'You cannot perform a search at this time.',
+         title: t('drugRef.toastAccessDeniedTitle'),
+         description: accessResult.message || t('drugRef.toastCannotSearch'),
          variant: "destructive",
        });
        openUpgradeDialog(); // Open the upgrade dialog
@@ -107,7 +109,7 @@ const DrugReference = () => {
     // --- End Action Access Check ---
 
     if (!searchTerm.trim()) {
-      setError('Please enter a drug name.');
+      setError(t('drugRef.errorEnterDrugName'));
       setResults(null);
       setSearched(true);
       return;
@@ -119,7 +121,8 @@ const DrugReference = () => {
     setSearched(true);
 
     const encodedDrugName = encodeURIComponent(searchTerm.trim());
-    const functionUrl = `/.netlify/functions/drug-search?term=${encodedDrugName}`;
+    const currentLanguage = i18n.language;
+    const functionUrl = `/.netlify/functions/drug-search?term=${encodedDrugName}&lang=${currentLanguage}`;
 
     try {
       const response = await fetch(functionUrl);
@@ -127,10 +130,10 @@ const DrugReference = () => {
       // Handle non-OK responses first
       if (!response.ok) {
         if (response.status === 404) {
-          setError(`No results found for "${searchTerm}". Please check spelling or try another name.`);
+          setError(t('drugRef.errorNotFound', { searchTerm }));
         } else {
           // Try to get error message from function response body
-          let errorMsg = `Request failed with status: ${response.status}`;
+          let errorMsg = t('drugRef.errorRequestFailed', { status: response.status });
           try {
             const errorData = await response.json();
             if (errorData && errorData.error) {
@@ -143,7 +146,7 @@ const DrugReference = () => {
           setError(errorMsg);
         }
         // Important: Stop further processing on error
-        return; 
+        return;
       }
 
       // If response is OK (200), parse the result
@@ -153,7 +156,7 @@ const DrugReference = () => {
     } catch (err) {
       // Handle network errors or errors during fetch/parsing
       console.error('Error fetching drug data:', err);
-      let message = 'An error occurred while fetching data. Please check your network connection and try again later.';
+      let message = t('drugRef.errorFetchingData');
       if (err instanceof Error) {
         message = err.message; // Use specific error message if available
       }
@@ -199,13 +202,13 @@ const DrugReference = () => {
       <div>
         <h4 className="font-semibold text-gray-800 mb-1">{label}:</h4>
         <div className="text-gray-700 text-justify prose prose-sm max-w-none"> {/* Add prose classes for basic styling */}
-          <ReactMarkdown 
+          <ReactMarkdown
             // allowedElements={allowedElements} // Uncomment to restrict elements
             // unwrapDisallowed={true} // Unwrap disallowed elements instead of removing them
           >
             {item.text}
           </ReactMarkdown>
-          {isAi && <span className="text-xs italic text-orange-600 ml-1 block mt-1">(AI generated, verify with a professional)</span>} {/* Make disclaimer block */}
+          {isAi && <span className="text-xs italic text-orange-600 ml-1 block mt-1">{t('drugRef.aiDisclaimer')}</span>} {/* Make disclaimer block */}
         </div>
       </div>
     );
@@ -221,11 +224,11 @@ const DrugReference = () => {
     return (
       <Alert variant="destructive" className="bg-red-50 border-red-500 text-red-800">
         <AlertTriangle className="h-4 w-4 !text-red-800" />
-        <AlertTitle className="font-bold">Boxed Warning</AlertTitle>
+        <AlertTitle className="font-bold">{t('drugRef.boxedWarningTitle')}</AlertTitle>
         <AlertDescription> {/* Removed asChild prop */}
            <div className="prose prose-sm max-w-none text-justify"> {/* Add prose classes AND text-justify */}
              <ReactMarkdown>{item.text}</ReactMarkdown>
-             {isAi && <span className="text-xs italic text-orange-600 ml-1 block mt-1">(AI generated, verify with a professional)</span>} {/* Make disclaimer block */}
+             {isAi && <span className="text-xs italic text-orange-600 ml-1 block mt-1">{t('drugRef.aiDisclaimer')}</span>} {/* Make disclaimer block */}
            </div>
         </AlertDescription>
       </Alert>
@@ -236,13 +239,13 @@ const DrugReference = () => {
   // Helper to display results safely using the new structure
   const displayResults = (result: DrugResult) => {
     // Helper to join text from DataItem arrays
-    const joinDataItems = (items?: DataItem[]): string => 
-      items?.map(item => item.text).join(', ') ?? 'Information Not Available';
+    const joinDataItems = (items?: DataItem[]): string =>
+      items?.map(item => item.text).join(', ') ?? t('drugRef.infoNotAvailable');
 
     const genericName = joinDataItems(result.openfda?.generic_name);
     const brandName = joinDataItems(result.openfda?.brand_name);
     const manufacturer = joinDataItems(result.openfda?.manufacturer_name);
-    
+
     // Assuming splSetId is still simple, adjust if backend changes it
     const splSetId = (result.openfda?.spl_set_id as unknown as string[])?.[0] ?? null; 
     const dailyMedLink = splSetId ? `https://dailymed.nlm.nih.gov/dailymed/spl.cfm?setid=${splSetId}` : null;
@@ -251,17 +254,17 @@ const DrugReference = () => {
       <div className="space-y-6"> {/* Increased spacing */}
         {/* Basic Info */}
         <h3 className="text-2xl font-semibold text-medical-blue">{brandName} <span className="text-lg font-normal text-gray-600">({genericName})</span></h3>
-        <p><strong className="text-gray-700">Manufacturer:</strong> {manufacturer}</p>
+        <p><strong className="text-gray-700">{t('drugRef.manufacturerLabel')}</strong> {manufacturer}</p>
 
         {/* Boxed Warning */}
         <DisplayBoxedWarning data={result.boxed_warning} />
 
         {/* Other Fields */}
-        <DisplayField label="Indications and Usage" data={result.indications_and_usage} />
-        <DisplayField label="Mechanism of Action" data={result.mechanism_of_action} />
-        <DisplayField label="Contraindications" data={result.contraindications} />
-        <DisplayField label="Dosage Forms & Strengths" data={result.dosage_forms_and_strengths} />
-        <DisplayField label="Adverse Reactions" data={result.adverse_reactions} />
+        <DisplayField label={t('drugRef.indicationsLabel')} data={result.indications_and_usage} />
+        <DisplayField label={t('drugRef.mechanismLabel')} data={result.mechanism_of_action} />
+        <DisplayField label={t('drugRef.contraindicationsLabel')} data={result.contraindications} />
+        <DisplayField label={t('drugRef.dosageFormsLabel')} data={result.dosage_forms_and_strengths} />
+        <DisplayField label={t('drugRef.adverseReactionsLabel')} data={result.adverse_reactions} />
         {/* Removed extra closing tags from previous edit */}
         {/* Removed DailyMed Link Section - This comment was misplaced */}
       </div> // This closes the main div started for space-y-6
@@ -271,9 +274,9 @@ const DrugReference = () => {
 
   return (
     <div>
-      <PageHeader 
-        title="Drug Reference" 
-        subtitle="Search US FDA drug label information via OpenFDA."
+      <PageHeader
+        title={t('tools.drugReference')}
+        subtitle={t('drugRef.pageSubtitle')}
       />
 
       <div className="container-custom">
@@ -291,9 +294,9 @@ const DrugReference = () => {
            {!(isCheckingInitialAccess || isLoadingToggles) && !initialAccessAllowed && (
               <Alert variant="destructive" className="mt-8">
                 <Terminal className="h-4 w-4" />
-                <AlertTitle>Access Denied</AlertTitle>
+                <AlertTitle>{t('drugRef.toastAccessDeniedTitle')}</AlertTitle>
                 <AlertDescription>
-                  {initialAccessMessage || 'You do not have permission to access this feature.'}
+                  {initialAccessMessage || t('drugRef.accessDeniedDefault')}
                 </AlertDescription>
               </Alert>
             )}
@@ -304,15 +307,11 @@ const DrugReference = () => {
               {/* Disclaimer */}
               <Alert variant="destructive" className="mb-8 bg-yellow-50 border-yellow-500 text-yellow-800">
             <AlertTriangle className="h-4 w-4 !text-yellow-800" />
-            <AlertTitle className="font-bold">Important Disclaimer</AlertTitle>
+            <AlertTitle className="font-bold">{t('drugRef.importantDisclaimerTitle')}</AlertTitle>
             <AlertDescription className="text-justify"> {/* Added text-justify */}
               {/* Wrap the disclaimer content in ReactMarkdown */}
-              <ReactMarkdown> 
-                {`This tool provides information primarily sourced from OpenFDA (US FDA). Where official data is unavailable for certain fields, **Artificial Intelligence (AI) may be used to supplement the information.**
-
-All information, whether from official sources or AI, is for **informational and educational purposes ONLY.** It may not be complete, fully up-to-date, or applicable outside the US. **AI-generated content requires extra scrutiny and verification.**
-
-This tool **DOES NOT substitute for professional medical advice, diagnosis, or treatment.** Always consult your doctor or pharmacist regarding medications and health concerns. Never disregard professional medical advice or delay seeking it because of something you have read here.`}
+              <ReactMarkdown>
+                {t('drugRef.importantDisclaimerText')}
               </ReactMarkdown>
             </AlertDescription>
           </Alert>
@@ -320,14 +319,14 @@ This tool **DOES NOT substitute for professional medical advice, diagnosis, or t
           {/* Search Area */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Drug Information Search</CardTitle>
-              <CardDescription>Enter a drug name (generic or brand)</CardDescription>
+              <CardTitle>{t('drugRef.searchCardTitle')}</CardTitle>
+              <CardDescription>{t('drugRef.searchCardDescription')}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col sm:flex-row gap-4">
-              <Input 
-                type="text" 
-                id="drugSearchInput" 
-                placeholder="e.g., Lisinopril, Advil" 
+              <Input
+                type="text"
+                id="drugSearchInput"
+                placeholder={t('drugRef.searchInputPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -335,7 +334,7 @@ This tool **DOES NOT substitute for professional medical advice, diagnosis, or t
               />
               <Button onClick={handleSearch} disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Search
+                {t('drugRef.searchButton')}
               </Button>
             </CardContent>
           </Card>
@@ -343,28 +342,28 @@ This tool **DOES NOT substitute for professional medical advice, diagnosis, or t
           {/* Results Area */}
           <Card>
              <CardHeader>
-               <CardTitle>Results</CardTitle>
+               <CardTitle>{t('drugRef.resultsCardTitle')}</CardTitle>
              </CardHeader>
              <CardContent className="min-h-[150px]"> {/* Minimum height */}
                 {isLoading && (
                   <div className="flex items-center justify-center text-gray-500">
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Loading...
+                    {t('drugRef.loadingText')}
                   </div>
                 )}
                 {error && !isLoading && (
                   <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
+                    <AlertTitle>{t('drugRef.toastErrorTitle')}</AlertTitle>
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
                 {results && !isLoading && displayResults(results)}
                 {!results && !isLoading && !error && searched && (
-                   <p className="text-center text-gray-500">No results found for the search term.</p>
+                   <p className="text-center text-gray-500">{t('drugRef.noResultsFound')}</p>
                 )}
                  {!results && !isLoading && !error && !searched && (
-                   <p className="text-center text-gray-500">Enter a drug name above and click Search.</p>
+                   <p className="text-center text-gray-500">{t('drugRef.promptSearch')}</p>
                  )}
              </CardContent>
           </Card>
@@ -376,7 +375,7 @@ This tool **DOES NOT substitute for professional medical advice, diagnosis, or t
             <Link to="/tools">
               <Button variant="outline" className="flex items-center gap-2">
                 <ArrowLeft size={16} />
-                Back to Tools
+                {t('drugRef.backToToolsButton')}
               </Button>
             </Link>
           </div>

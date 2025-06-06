@@ -1,0 +1,318 @@
+{
+  "brandName": "DigiSehat",
+  "welcomeMessage": "Welcome to DigiSehat!",
+  "welcomeSubtitle": "Your digital health platform. Access tools and resources below.",
+  "featuredTools": "Featured Tools",
+  "quickAccessTools": "Quick Access Tools",
+  "exploreGemini": "Explore Gemini",
+  "exploreGeminiDescription": "Chat with our advanced AI assistant for medical queries, summaries, and more.",
+  "launchGemini": "Launch Gemini",
+  "exploreDeepSeek": "Explore DeepSeek",
+  "exploreDeepSeekDescription": "Interact with the DeepSeek AI for alternative perspectives.",
+  "launchDeepSeek": "Launch DeepSeek",
+  "tools": {
+    "aiChatbot": "AI Chatbot",
+    "aiPeerReview": "AI Peer-Review",
+    "drugReference": "Drug Reference",
+    "interactionChecker": "Interaction Checker",
+    "diseaseLibrary": "Disease Library",
+    "clinicalGuidelines": "Clinical Guidelines",
+    "clinicalScoringHub": "Clinical Scoring Hub",
+    "learningResources": "Learning Resources",
+    "medicalCalculator": "Medical Calculator",
+    "nutritionDatabase": "Nutrition Database",
+    "aiMindMapGenerator": "AI Mind Map Generator",
+    "exploreGemini": "Explore Gemini",
+    "exploreDeepSeek": "Explore DeepSeek",
+    "nucleusArchive": "Nucleus Archive",
+    "author": "Author"
+  },
+  "toolDescriptions": {
+    "nutritionDatabase": "Explore detailed nutritional information.",
+    "aiMindMapGenerator": "Visualize concepts with AI-powered mind maps.",
+    "diseaseLibrary": "Access comprehensive disease information.",
+    "drugReference": "Look up drug details and interactions.",
+    "clinicalScoringHub": "Calculate various clinical scores.",
+    "interactionChecker": "Check for drug interactions.",
+    "learningResources": "Access curated medical learning materials.",
+    "aiPeerReview": "Get AI feedback on medical texts."
+  },
+  "sidebar": {
+    "tools": "Tools",
+    "adminDashboard": "Admin Dashboard",
+    "upgradePlan": "Upgrade Plan",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "expandSidebar": "Expand Sidebar",
+    "collapseSidebar": "Collapse Sidebar",
+    "home": "Home"
+  },
+  "language": "Language",
+  "indonesian": "Indonesian",
+  "english": "English",
+  "switchToEnglish": "Switch to English",
+  "switchToIndonesian": "Switch to Indonesian",
+  "home": {
+    "hero": {
+      "headline": "Digital Health at Your Fingertips",
+      "subheadline": "A comprehensive platform for health information, clinical tools, and learning resources.",
+      "cta": "Explore Our Tools"
+    },
+    "features": {
+      "sectionTitle": "Key Features of DigiSehat",
+      "trustedInfo": {
+        "title": "Trusted Health Information",
+        "description": "Access accurate and up-to-date medical data and drug references."
+      },
+      "smartTools": {
+        "title": "Smart Clinical Support Tools",
+        "description": "Utilize our medical calculators, interaction checkers, and AI chatbot."
+      },
+      "interactiveLearning": {
+        "title": "Interactive Learning Resources",
+        "description": "Expand your knowledge with mind maps and curated learning materials."
+      },
+      "includes": "Includes"
+    },
+    "footer": {
+      "allRightsReserved": "All rights reserved."
+    }
+  },
+  "toolsPage": {
+    "header": {
+      "title": "Medical Tools",
+      "subtitle": "Access specialized tools to assist in your medical studies and practice"
+    },
+    "medicalCalculator": {
+      "title": "Medical Calculator",
+      "description": "Calculate BMI, BSA, GFR, and other important clinical values."
+    },
+    "drugReference": {
+      "title": "Drug Reference",
+      "description": "Access comprehensive drug information database."
+    },
+    "nutritionDatabase": {
+      "title": "Nutrition Database",
+      "description": "Explore nutritional information for various food items."
+    },
+    "diseaseLibrary": {
+      "title": "Disease Library",
+      "description": "Comprehensive information on various conditions."
+    },
+    "clinicalGuidelines": {
+      "title": "Clinical Guidelines",
+      "description": "Access the latest medical practice guidelines."
+    },
+    "aiChatbot": {
+      "title": "AI Chatbot",
+      "description": "Engage with an AI assistant for medical information and queries."
+    },
+    "aiPeerReview": {
+      "title": "AI Peer-Review",
+      "description": "Get AI-powered feedback on your clinical notes or case studies."
+    },
+    "exploreGemini": {
+      "title": "Explore GEMINI",
+      "description": "Utilize Google's advanced AI for medical research exploration."
+    },
+    "exploreDeepSeek": {
+      "title": "Explore DeepSeek",
+      "description": "Leverage DeepSeek AI for advanced medical insights."
+    },
+    "interactionChecker": {
+      "title": "Drug Interaction Checker",
+      "description": "Check for potential interactions between multiple drugs."
+    },
+    "aiMindMapGenerator": {
+      "title": "AI Mind Map Generator",
+      "description": "Generate visual mind maps from any topic using AI."
+    },
+    "clinicalScoringHub": {
+      "title": "Clinical Scoring Hub",
+      "description": "Access various validated clinical scoring calculators."
+    },
+    "learningResources": {
+      "title": "Learning Resources",
+      "description": "Access curated learning materials and resources."
+    },
+    "accessDenied": {
+      "title": "Access Denied",
+      "description": "Access to the \"{{toolName}}\" feature is currently disabled for maintenance. Please check back later."
+    }
+  },
+  "drugRef": {
+    "pageSubtitle": "Search US FDA drug label information via OpenFDA.",
+    "importantDisclaimerTitle": "Important Disclaimer",
+    "importantDisclaimerText": "This tool provides information primarily sourced from OpenFDA (US FDA). Where official data is unavailable for certain fields, **Artificial Intelligence (AI) may be used to supplement the information.**\n\nAll information, whether from official sources or AI, is for **informational and educational purposes ONLY.** It may not be complete, fully up-to-date, or applicable outside the US. **AI-generated content requires extra scrutiny and verification.**\n\nThis tool **DOES NOT substitute for professional medical advice, diagnosis, or treatment.** Always consult your doctor or pharmacist regarding medications and health concerns. Never disregard professional medical advice or delay seeking it because of something you have read here.",
+    "searchCardTitle": "Drug Information Search",
+    "searchCardDescription": "Enter a drug name (generic or brand)",
+    "searchInputPlaceholder": "e.g., Lisinopril, Advil",
+    "searchButton": "Search",
+    "resultsCardTitle": "Results",
+    "loadingText": "Loading...",
+    "noResultsFound": "No results found for the search term.",
+    "promptSearch": "Enter a drug name above and click Search.",
+    "backToToolsButton": "Back to Tools",
+    "accessDeniedLevel": "Access denied for your current subscription level.",
+    "failedToCheckAccess": "Failed to check feature access. Please try again.",
+    "toastErrorTitle": "Error",
+    "toastAccessCheckError": "Could not verify feature access at this time.",
+    "toastAccessDeniedTitle": "Access Denied",
+    "toastCannotSearch": "You cannot perform a search at this time. Please upgrade your plan or check your quota.",
+    "errorEnterDrugName": "Please enter a drug name.",
+    "errorNotFound": "No results found for \"{{searchTerm}}\". Please check spelling or try another name.",
+    "errorRequestFailed": "Request failed with status: {{status}}",
+    "errorFetchingData": "An error occurred while fetching data. Please check your network connection and try again later.",
+    "aiDisclaimer": "(AI generated, verify with a professional)",
+    "boxedWarningTitle": "Boxed Warning",
+    "infoNotAvailable": "Information Not Available",
+    "manufacturerLabel": "Manufacturer:",
+    "indicationsLabel": "Indications and Usage",
+    "mechanismLabel": "Mechanism of Action",
+    "contraindicationsLabel": "Contraindications",
+    "dosageFormsLabel": "Dosage Forms & Strengths",
+    "adverseReactionsLabel": "Adverse Reactions",
+    "accessDeniedDefault": "You do not have permission to access this feature."
+  },
+  "medicalCalculatorPage": {
+    "pageTitle": "Medical Calculator",
+    "pageSubtitle": "Calculate common clinical values. For informational purposes only.",
+    "accessDenied": {
+      "title": "Access Denied",
+      "defaultMessage": "You do not have permission to access this feature."
+    },
+    "disclaimer": {
+      "title": "Disclaimer",
+      "text": "This calculator is intended for informational and educational purposes only and does not substitute for professional medical diagnosis, advice, or treatment. Normal values can vary. Always consult with a qualified healthcare professional for accurate interpretation and recommendations."
+    },
+    "error": {
+      "title": "Error",
+      "bmiInputs": "BMI: Please enter valid positive numbers for weight (kg) and height (cm).",
+      "bsaInputs": "BSA: Please enter valid positive numbers for weight (kg) and height (cm).",
+      "egfrInputs": "eGFR: Please enter valid positive numbers for creatinine (mg/dL), age, and select sex.",
+      "ibwInputs": "IBW: Please enter a valid positive height (cm) and select sex.",
+      "adjbwActualWeightInput": "AdjBW: Please enter a valid positive Actual Body Weight (kg).",
+      "adjbwIbwRequired": "AdjBW: Please calculate Ideal Body Weight (IBW) first.",
+      "bmrInputs": "BMR: Please enter valid positive numbers for weight (kg), height (cm), age, and select sex.",
+      "correctedCaInputs": "Corrected Ca: Please enter valid positive numbers for Total Calcium (mg/dL) and Albumin (g/dL)."
+    },
+    "common": {
+      "resultLabel": "Result:",
+      "labelSex": "Sex",
+      "placeholderSelectSex": "Select sex",
+      "sexMale": "Male",
+      "sexFemale": "Female",
+      "backToToolsButton": "Back to Tools"
+    },
+    "bmi": {
+      "cardTitle": "BMI Calculator",
+      "cardDescription": "Body Mass Index",
+      "labelWeight": "Weight (kg)",
+      "placeholderWeight": "e.g., 70",
+      "labelHeight": "Height (cm)",
+      "placeholderHeight": "e.g., 175",
+      "buttonCalculate": "Calculate BMI",
+      "unit": "kg/m²",
+      "interpretation": {
+        "underweight": "Underweight",
+        "normal": "Normal range",
+        "overweight": "Overweight",
+        "obese": "Obese"
+      }
+    },
+    "bsa": {
+      "cardTitle": "BSA Calculator",
+      "cardDescription": "Body Surface Area (Mosteller)",
+      "labelWeight": "Weight (kg)",
+      "placeholderWeight": "e.g., 70",
+      "labelHeight": "Height (cm)",
+      "placeholderHeight": "e.g., 175",
+      "buttonCalculate": "Calculate BSA",
+      "unit": "m²",
+      "interpretation": {
+        "typical": "BSA is often used by clinicians for drug dosing or physiological assessments. Typical adult values range from 1.5 to 2.2 m²."
+      }
+    },
+    "egfr": {
+      "cardTitle": "eGFR Calculator",
+      "cardDescription": "CKD-EPI 2021 (No Race)",
+      "labelCreatinine": "Serum Creatinine (mg/dL)",
+      "placeholderCreatinine": "e.g., 1.1",
+      "labelAge": "Age (years)",
+      "placeholderAge": "e.g., 50",
+      "buttonCalculate": "Calculate eGFR",
+      "unit": "mL/min/1.73 m²",
+      "interpretation": {
+        "stage1": "Stage 1",
+        "stage1_desc": "Normal or high kidney function (check for kidney damage if other signs present).",
+        "stage2": "Stage 2",
+        "stage2_desc": "Mildly decreased kidney function.",
+        "stage3a": "Stage 3a",
+        "stage3a_desc": "Mild to moderately decreased kidney function.",
+        "stage3b": "Stage 3b",
+        "stage3b_desc": "Moderate to severely decreased kidney function.",
+        "stage4": "Stage 4",
+        "stage4_desc": "Severely decreased kidney function.",
+        "stage5": "Stage 5",
+        "stage5_desc": "Kidney failure."
+      }
+    },
+    "ibw": {
+      "cardTitle": "IBW Calculator",
+      "cardDescription": "Ideal Body Weight (Devine)",
+      "labelHeight": "Height (cm)",
+      "placeholderHeight": "e.g., 175",
+      "buttonCalculate": "Calculate IBW",
+      "unit": "kg",
+      "interpretation": {
+        "devine": "This is an estimation using the Devine formula. IBW is often used for ventilator settings or certain drug dosages."
+      }
+    },
+    "adjbw": {
+      "cardTitle": "AdjBW Calculator",
+      "cardDescription": "Adjusted Body Weight",
+      "labelActualWeight": "Actual Body Weight (kg)",
+      "placeholderActualWeight": "e.g., 90",
+      "labelIdealWeight": "Ideal Body Weight (kg)",
+      "placeholderIdealWeight": "Calculate IBW first",
+      "buttonCalculate": "Calculate AdjBW",
+      "unit": "kg",
+      "interpretation": {
+        "notTypicallyCalculated": "Adjusted Body Weight is typically calculated when Actual Body Weight significantly exceeds Ideal Body Weight (e.g., >120%).",
+        "purpose": "AdjBW estimates a relevant body mass for dosing certain drugs in obese patients. It's used when Actual Weight significantly exceeds Ideal Weight."
+      }
+    },
+    "bmr": {
+      "cardTitle": "BMR Calculator",
+      "cardDescription": "Basal Metabolic Rate (Mifflin-St Jeor)",
+      "labelWeight": "Weight (kg)",
+      "placeholderWeight": "e.g., 70",
+      "labelHeight": "Height (cm)",
+      "placeholderHeight": "e.g., 175",
+      "labelAge": "Age (years)",
+      "placeholderAge": "e.g., 30",
+      "buttonCalculate": "Calculate BMR",
+      "unit": "kcal/day",
+      "interpretation": {
+        "definition": "This is the estimated minimum calories your body needs at rest. Total daily energy needs depend on activity levels."
+      }
+    },
+    "correctedCalcium": {
+      "cardTitle": "Corrected Calcium",
+      "cardDescription": "Adjusts for Albumin Level",
+      "labelTotalCalcium": "Total Calcium (mg/dL)",
+      "placeholderTotalCalcium": "e.g., 9.5",
+      "labelAlbumin": "Serum Albumin (g/dL)",
+      "placeholderAlbumin": "e.g., 3.5",
+      "buttonCalculate": "Calculate Corrected Ca",
+      "unit": "mg/dL",
+      "interpretation": {
+        "prefix": "Corrected for Albumin ({{albumin}} g/dL). This estimates calcium if albumin were normal (4.0 g/dL).",
+        "belowRange": "Result is below the typical normal range (approx. 8.5-10.5 mg/dL).",
+        "aboveRange": "Result is above the typical normal range (approx. 8.5-10.5 mg/dL).",
+        "withinRange": "Result is within the typical normal range (approx. 8.5-10.5 mg/dL)."
+      }
+    }
+  }
+}

@@ -1,0 +1,318 @@
+{
+  "brandName": "DigiSehat",
+  "welcomeMessage": "Selamat Datang di DigiSehat!",
+  "welcomeSubtitle": "Platform kesehatan digital Anda. Akses alat dan sumber daya di bawah ini.",
+  "featuredTools": "Alat Unggulan",
+  "quickAccessTools": "Alat Akses Cepat",
+  "exploreGemini": "Jelajahi Gemini",
+  "exploreGeminiDescription": "Chat dengan asisten AI canggih kami untuk pertanyaan medis, ringkasan, dan lainnya.",
+  "launchGemini": "Luncurkan Gemini",
+  "exploreDeepSeek": "Jelajahi DeepSeek",
+  "exploreDeepSeekDescription": "Berinteraksi dengan DeepSeek AI untuk perspektif alternatif.",
+  "launchDeepSeek": "Luncurkan DeepSeek",
+  "tools": {
+    "aiChatbot": "AI Chatbot",
+    "aiPeerReview": "AI Peer-Review",
+    "drugReference": "Referensi Obat",
+    "interactionChecker": "Pemeriksa Interaksi",
+    "diseaseLibrary": "Pustaka Penyakit",
+    "clinicalGuidelines": "Panduan Klinis",
+    "clinicalScoringHub": "Pusat Skor Klinis",
+    "learningResources": "Sumber Belajar",
+    "medicalCalculator": "Kalkulator Medis",
+    "nutritionDatabase": "Database Nutrisi",
+    "aiMindMapGenerator": "AI Pembuat Mind Map",
+    "exploreGemini": "Jelajahi Gemini",
+    "exploreDeepSeek": "Jelajahi DeepSeek",
+    "nucleusArchive": "Arsip Nucleus",
+    "author": "Penulis"
+  },
+  "toolDescriptions": {
+    "nutritionDatabase": "Jelajahi informasi nutrisi terperinci.",
+    "aiMindMapGenerator": "Visualisasikan konsep dengan peta pikiran bertenaga AI.",
+    "diseaseLibrary": "Akses informasi penyakit yang komprehensif.",
+    "drugReference": "Cari detail dan interaksi obat.",
+    "clinicalScoringHub": "Hitung berbagai skor klinis.",
+    "interactionChecker": "Periksa interaksi obat.",
+    "learningResources": "Akses materi pembelajaran medis yang dikurasi.",
+    "aiPeerReview": "Dapatkan umpan balik AI tentang teks medis."
+  },
+  "sidebar": {
+    "tools": "Alat",
+    "adminDashboard": "Dasbor Admin",
+    "upgradePlan": "Tingkatkan Paket",
+    "signOut": "Keluar",
+    "signIn": "Masuk",
+    "signUp": "Daftar",
+    "expandSidebar": "Perluas Sidebar",
+    "collapseSidebar": "Ciutkan Sidebar",
+    "home": "Beranda"
+  },
+  "language": "Bahasa",
+  "indonesian": "Indonesia",
+  "english": "Inggris",
+  "switchToEnglish": "Ganti ke Bahasa Inggris",
+  "switchToIndonesian": "Ganti ke Bahasa Indonesia",
+  "home": {
+    "hero": {
+      "headline": "Kesehatan Digital di Ujung Jari Anda",
+      "subheadline": "Platform komprehensif untuk informasi kesehatan, alat klinis, dan sumber belajar.",
+      "cta": "Jelajahi Alat Kami"
+    },
+    "features": {
+      "sectionTitle": "Fitur Utama DigiSehat",
+      "trustedInfo": {
+        "title": "Informasi Kesehatan Terpercaya",
+        "description": "Akses data medis dan referensi obat yang akurat dan terkini."
+      },
+      "smartTools": {
+        "title": "Alat Bantu Klinis Cerdas",
+        "description": "Gunakan kalkulator medis, pemeriksa interaksi, dan chatbot AI kami."
+      },
+      "interactiveLearning": {
+        "title": "Sumber Belajar Interaktif",
+        "description": "Perluas pengetahuan Anda dengan peta pikiran dan materi pembelajaran pilihan."
+      },
+      "includes": "Termasuk"
+    },
+    "footer": {
+      "allRightsReserved": "Hak cipta dilindungi."
+    }
+  },
+  "toolsPage": {
+    "header": {
+      "title": "Alat Medis",
+      "subtitle": "Akses alat khusus untuk membantu studi dan praktik medis Anda"
+    },
+    "medicalCalculator": {
+      "title": "Kalkulator Medis",
+      "description": "Hitung BMI, BSA, GFR, dan nilai klinis penting lainnya."
+    },
+    "drugReference": {
+      "title": "Referensi Obat",
+      "description": "Akses database informasi obat yang komprehensif."
+    },
+    "nutritionDatabase": {
+      "title": "Database Nutrisi",
+      "description": "Jelajahi informasi nutrisi untuk berbagai item makanan."
+    },
+    "diseaseLibrary": {
+      "title": "Pustaka Penyakit",
+      "description": "Informasi komprehensif tentang berbagai kondisi."
+    },
+    "clinicalGuidelines": {
+      "title": "Panduan Klinis",
+      "description": "Akses panduan praktik medis terbaru."
+    },
+    "aiChatbot": {
+      "title": "AI Chatbot",
+      "description": "Berinteraksi dengan asisten AI untuk informasi dan pertanyaan medis."
+    },
+    "aiPeerReview": {
+      "title": "AI Peer-Review",
+      "description": "Dapatkan umpan balik bertenaga AI tentang catatan klinis atau studi kasus Anda."
+    },
+    "exploreGemini": {
+      "title": "Jelajahi GEMINI",
+      "description": "Manfaatkan AI canggih Google untuk eksplorasi penelitian medis."
+    },
+    "exploreDeepSeek": {
+      "title": "Jelajahi DeepSeek",
+      "description": "Manfaatkan DeepSeek AI untuk wawasan medis tingkat lanjut."
+    },
+    "interactionChecker": {
+      "title": "Pemeriksa Interaksi Obat",
+      "description": "Periksa potensi interaksi antara beberapa obat."
+    },
+    "aiMindMapGenerator": {
+      "title": "AI Pembuat Mind Map",
+      "description": "Hasilkan peta pikiran visual dari topik apa pun menggunakan AI."
+    },
+    "clinicalScoringHub": {
+      "title": "Pusat Skor Klinis",
+      "description": "Akses berbagai kalkulator skor klinis yang divalidasi."
+    },
+    "learningResources": {
+      "title": "Sumber Belajar",
+      "description": "Akses materi dan sumber belajar yang dikurasi."
+    },
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "description": "Akses ke fitur \"{{toolName}}\" saat ini dinonaktifkan untuk pemeliharaan. Silakan periksa kembali nanti."
+    }
+  },
+  "drugRef": {
+    "pageSubtitle": "Cari informasi label obat FDA AS melalui OpenFDA.",
+    "importantDisclaimerTitle": "Sanggahan Penting",
+    "importantDisclaimerText": "Alat ini menyediakan informasi yang terutama bersumber dari OpenFDA (FDA AS). Jika data resmi tidak tersedia untuk bidang tertentu, **Kecerdasan Buatan (AI) dapat digunakan untuk melengkapi informasi tersebut.**\n\nSemua informasi, baik dari sumber resmi maupun AI, adalah untuk **tujuan informasi dan pendidikan SAJA.** Informasi tersebut mungkin tidak lengkap, sepenuhnya terkini, atau berlaku di luar AS. **Konten yang dihasilkan AI memerlukan pengawasan dan verifikasi ekstra.**\n\nAlat ini **TIDAK menggantikan nasihat, diagnosis, atau perawatan medis profesional.** Selalu konsultasikan dengan dokter atau apoteker Anda mengenai obat-obatan dan masalah kesehatan. Jangan pernah mengabaikan nasihat medis profesional atau menunda mencarinya karena sesuatu yang telah Anda baca di sini.",
+    "searchCardTitle": "Pencarian Informasi Obat",
+    "searchCardDescription": "Masukkan nama obat (generik atau merek)",
+    "searchInputPlaceholder": "cth., Lisinopril, Advil",
+    "searchButton": "Cari",
+    "resultsCardTitle": "Hasil",
+    "loadingText": "Memuat...",
+    "noResultsFound": "Tidak ada hasil yang ditemukan untuk istilah pencarian.",
+    "promptSearch": "Masukkan nama obat di atas dan klik Cari.",
+    "backToToolsButton": "Kembali ke Alat",
+    "accessDeniedLevel": "Akses ditolak untuk tingkat langganan Anda saat ini.",
+    "failedToCheckAccess": "Gagal memeriksa akses fitur. Silakan coba lagi.",
+    "toastErrorTitle": "Kesalahan",
+    "toastAccessCheckError": "Tidak dapat memverifikasi akses fitur saat ini.",
+    "toastAccessDeniedTitle": "Akses Ditolak",
+    "toastCannotSearch": "Anda tidak dapat melakukan pencarian saat ini. Harap tingkatkan paket Anda atau periksa kuota Anda.",
+    "errorEnterDrugName": "Harap masukkan nama obat.",
+    "errorNotFound": "Tidak ada hasil yang ditemukan untuk \"{{searchTerm}}\". Harap periksa ejaan atau coba nama lain.",
+    "errorRequestFailed": "Permintaan gagal dengan status: {{status}}",
+    "errorFetchingData": "Terjadi kesalahan saat mengambil data. Harap periksa koneksi jaringan Anda dan coba lagi nanti.",
+    "aiDisclaimer": "(Dihasilkan AI, verifikasi dengan profesional)",
+    "boxedWarningTitle": "Peringatan Kotak Hitam",
+    "infoNotAvailable": "Informasi Tidak Tersedia",
+    "manufacturerLabel": "Produsen:",
+    "indicationsLabel": "Indikasi dan Penggunaan",
+    "mechanismLabel": "Mekanisme Aksi",
+    "contraindicationsLabel": "Kontraindikasi",
+    "dosageFormsLabel": "Bentuk Sediaan & Kekuatan",
+    "adverseReactionsLabel": "Reaksi Merugikan",
+    "accessDeniedDefault": "Anda tidak memiliki izin untuk mengakses fitur ini."
+  },
+  "medicalCalculatorPage": {
+    "pageTitle": "Kalkulator Medis",
+    "pageSubtitle": "Hitung nilai klinis umum. Hanya untuk tujuan informasi.",
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "defaultMessage": "Anda tidak memiliki izin untuk mengakses fitur ini."
+    },
+    "disclaimer": {
+      "title": "Sanggahan",
+      "text": "Kalkulator ini ditujukan untuk tujuan informasi dan pendidikan saja dan tidak menggantikan diagnosis, saran, atau perawatan medis profesional. Nilai normal dapat bervariasi. Selalu konsultasikan dengan profesional kesehatan yang berkualifikasi untuk interpretasi dan rekomendasi yang akurat."
+    },
+    "error": {
+      "title": "Kesalahan",
+      "bmiInputs": "IMT: Harap masukkan angka positif yang valid untuk berat (kg) dan tinggi (cm).",
+      "bsaInputs": "LPT: Harap masukkan angka positif yang valid untuk berat (kg) dan tinggi (cm).",
+      "egfrInputs": "eLFG: Harap masukkan angka positif yang valid untuk kreatinin serum (mg/dL), usia, dan pilih jenis kelamin.",
+      "ibwInputs": "BBI: Harap masukkan tinggi badan (cm) positif yang valid dan pilih jenis kelamin.",
+      "adjbwActualWeightInput": "BBD: Harap masukkan Berat Badan Aktual (kg) positif yang valid.",
+      "adjbwIbwRequired": "BBD: Harap hitung Berat Badan Ideal (BBI) terlebih dahulu.",
+      "bmrInputs": "AMB: Harap masukkan angka positif yang valid untuk berat (kg), tinggi (cm), usia, dan pilih jenis kelamin.",
+      "correctedCaInputs": "Ca Terkoreksi: Harap masukkan angka positif yang valid untuk Kalsium Total (mg/dL) dan Albumin (g/dL)."
+    },
+    "common": {
+      "resultLabel": "Hasil:",
+      "labelSex": "Jenis Kelamin",
+      "placeholderSelectSex": "Pilih jenis kelamin",
+      "sexMale": "Laki-laki",
+      "sexFemale": "Perempuan",
+      "backToToolsButton": "Kembali ke Alat"
+    },
+    "bmi": {
+      "cardTitle": "Kalkulator IMT",
+      "cardDescription": "Indeks Massa Tubuh",
+      "labelWeight": "Berat (kg)",
+      "placeholderWeight": "cth., 70",
+      "labelHeight": "Tinggi (cm)",
+      "placeholderHeight": "cth., 175",
+      "buttonCalculate": "Hitung IMT",
+      "unit": "kg/m²",
+      "interpretation": {
+        "underweight": "Berat badan kurang",
+        "normal": "Rentang normal",
+        "overweight": "Berat badan berlebih",
+        "obese": "Obesitas"
+      }
+    },
+    "bsa": {
+      "cardTitle": "Kalkulator LPT",
+      "cardDescription": "Luas Permukaan Tubuh (Mosteller)",
+      "labelWeight": "Berat (kg)",
+      "placeholderWeight": "cth., 70",
+      "labelHeight": "Tinggi (cm)",
+      "placeholderHeight": "cth., 175",
+      "buttonCalculate": "Hitung LPT",
+      "unit": "m²",
+      "interpretation": {
+        "typical": "LPT sering digunakan oleh klinisi untuk dosis obat atau penilaian fisiologis. Nilai dewasa tipikal berkisar antara 1,5 hingga 2,2 m²."
+      }
+    },
+    "egfr": {
+      "cardTitle": "Kalkulator eLFG",
+      "cardDescription": "CKD-EPI 2021 (Tanpa Ras)",
+      "labelCreatinine": "Kreatinin Serum (mg/dL)",
+      "placeholderCreatinine": "cth., 1.1",
+      "labelAge": "Usia (tahun)",
+      "placeholderAge": "cth., 50",
+      "buttonCalculate": "Hitung eLFG",
+      "unit": "mL/menit/1,73 m²",
+      "interpretation": {
+        "stage1": "Stadium 1",
+        "stage1_desc": "Fungsi ginjal normal atau tinggi (periksa kerusakan ginjal jika ada tanda-tanda lain).",
+        "stage2": "Stadium 2",
+        "stage2_desc": "Fungsi ginjal menurun ringan.",
+        "stage3a": "Stadium 3a",
+        "stage3a_desc": "Fungsi ginjal menurun ringan hingga sedang.",
+        "stage3b": "Stadium 3b",
+        "stage3b_desc": "Fungsi ginjal menurun sedang hingga berat.",
+        "stage4": "Stadium 4",
+        "stage4_desc": "Fungsi ginjal menurun berat.",
+        "stage5": "Stadium 5",
+        "stage5_desc": "Gagal ginjal."
+      }
+    },
+    "ibw": {
+      "cardTitle": "Kalkulator BBI",
+      "cardDescription": "Berat Badan Ideal (Devine)",
+      "labelHeight": "Tinggi (cm)",
+      "placeholderHeight": "cth., 175",
+      "buttonCalculate": "Hitung BBI",
+      "unit": "kg",
+      "interpretation": {
+        "devine": "Ini adalah perkiraan menggunakan rumus Devine. BBI sering digunakan untuk pengaturan ventilator atau dosis obat tertentu."
+      }
+    },
+    "adjbw": {
+      "cardTitle": "Kalkulator BBD",
+      "cardDescription": "Berat Badan Disesuaikan",
+      "labelActualWeight": "Berat Badan Aktual (kg)",
+      "placeholderActualWeight": "cth., 90",
+      "labelIdealWeight": "Berat Badan Ideal (kg)",
+      "placeholderIdealWeight": "Hitung BBI dahulu",
+      "buttonCalculate": "Hitung BBD",
+      "unit": "kg",
+      "interpretation": {
+        "notTypicallyCalculated": "Berat Badan Disesuaikan biasanya dihitung ketika Berat Badan Aktual secara signifikan melebihi Berat Badan Ideal (misalnya, >120%).",
+        "purpose": "BBD memperkirakan massa tubuh yang relevan untuk dosis obat tertentu pada pasien obesitas. Ini digunakan ketika Berat Aktual secara signifikan melebihi Berat Ideal."
+      }
+    },
+    "bmr": {
+      "cardTitle": "Kalkulator AMB",
+      "cardDescription": "Angka Metabolisme Basal (Mifflin-St Jeor)",
+      "labelWeight": "Berat (kg)",
+      "placeholderWeight": "cth., 70",
+      "labelHeight": "Tinggi (cm)",
+      "placeholderHeight": "cth., 175",
+      "labelAge": "Usia (tahun)",
+      "placeholderAge": "cth., 30",
+      "buttonCalculate": "Hitung AMB",
+      "unit": "kkal/hari",
+      "interpretation": {
+        "definition": "Ini adalah perkiraan kalori minimum yang dibutuhkan tubuh Anda saat istirahat. Kebutuhan energi harian total tergantung pada tingkat aktivitas."
+      }
+    },
+    "correctedCalcium": {
+      "cardTitle": "Kalsium Terkoreksi",
+      "cardDescription": "Menyesuaikan dengan Kadar Albumin",
+      "labelTotalCalcium": "Kalsium Total (mg/dL)",
+      "placeholderTotalCalcium": "cth., 9.5",
+      "labelAlbumin": "Albumin Serum (g/dL)",
+      "placeholderAlbumin": "cth., 3.5",
+      "buttonCalculate": "Hitung Ca Terkoreksi",
+      "unit": "mg/dL",
+      "interpretation": {
+        "prefix": "Dikoreksi untuk Albumin ({{albumin}} g/dL). Ini memperkirakan kalsium jika albumin normal (4,0 g/dL).",
+        "belowRange": "Hasil di bawah rentang normal tipikal (sekitar 8,5-10,5 mg/dL).",
+        "aboveRange": "Hasil di atas rentang normal tipikal (sekitar 8,5-10,5 mg/dL).",
+        "withinRange": "Hasil dalam rentang normal tipikal (sekitar 8,5-10,5 mg/dL)."
+      }
+    }
+  }
+}

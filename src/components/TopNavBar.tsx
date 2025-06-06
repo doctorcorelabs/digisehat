@@ -24,7 +24,7 @@ const TopNavBar = ({ onToggleMobileMenu }: TopNavBarProps) => {
       {/* Mobile: Logo/Brand */}
       <Link to="/tools" className="flex items-center space-x-2 md:hidden">
         <BrainCircuit className="h-6 w-6 text-blue-600" />
-        <span className="font-bold text-lg text-gray-800">NUCLEAI</span>
+        <span className="font-bold text-lg text-gray-800">DigiSehat</span>
       </Link>
 
       {/* Placeholder for potential right-side elements on mobile */}

@@ -2,6 +2,7 @@
 import { ReactNode, useState } from 'react';
 import Sidebar from './Sidebar';
 import TopNavBar from './TopNavBar'; // Import TopNavBar
+import LanguageToggleButton from './LanguageToggleButton'; // Import LanguageToggleButton
 import { useAuth } from '@/contexts/AuthContext';
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import UpgradePlanDialogContent from '@/components/UpgradePlanDialog';
@@ -30,6 +31,7 @@ const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
+      <LanguageToggleButton /> {/* Add the language toggle button here */}
       {/* Sidebar for Desktop (md and up) - ADDED fixed positioning classes */}
       <div className="hidden md:flex md:flex-shrink-0 md:fixed md:inset-y-0 md:left-0 md:z-30">
         <Sidebar isCollapsed={isSidebarCollapsed} onToggle={toggleDesktopSidebar} />

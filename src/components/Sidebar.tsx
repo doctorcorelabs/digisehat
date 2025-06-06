@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,6 +16,11 @@ interface SidebarProps {
 const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
   const { user, logout, openUpgradeDialog } = useAuth(); // Get openUpgradeDialog from context
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation(); // Initialize useTranslation
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   const handleSignOut = async () => {
     await logout(); // Changed signOut to logout
@@ -23,21 +29,22 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
 
   // Define tool links - adjust paths and names as needed
   const toolLinks = [
-    { path: "/tools/ai-chatbot", name: "AI Chatbot", icon: Bot },
-    { path: "/tools/ai-peer-review", name: "AI Peer-Review", icon: Users },
-    { path: "/tools/drug-reference", name: "Drug Reference", icon: FlaskConical },
-    { path: "/tools/interaction-checker", name: "Interaction Checker", icon: ShieldCheck },
-    { path: "/tools/disease-library", name: "Disease Library", icon: BookOpen },
-    { path: "/tools/clinical-guidelines", name: "Clinical Guidelines", icon: FileText },
-    { path: "/tools/clinical-scoring-hub", name: "Clinical Scoring Hub", icon: BarChart },
-    { path: "/tools/learning-resources", name: "Learning Resources", icon: GraduationCap }, // Added Learning Resources
-    { path: "/tools/medical-calculator", name: "Medical Calculator", icon: Stethoscope }, // Changed icon
-    { path: "/tools/nutrition-database", name: "Nutrition Database", icon: Database },
-    { path: "/tools/ai-mindmap-generator", name: "AI Mind Map Generator", icon: Map },
-    { path: "/tools/explore-gemini", name: "Explore Gemini", icon: Gem },
-    { path: "/tools/explore-deepseek", name: "Explore DeepSeek", icon: Brain },
-    { path: "/nucleus", name: "Nucleus Archive", icon: Microscope }, // Added Nucleus
-    { path: "/author", name: "Author", icon: User }, // Added Author link
+    { path: "http://localhost:8888/", name: t('sidebar.home'), icon: Home, isExternal: true },
+    { path: "/tools/ai-chatbot", name: t('tools.aiChatbot'), icon: Bot },
+    { path: "/tools/ai-peer-review", name: t('tools.aiPeerReview'), icon: Users },
+    { path: "/tools/drug-reference", name: t('tools.drugReference'), icon: FlaskConical },
+    { path: "/tools/interaction-checker", name: t('tools.interactionChecker'), icon: ShieldCheck },
+    { path: "/tools/disease-library", name: t('tools.diseaseLibrary'), icon: BookOpen },
+    { path: "/tools/clinical-guidelines", name: t('tools.clinicalGuidelines'), icon: FileText },
+    { path: "/tools/clinical-scoring-hub", name: t('tools.clinicalScoringHub'), icon: BarChart },
+    { path: "/tools/learning-resources", name: t('tools.learningResources'), icon: GraduationCap }, // Added Learning Resources
+    { path: "/tools/medical-calculator", name: t('tools.medicalCalculator'), icon: Stethoscope }, // Changed icon
+    { path: "/tools/nutrition-database", name: t('tools.nutritionDatabase'), icon: Database },
+    { path: "/tools/ai-mindmap-generator", name: t('tools.aiMindMapGenerator'), icon: Map },
+    { path: "/tools/explore-gemini", name: t('tools.exploreGemini'), icon: Gem },
+    { path: "/tools/explore-deepseek", name: t('tools.exploreDeepSeek'), icon: Brain },
+    { path: "/nucleus", name: t('tools.nucleusArchive'), icon: Microscope }, // Added Nucleus
+    { path: "/author", name: t('tools.author'), icon: User }, // Added Author link
   ];
 
   return (
@@ -47,7 +54,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         <div className={`flex items-center border-b border-gray-200 ${isCollapsed ? 'h-16 justify-center' : 'h-16 p-4 justify-between'}`}>
           <Link to="/tools" className={`flex items-center space-x-2 ${isCollapsed ? 'hidden' : 'flex'}`}>
             <BrainCircuit className="h-6 w-6 text-blue-600 flex-shrink-0" />
-            <span className="font-bold text-lg text-gray-800">NUCLEAI</span>
+            <span className="font-bold text-lg text-gray-800">{t('brandName')}</span>
           </Link>
           {/* Show only icon when collapsed */}
           <Link to="/tools" className={`flex items-center justify-center ${isCollapsed ? 'flex' : 'hidden'}`}>
@@ -55,7 +62,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                <TooltipTrigger asChild>
                  <BrainCircuit className="h-6 w-6 text-blue-600" />
                </TooltipTrigger>
-               <TooltipContent side="right">NUCLEAI</TooltipContent>
+               <TooltipContent side="right">{t('brandName')}</TooltipContent>
              </Tooltip>
           </Link>
           {/* Toggle Button - Placed in header for consistency */}
@@ -71,21 +78,34 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
         <ScrollArea className={`flex-1 ${isCollapsed ? 'p-2' : 'p-4'}`}>
           <nav className="space-y-1">
             {!isCollapsed && (
-              <h3 className="px-2 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tools</h3>
+              <h3 className="px-2 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">{t('sidebar.tools')}</h3>
             )}
             {toolLinks.map((link) => (
               <Tooltip key={link.path}>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className={`w-full text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`}
-                    asChild
-                  >
-                    <Link to={link.path}>
-                      <link.icon className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
-                      <span className={isCollapsed ? 'sr-only' : ''}>{link.name}</span>
-                    </Link>
-                  </Button>
+                  {link.isExternal ? (
+                    <Button
+                      variant="ghost"
+                      className={`w-full text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`}
+                      asChild
+                    >
+                      <a href={link.path}>
+                        <link.icon className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
+                        <span className={isCollapsed ? 'sr-only' : ''}>{link.name}</span>
+                      </a>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      className={`w-full text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`}
+                      asChild
+                    >
+                      <Link to={link.path}>
+                        <link.icon className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
+                        <span className={isCollapsed ? 'sr-only' : ''}>{link.name}</span>
+                      </Link>
+                    </Button>
+                  )}
                 </TooltipTrigger>
                 {isCollapsed && (
                   <TooltipContent side="right">{link.name}</TooltipContent>
@@ -105,7 +125,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                </Button>
              </TooltipTrigger>
              {isCollapsed && (
-               <TooltipContent side="right">{isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}</TooltipContent>
+               <TooltipContent side="right">{isCollapsed ? t('sidebar.expandSidebar') : t('sidebar.collapseSidebar')}</TooltipContent>
              )}
            </Tooltip>
 
@@ -131,12 +151,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                     <Button variant="ghost" className={`w-full text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`} asChild>
                       <Link to="/admin-dashboard">
                         <Settings className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
-                        <span className={isCollapsed ? 'sr-only' : ''}>Admin Dashboard</span>
+                        <span className={isCollapsed ? 'sr-only' : ''}>{t('sidebar.adminDashboard')}</span>
                       </Link>
                     </Button>
                   </TooltipTrigger>
                   {isCollapsed && (
-                    <TooltipContent side="right">Admin Dashboard</TooltipContent>
+                    <TooltipContent side="right">{t('sidebar.adminDashboard')}</TooltipContent>
                   )}
                 </Tooltip>
               )}
@@ -147,11 +167,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                   <TooltipTrigger asChild>
                     <Button variant="ghost" onClick={openUpgradeDialog} className={`w-full text-blue-600 hover:bg-blue-50 hover:text-blue-700 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`}>
                       <ArrowUpCircle className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
-                      <span className={isCollapsed ? 'sr-only' : ''}>Upgrade Plan</span>
+                      <span className={isCollapsed ? 'sr-only' : ''}>{t('sidebar.upgradePlan')}</span>
                     </Button>
                   </TooltipTrigger>
                   {isCollapsed && (
-                    <TooltipContent side="right">Upgrade Plan</TooltipContent>
+                    <TooltipContent side="right">{t('sidebar.upgradePlan')}</TooltipContent>
                   )}
                 </Tooltip>
               )}
@@ -161,11 +181,11 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                 <TooltipTrigger asChild>
                   <Button variant="ghost" onClick={handleSignOut} className={`w-full text-red-600 hover:bg-red-50 hover:text-red-700 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`}>
                     <LogOut className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
-                    <span className={isCollapsed ? 'sr-only' : ''}>Sign Out</span>
+                    <span className={isCollapsed ? 'sr-only' : ''}>{t('sidebar.signOut')}</span>
                   </Button>
                 </TooltipTrigger>
                 {isCollapsed && (
-                  <TooltipContent side="right">Sign Out</TooltipContent>
+                  <TooltipContent side="right">{t('sidebar.signOut')}</TooltipContent>
                 )}
               </Tooltip>
             </>
@@ -177,12 +197,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                    <Button variant="default" className={`w-full ${isCollapsed ? 'h-10 w-10 p-0' : ''}`} asChild>
                      <Link to="/signin">
                        <User className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
-                       <span className={isCollapsed ? 'sr-only' : ''}>Sign In</span>
+                       <span className={isCollapsed ? 'sr-only' : ''}>{t('sidebar.signIn')}</span>
                      </Link>
                    </Button>
                  </TooltipTrigger>
                  {isCollapsed && (
-                   <TooltipContent side="right">Sign In</TooltipContent>
+                   <TooltipContent side="right">{t('sidebar.signIn')}</TooltipContent>
                  )}
                </Tooltip>
                {/* Sign Up Button */}
@@ -191,12 +211,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
                    <Button variant="outline" className={`w-full ${isCollapsed ? 'h-10 w-10 p-0' : ''}`} asChild>
                      <Link to="/signup">
                        <Settings className={`flex-shrink-0 h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} /> {/* Using Settings icon as placeholder */}
-                       <span className={isCollapsed ? 'sr-only' : ''}>Sign Up</span>
+                       <span className={isCollapsed ? 'sr-only' : ''}>{t('sidebar.signUp')}</span>
                      </Link>
                    </Button>
                  </TooltipTrigger>
                  {isCollapsed && (
-                   <TooltipContent side="right">Sign Up</TooltipContent>
+                   <TooltipContent side="right">{t('sidebar.signUp')}</TooltipContent>
                  )}
                </Tooltip>
              </>
