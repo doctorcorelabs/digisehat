@@ -15,8 +15,10 @@ import { FeatureName } from '@/lib/quotas'; // Import FeatureName from quotas.ts
 import { useToast } from '@/components/ui/use-toast'; // Added toast
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'; // Added Alert
 import { Skeleton } from '@/components/ui/skeleton'; // Added Skeleton
+import { useTranslation } from 'react-i18next'; // Added for i18n
 
 const ClinicalScoringHub: React.FC = () => {
+  const { t } = useTranslation(); // Added for i18n
   const featureName: FeatureName = 'clinical_scoring';
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
   const { toast } = useToast();
@@ -63,8 +65,8 @@ const ClinicalScoringHub: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <PageHeader
-        title="Clinical Scoring Hub"
-        subtitle="A collection of validated clinical scoring calculators for risk stratification, diagnosis, severity assessment, and prognosis."
+        title={t('clinicalScoringHubPage.header.title')}
+        subtitle={t('clinicalScoringHubPage.header.subtitle')}
       />
 
       {/* Show Skeleton only based on the hook's loading state */}
@@ -80,9 +82,9 @@ const ClinicalScoringHub: React.FC = () => {
        {!isLoadingToggles && !initialAccessAllowed && (
           <Alert variant="destructive" className="mt-6">
             <Terminal className="h-4 w-4" />
-            <AlertTitle>Access Denied</AlertTitle>
+            <AlertTitle>{t('clinicalScoringHubPage.accessDenied.title')}</AlertTitle>
             <AlertDescription>
-              {initialAccessMessage || 'You do not have permission to access this feature.'}
+              {initialAccessMessage || t('clinicalScoringHubPage.accessDenied.defaultMessage')}
             </AlertDescription>
           </Alert>
         )}
@@ -94,45 +96,45 @@ const ClinicalScoringHub: React.FC = () => {
             {/* Placeholder for Score Categories/Calculators */}
             <Card>
           <CardHeader>
-            <CardTitle>Cardiology Scores</CardTitle>
+            <CardTitle>{t('clinicalScoringHubPage.cardiologyScores.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-justify">Calculators related to cardiovascular risk and conditions.</p>
+            <p className="text-justify">{t('clinicalScoringHubPage.cardiologyScores.description')}</p>
             {/* Links or embedded calculators will go here */}
-            <p className="mt-4 text-sm text-muted-foreground text-justify">(CHADS2-VASc, HEART Score, etc.)</p>
+            <p className="mt-4 text-sm text-muted-foreground text-justify">{t('clinicalScoringHubPage.cardiologyScores.examples')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Pulmonology/Critical Care Scores</CardTitle>
+            <CardTitle>{t('clinicalScoringHubPage.pulmonologyScores.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-justify">Calculators for respiratory conditions and critical illness.</p>
+            <p className="text-justify">{t('clinicalScoringHubPage.pulmonologyScores.description')}</p>
             {/* Links or embedded calculators will go here */}
-             <p className="mt-4 text-sm text-muted-foreground text-justify">(Wells' PE, CURB-65, GCS, etc.)</p>
+             <p className="mt-4 text-sm text-muted-foreground text-justify">{t('clinicalScoringHubPage.pulmonologyScores.examples')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Gastroenterology Scores</CardTitle>
+            <CardTitle>{t('clinicalScoringHubPage.gastroenterologyScores.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-justify">Calculators relevant to liver and digestive diseases.</p>
+            <p className="text-justify">{t('clinicalScoringHubPage.gastroenterologyScores.description')}</p>
             {/* Links or embedded calculators will go here */}
-             <p className="mt-4 text-sm text-muted-foreground text-justify">(MELD Score, etc.)</p>
+             <p className="mt-4 text-sm text-muted-foreground text-justify">{t('clinicalScoringHubPage.gastroenterologyScores.examples')}</p>
           </CardContent>
         </Card>
 
          <Card>
           <CardHeader>
-            <CardTitle>Other Scores</CardTitle>
+            <CardTitle>{t('clinicalScoringHubPage.otherScores.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-justify">Various other useful clinical scores.</p>
+            <p className="text-justify">{t('clinicalScoringHubPage.otherScores.description')}</p>
             {/* Links or embedded calculators will go here */}
-             <p className="mt-4 text-sm text-muted-foreground text-justify">(Wells' DVT, etc.)</p>
+             <p className="mt-4 text-sm text-muted-foreground text-justify">{t('clinicalScoringHubPage.otherScores.examples')}</p>
           </CardContent>
         </Card>
         {/* Add more category cards as needed */}
@@ -140,7 +142,7 @@ const ClinicalScoringHub: React.FC = () => {
 
       {/* Display Calculators Section */}
       <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-6">Calculators</h2>
+        <h2 className="text-2xl font-semibold mb-6">{t('clinicalScoringHubPage.calculatorsSectionTitle')}</h2>
         {/* We can add logic here later to select which calculator to show */}
         {/* For now, just display the CHADS2-VASc */}
         <ChadsvascScore />
@@ -158,7 +160,7 @@ const ClinicalScoringHub: React.FC = () => {
         <Link to="/tools">
           <Button variant="outline" className="inline-flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
-            Back to Tools
+            {t('clinicalScoringHubPage.buttons.backToTools')}
           </Button>
         </Link>
       </div>

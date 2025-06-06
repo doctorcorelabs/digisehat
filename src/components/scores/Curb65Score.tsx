@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'; // Need Input for age
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Curb65State {
   confusion: boolean;
@@ -16,6 +17,7 @@ interface Curb65State {
 }
 
 const Curb65Score: React.FC = () => {
+  const { t } = useTranslation();
   const [criteria, setCriteria] = useState<Curb65State>({
     confusion: false,
     ureaGreaterThan7: false,
@@ -55,17 +57,17 @@ const Curb65Score: React.FC = () => {
     switch (score) {
       case 0:
       case 1:
-        return `Score ${score}: Low risk (Mortality ~1.5%). Consider outpatient treatment.`;
+        return t('curb65Score.interpretation.low_risk', { score });
       case 2:
-        return `Score ${score}: Moderate risk (Mortality ~9.2%). Consider hospital admission.`;
+        return t('curb65Score.interpretation.moderate_risk', { score });
       case 3:
       case 4:
       case 5:
-        return `Score ${score}: High risk (Mortality ~22%). Urgent hospital admission, consider ICU.`;
+        return t('curb65Score.interpretation.high_risk', { score });
       default:
-        return "Score calculation pending";
+        return t('curb65Score.interpretation.pending');
     }
-  }, [score]);
+  }, [score, t]);
 
   const resetCalculator = () => {
     setCriteria({
@@ -81,8 +83,8 @@ const Curb65Score: React.FC = () => {
   return (
     <Card className="w-full max-w-lg mx-auto mt-6">
       <CardHeader>
-        <CardTitle>CURB-65 Score Calculator</CardTitle>
-        <CardDescription className="text-justify">For Community-Acquired Pneumonia Severity Assessment</CardDescription>
+        <CardTitle>{t('curb65Score.title')}</CardTitle>
+        <CardDescription className="text-justify">{t('curb65Score.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
@@ -93,7 +95,7 @@ const Curb65Score: React.FC = () => {
               checked={criteria.confusion}
               onCheckedChange={() => handleCheckboxChange('confusion')}
             />
-            <Label htmlFor="confusion" className="text-justify">Confusion (new disorientation in person, place, or time) (+1 pt)</Label>
+            <Label htmlFor="confusion" className="text-justify">{t('curb65Score.criteria.confusion')}</Label>
           </div>
           {/* Urea */}
           <div className="flex items-center space-x-2">
@@ -102,7 +104,7 @@ const Curb65Score: React.FC = () => {
               checked={criteria.ureaGreaterThan7}
               onCheckedChange={() => handleCheckboxChange('ureaGreaterThan7')}
             />
-            <Label htmlFor="ureaGreaterThan7" className="text-justify">{'Urea > 7 mmol/L (or BUN > 19 mg/dL) (+1 pt)'}</Label>
+            <Label htmlFor="ureaGreaterThan7" className="text-justify">{t('curb65Score.criteria.ureaGreaterThan7')}</Label>
           </div>
           {/* Respiratory Rate */}
           <div className="flex items-center space-x-2">
@@ -111,7 +113,7 @@ const Curb65Score: React.FC = () => {
               checked={criteria.respiratoryRateGreaterThan30}
               onCheckedChange={() => handleCheckboxChange('respiratoryRateGreaterThan30')}
             />
-            <Label htmlFor="respiratoryRateGreaterThan30" className="text-justify">{'Respiratory Rate ≥ 30 breaths/min (+1 pt)'}</Label>
+            <Label htmlFor="respiratoryRateGreaterThan30" className="text-justify">{t('curb65Score.criteria.respiratoryRateGreaterThan30')}</Label>
           </div>
           {/* Blood Pressure */}
           <div className="flex items-center space-x-2">
@@ -120,40 +122,40 @@ const Curb65Score: React.FC = () => {
               checked={criteria.lowBloodPressure}
               onCheckedChange={() => handleCheckboxChange('lowBloodPressure')}
             />
-            <Label htmlFor="lowBloodPressure" className="text-justify">{'Low Blood Pressure (SBP < 90 mmHg or DBP ≤ 60 mmHg) (+1 pt)'}</Label>
+            <Label htmlFor="lowBloodPressure" className="text-justify">{t('curb65Score.criteria.lowBloodPressure')}</Label>
           </div>
           {/* Age */}
           <div className="flex items-center space-x-2">
-             <Label htmlFor="age" className="w-20">Age:</Label>
+             <Label htmlFor="age" className="w-20">{t('curb65Score.criteria.ageLabel')}</Label>
              <Input
                id="age"
                type="number"
                value={age}
                onChange={handleAgeChange}
-               placeholder="Enter age"
+               placeholder={t('curb65Score.criteria.agePlaceholder')}
                className="flex-1"
              />
-             <Label className="ml-2">{'(≥ 65 years = +1 pt)'}</Label>
+             <Label className="ml-2">{t('curb65Score.criteria.ageCriteria')}</Label>
            </div>
         </div>
         <Alert>
           <Info className="h-4 w-4" />
-          <AlertTitle>Calculated Score: {score}</AlertTitle>
+          <AlertTitle>{t('curb65Score.calculatedScoreTitle', { score })}</AlertTitle>
           <AlertDescription className="text-justify">
             {interpretation}
           </AlertDescription>
         </Alert>
          <Alert variant="destructive">
            <Info className="h-4 w-4" />
-           <AlertTitle>Disclaimer</AlertTitle>
+           <AlertTitle>{t('curb65Score.disclaimerTitle')}</AlertTitle>
            <AlertDescription className="text-justify">
-             This tool aids severity assessment and site-of-care decisions but does not replace clinical judgment. Consider other factors (e.g., comorbidities, oxygen saturation).
+             {t('curb65Score.disclaimerText')}
            </AlertDescription>
          </Alert>
       </CardContent>
       <CardFooter>
         <Button onClick={resetCalculator} variant="outline" className="w-full">
-          Reset
+          {t('curb65Score.resetButton')}
         </Button>
       </CardFooter>
     </Card>

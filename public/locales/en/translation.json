@@ -681,5 +681,218 @@
     "toastUsageRecordedDescription": "Remaining mind map generations for today: {{count}}",
     "promptNewLabel": "Enter label for the new node:",
     "toastAdvancedAccessDenied": "You cannot access the Advanced Mind Map Generator at this time."
+  },
+  "clinicalScoringHubPage": {
+    "header": {
+      "title": "Clinical Scoring Hub",
+      "subtitle": "A collection of validated clinical scoring calculators for risk stratification, diagnosis, severity assessment, and prognosis."
+    },
+    "accessDenied": {
+      "title": "Access Denied",
+      "defaultMessage": "You do not have permission to access this feature.",
+      "failedToVerify": "Failed to check feature access.",
+      "couldNotVerify": "Could not verify feature access at this time."
+    },
+    "cardiologyScores": {
+      "title": "Cardiology Scores",
+      "description": "Calculators related to cardiovascular risk and conditions.",
+      "examples": "(CHADS2-VASc, HEART Score, etc.)"
+    },
+    "pulmonologyScores": {
+      "title": "Pulmonology/Critical Care Scores",
+      "description": "Calculators for respiratory conditions and critical illness.",
+      "examples": "(Wells' PE, CURB-65, GCS, etc.)"
+    },
+    "gastroenterologyScores": {
+      "title": "Gastroenterology Scores",
+      "description": "Calculators relevant to liver and digestive diseases.",
+      "examples": "(MELD Score, etc.)"
+    },
+    "otherScores": {
+      "title": "Other Scores",
+      "description": "Various other useful clinical scores.",
+      "examples": "(Wells' DVT, etc.)"
+    },
+    "calculatorsSectionTitle": "Calculators",
+    "buttons": {
+      "backToTools": "Back to Tools"
+    }
+  },
+  "chadsvascScore": {
+    "title": "CHA₂DS₂-VASc Score Calculator",
+    "description": "For Stroke Risk Stratification in Atrial Fibrillation",
+    "criteria": {
+      "congestiveHeartFailure": "Congestive Heart Failure / LV Dysfunction (1 pt)",
+      "hypertension": "Hypertension (1 pt)",
+      "age75OrOlder": "Age ≥ 75 years (2 pts)",
+      "diabetesMellitus": "Diabetes Mellitus (1 pt)",
+      "strokeTiaThromboembolism": "Stroke / TIA / Thromboembolism History (2 pts)",
+      "vascularDisease": "Vascular Disease (Prior MI, PAD, Aortic Plaque) (1 pt)",
+      "age65To74": "Age 65-74 years (1 pt)",
+      "sexCategoryFemale": "Sex Category Female (1 pt)"
+    },
+    "calculatedScoreTitle": "Calculated Score: {{score}}",
+    "interpretation": {
+      "female_score_1": "Score 1 (Female): Consider anticoagulation (Risk ~1.9%/year)",
+      "female_score_gte_2": "Score {{score}} (Female): Anticoagulation recommended (Risk increases with score)",
+      "female_score_0": "Score 0 (Female): Low risk, anticoagulation generally not recommended (Risk ~1.1%/year)",
+      "male_score_0": "Score 0 (Male): Low risk, anticoagulation generally not recommended (Risk ~0.8%/year)",
+      "male_score_gte_1": "Score {{score}} (Male): Anticoagulation recommended (Risk increases with score)",
+      "male_fallback": "Score 0 (Male): Low risk"
+    },
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool is for educational purposes only and does not replace clinical judgment. Consult current guidelines.",
+    "resetButton": "Reset"
+  },
+  "wellsScoreDvt": {
+    "title": "Wells' Score Calculator for DVT",
+    "description": "For Deep Vein Thrombosis Probability Assessment",
+    "criteria": {
+      "activeCancer": "Active cancer (treatment within 6 months, or palliative) (+1 pt)",
+      "paralysisParesisImmobilization": "Paralysis, paresis, or recent plaster immobilization of lower extremity (+1 pt)",
+      "bedriddenRecently": "Recently bedridden >3 days or major surgery within 12 weeks requiring general/regional anesthesia (+1 pt)",
+      "localizedTenderness": "Localized tenderness along the distribution of the deep venous system (+1 pt)",
+      "entireLegSwollen": "Entire leg swollen (+1 pt)",
+      "calfSwellingDifference": "Calf swelling >3 cm compared to asymptomatic leg (measured 10 cm below tibial tuberosity) (+1 pt)",
+      "pittingEdema": "Pitting edema (confined to symptomatic leg) (+1 pt)",
+      "collateralSuperficialVeins": "Collateral superficial veins (non-varicose) (+1 pt)",
+      "previousDvt": "Previously documented DVT (+1 pt)",
+      "alternativeDiagnosisLikely": "Alternative diagnosis at least as likely as DVT (-2 pts)"
+    },
+    "calculatedScoreTitle": "Calculated Score: {{score}}",
+    "interpretation": {
+      "high_probability": "Score {{score}}: High Probability of DVT (~75%)",
+      "moderate_probability": "Score {{score}}: Moderate Probability of DVT (~17%)",
+      "low_probability": "Score {{score}}: Low Probability of DVT (~3%)",
+      "pending": "Score calculation pending"
+    },
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool is for educational purposes only and does not replace clinical judgment or diagnostic testing (e.g., D-dimer, ultrasound). Consult current guidelines.",
+    "resetButton": "Reset"
+  },
+  "wellsScorePe": {
+    "title": "Wells' Score Calculator for PE",
+    "description": "For Pulmonary Embolism Probability Assessment",
+    "criteria": {
+      "clinicalSignsDvt": "Clinical signs and symptoms of DVT (minimum of leg swelling and pain with palpation of the deep veins) (+3 pts)",
+      "peMostLikelyDiagnosis": "PE is #1 diagnosis OR equally likely (+3 pts)",
+      "heartRateGreaterThan100": "Heart rate > 100 bpm (+1.5 pts)",
+      "immobilizationOrSurgery": "Immobilization at least 3 days OR surgery in the previous 4 weeks (+1.5 pts)",
+      "previousPeOrDvt": "Previous, objectively diagnosed PE or DVT (+1.5 pts)",
+      "hemoptysis": "Hemoptysis (+1 pt)",
+      "malignancy": "Malignancy with treatment within 6 months or palliative (+1 pt)"
+    },
+    "calculatedScoreTitle": "Calculated Score: {{score}}",
+    "interpretation": {
+      "traditional_high_probability": "Score {{score}}: High Probability of PE",
+      "traditional_moderate_probability": "Score {{score}}: Moderate Probability of PE",
+      "traditional_low_probability": "Score {{score}}: Low Probability of PE",
+      "traditional_pending": "Score calculation pending",
+      "simplified_pe_likely": "Score {{score}}: PE Likely",
+      "simplified_pe_unlikely": "Score {{score}}: PE Unlikely",
+      "simplified_pending": "Score calculation pending"
+    },
+    "interpretationLabels": {
+        "traditional": "Traditional",
+        "simplified": "Simplified (2-Level)"
+    },
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool aids in risk stratification but does not replace clinical judgment or diagnostic testing (e.g., D-dimer, CTPA). Consult current guidelines.",
+    "resetButton": "Reset"
+  },
+  "gcsScore": {
+    "title": "Glasgow Coma Scale (GCS) Calculator",
+    "description": "Assesses level of consciousness after head injury.",
+    "eyeOpeningResponseTitle": "Eye Opening Response (E)",
+    "verbalResponseTitle": "Verbal Response (V)",
+    "motorResponseTitle": "Motor Response (M)",
+    "eyeOptions": {
+      "4": "Spontaneous",
+      "3": "To sound",
+      "2": "To pressure",
+      "1": "None"
+    },
+    "verbalOptions": {
+      "5": "Oriented",
+      "4": "Confused",
+      "3": "Words (inappropriate)",
+      "2": "Sounds (incomprehensible)",
+      "1": "None"
+    },
+    "motorOptions": {
+      "6": "Obeys commands",
+      "5": "Localizes pain",
+      "4": "Withdraws to pain (normal flexion)",
+      "3": "Abnormal flexion to pain (decorticate)",
+      "2": "Extension to pain (decerebrate)",
+      "1": "None"
+    },
+    "pointsSuffix": "pts",
+    "calculatedScoreTitle": "Calculated Score: {{score}}",
+    "interpretation": {
+      "selectOptionsPrompt": "Select one option from each category (Eyes, Verbal, Motor) to calculate the score.",
+      "mildBrainInjury": "Mild Brain Injury",
+      "moderateBrainInjury": "Moderate Brain Injury",
+      "severeBrainInjury": "Severe Brain Injury",
+      "resultFormat": "Total Score {{score}}: {{severity}}. (Components: E{{eyeScore}} V{{verbalScore}} M{{motorScore}})"
+    },
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool is for educational purposes. GCS assessment requires clinical training. Consider factors like intubation (V score = VT) or sedation.",
+    "resetButton": "Reset",
+    "notApplicable": "N/A"
+  },
+  "curb65Score": {
+    "title": "CURB-65 Score Calculator",
+    "description": "For Community-Acquired Pneumonia Severity Assessment",
+    "criteria": {
+      "confusion": "Confusion (new disorientation in person, place, or time) (+1 pt)",
+      "ureaGreaterThan7": "Urea > 7 mmol/L (or BUN > 19 mg/dL) (+1 pt)",
+      "respiratoryRateGreaterThan30": "Respiratory Rate ≥ 30 breaths/min (+1 pt)",
+      "lowBloodPressure": "Low Blood Pressure (SBP < 90 mmHg or DBP ≤ 60 mmHg) (+1 pt)",
+      "ageLabel": "Age:",
+      "agePlaceholder": "Enter age",
+      "ageCriteria": "(≥ 65 years = +1 pt)"
+    },
+    "calculatedScoreTitle": "Calculated Score: {{score}}",
+    "interpretation": {
+      "low_risk": "Score {{score}}: Low risk (Mortality ~1.5%). Consider outpatient treatment.",
+      "moderate_risk": "Score {{score}}: Moderate risk (Mortality ~9.2%). Consider hospital admission.",
+      "high_risk": "Score {{score}}: High risk (Mortality ~22%). Urgent hospital admission, consider ICU.",
+      "pending": "Score calculation pending"
+    },
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool aids severity assessment and site-of-care decisions but does not replace clinical judgment. Consider other factors (e.g., comorbidities, oxygen saturation).",
+    "resetButton": "Reset"
+  },
+  "meldScore": {
+    "title": "MELD / MELD-Na Score Calculator",
+    "description": "Model for End-Stage Liver Disease Prognosis",
+    "labels": {
+      "bilirubin": "Bilirubin (mg/dL)",
+      "creatinine": "Creatinine (mg/dL)",
+      "inr": "INR",
+      "sodium": "Sodium (mEq/L)",
+      "dialysis": "Dialysis twice within the past 7 days?"
+    },
+    "placeholders": {
+      "bilirubin": "e.g., 1.2",
+      "creatinine": "e.g., 1.0",
+      "inr": "e.g., 1.1",
+      "sodium": "e.g., 135 (for MELD-Na)"
+    },
+    "calculatedScoreTitle": "Calculated Score",
+    "interpretation": {
+      "prompt": "Enter Bilirubin, Creatinine, and INR values.",
+      "risk_40_plus": "~71.3% mortality",
+      "risk_30_39": "~52.6% mortality",
+      "risk_20_29": "~19.6% mortality",
+      "risk_10_19": "~6.0% mortality",
+      "risk_0_9": "<1.9% mortality",
+      "meld_na_addon": " MELD-Na Score: {{meldNaScore}}.",
+      "result_format": "MELD Score: {{meldScore}} ({{risk}}).{{naInterpretation}} Used for liver transplant allocation and prognostication."
+    },
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "This tool is for educational purposes. MELD score calculation follows specific UNOS/OPTN rules. Consult official guidelines for clinical use, especially regarding transplant allocation.",
+    "resetButton": "Reset"
   }
 }

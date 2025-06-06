@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ChadsvascState {
   congestiveHeartFailure: boolean;
@@ -18,6 +19,7 @@ interface ChadsvascState {
 }
 
 const ChadsvascScore: React.FC = () => {
+  const { t } = useTranslation();
   const [criteria, setCriteria] = useState<ChadsvascState>({
     congestiveHeartFailure: false,
     hypertension: false,
@@ -57,15 +59,15 @@ const ChadsvascScore: React.FC = () => {
     // Simplified interpretation based on common guidelines (e.g., ESC 2020 AF Guidelines)
     // This is illustrative and should be verified against current guidelines.
     if (criteria.sexCategoryFemale) {
-      if (score === 1) return "Score 1 (Female): Consider anticoagulation (Risk ~1.9%/year)";
-      if (score >= 2) return `Score ${score} (Female): Anticoagulation recommended (Risk increases with score)`;
-      return "Score 0 (Female): Low risk, anticoagulation generally not recommended (Risk ~1.1%/year)";
+      if (score === 1) return t('chadsvascScore.interpretation.female_score_1');
+      if (score >= 2) return t('chadsvascScore.interpretation.female_score_gte_2', { score });
+      return t('chadsvascScore.interpretation.female_score_0');
     } else {
-      if (score === 0) return "Score 0 (Male): Low risk, anticoagulation generally not recommended (Risk ~0.8%/year)";
-      if (score >= 1) return `Score ${score} (Male): Anticoagulation recommended (Risk increases with score)`;
-      return "Score 0 (Male): Low risk"; // Fallback
+      if (score === 0) return t('chadsvascScore.interpretation.male_score_0');
+      if (score >= 1) return t('chadsvascScore.interpretation.male_score_gte_1', { score });
+      return t('chadsvascScore.interpretation.male_fallback');
     }
-  }, [score, criteria.sexCategoryFemale]);
+  }, [score, criteria.sexCategoryFemale, t]);
 
   const resetCalculator = () => {
     setCriteria({
@@ -83,8 +85,8 @@ const ChadsvascScore: React.FC = () => {
   return (
     <Card className="w-full max-w-lg mx-auto">
       <CardHeader>
-        <CardTitle>CHA₂DS₂-VASc Score Calculator</CardTitle>
-        <CardDescription className="text-justify">For Stroke Risk Stratification in Atrial Fibrillation</CardDescription>
+        <CardTitle>{t('chadsvascScore.title')}</CardTitle>
+        <CardDescription className="text-justify">{t('chadsvascScore.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
@@ -97,36 +99,29 @@ const ChadsvascScore: React.FC = () => {
                 disabled={key === 'age65To74' && criteria.age75OrOlder} // Disable 65-74 if 75+ is checked
               />
               <Label htmlFor={key} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-justify">
-                {key === 'congestiveHeartFailure' && 'Congestive Heart Failure / LV Dysfunction (1 pt)'}
-                {key === 'hypertension' && 'Hypertension (1 pt)'}
-                {key === 'age75OrOlder' && 'Age ≥ 75 years (2 pts)'}
-                {key === 'diabetesMellitus' && 'Diabetes Mellitus (1 pt)'}
-                {key === 'strokeTiaThromboembolism' && 'Stroke / TIA / Thromboembolism History (2 pts)'}
-                {key === 'vascularDisease' && 'Vascular Disease (Prior MI, PAD, Aortic Plaque) (1 pt)'}
-                {key === 'age65To74' && 'Age 65-74 years (1 pt)'}
-                {key === 'sexCategoryFemale' && 'Sex Category Female (1 pt)'}
+                {t(`chadsvascScore.criteria.${key}`)}
               </Label>
             </div>
           ))}
         </div>
         <Alert>
           <Info className="h-4 w-4" />
-          <AlertTitle>Calculated Score: {score}</AlertTitle>
+          <AlertTitle>{t('chadsvascScore.calculatedScoreTitle', { score })}</AlertTitle>
           <AlertDescription className="text-justify">
             {interpretation}
           </AlertDescription>
         </Alert>
          <Alert variant="destructive">
            <Info className="h-4 w-4" />
-           <AlertTitle>Disclaimer</AlertTitle>
+           <AlertTitle>{t('chadsvascScore.disclaimerTitle')}</AlertTitle>
            <AlertDescription className="text-justify">
-             This tool is for educational purposes only and does not replace clinical judgment. Consult current guidelines.
+             {t('chadsvascScore.disclaimerText')}
            </AlertDescription>
          </Alert>
       </CardContent>
       <CardFooter>
         <Button onClick={resetCalculator} variant="outline" className="w-full">
-          Reset
+          {t('chadsvascScore.resetButton')}
         </Button>
       </CardFooter>
     </Card>

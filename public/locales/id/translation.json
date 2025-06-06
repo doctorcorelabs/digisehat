@@ -680,6 +680,219 @@
     "toastUsageRecordedTitle": "Usage Recorded",
     "toastUsageRecordedDescription": "Remaining mind map generations for today: {{count}}",
     "promptNewLabel": "Enter label for the new node:",
-    "toastAdvancedAccessDenied": "You cannot access the Advanced Mind Map Generator at this time."
+    "toastAdvancedAccessDenied": "Anda tidak dapat mengakses Generator Peta Pikiran Lanjutan saat ini."
+  },
+  "clinicalScoringHubPage": {
+    "header": {
+      "title": "Pusat Skor Klinis",
+      "subtitle": "Kumpulan kalkulator skor klinis tervalidasi untuk stratifikasi risiko, diagnosis, penilaian keparahan, dan prognosis."
+    },
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "defaultMessage": "Anda tidak memiliki izin untuk mengakses fitur ini.",
+      "failedToVerify": "Gagal memeriksa akses fitur.",
+      "couldNotVerify": "Tidak dapat memverifikasi akses fitur saat ini."
+    },
+    "cardiologyScores": {
+      "title": "Skor Kardiologi",
+      "description": "Kalkulator terkait risiko dan kondisi kardiovaskular.",
+      "examples": "(CHADS2-VASc, Skor HEART, dll.)"
+    },
+    "pulmonologyScores": {
+      "title": "Skor Pulmonologi/Perawatan Kritis",
+      "description": "Kalkulator untuk kondisi pernapasan dan penyakit kritis.",
+      "examples": "(Wells PE, CURB-65, GCS, dll.)"
+    },
+    "gastroenterologyScores": {
+      "title": "Skor Gastroenterologi",
+      "description": "Kalkulator yang relevan dengan penyakit hati dan pencernaan.",
+      "examples": "(Skor MELD, dll.)"
+    },
+    "otherScores": {
+      "title": "Skor Lainnya",
+      "description": "Berbagai skor klinis berguna lainnya.",
+      "examples": "(Wells DVT, dll.)"
+    },
+    "calculatorsSectionTitle": "Kalkulator",
+    "buttons": {
+      "backToTools": "Kembali ke Alat"
+    }
+  },
+  "chadsvascScore": {
+    "title": "Kalkulator Skor CHA₂DS₂-VASc",
+    "description": "Untuk Stratifikasi Risiko Stroke pada Fibrilasi Atrium",
+    "criteria": {
+      "congestiveHeartFailure": "Gagal Jantung Kongestif / Disfungsi LV (1 poin)",
+      "hypertension": "Hipertensi (1 poin)",
+      "age75OrOlder": "Usia ≥ 75 tahun (2 poin)",
+      "diabetesMellitus": "Diabetes Melitus (1 poin)",
+      "strokeTiaThromboembolism": "Riwayat Stroke / TIA / Tromboemboli (2 poin)",
+      "vascularDisease": "Penyakit Vaskular (Riwayat MI, PAD, Plak Aorta) (1 poin)",
+      "age65To74": "Usia 65-74 tahun (1 poin)",
+      "sexCategoryFemale": "Jenis Kelamin Perempuan (1 poin)"
+    },
+    "calculatedScoreTitle": "Skor Terhitung: {{score}}",
+    "interpretation": {
+      "female_score_1": "Skor 1 (Perempuan): Pertimbangkan antikoagulasi (Risiko ~1.9%/tahun)",
+      "female_score_gte_2": "Skor {{score}} (Perempuan): Antikoagulasi direkomendasikan (Risiko meningkat seiring skor)",
+      "female_score_0": "Skor 0 (Perempuan): Risiko rendah, antikoagulasi umumnya tidak direkomendasikan (Risiko ~1.1%/tahun)",
+      "male_score_0": "Skor 0 (Laki-laki): Risiko rendah, antikoagulasi umumnya tidak direkomendasikan (Risiko ~0.8%/tahun)",
+      "male_score_gte_1": "Skor {{score}} (Laki-laki): Antikoagulasi direkomendasikan (Risiko meningkat seiring skor)",
+      "male_fallback": "Skor 0 (Laki-laki): Risiko rendah"
+    },
+    "disclaimerTitle": "Sanggahan",
+    "disclaimerText": "Alat ini hanya untuk tujuan pendidikan dan tidak menggantikan penilaian klinis. Konsultasikan panduan terkini.",
+    "resetButton": "Atur Ulang"
+  },
+  "wellsScoreDvt": {
+    "title": "Kalkulator Skor Wells untuk DVT",
+    "description": "Untuk Penilaian Probabilitas Trombosis Vena Dalam",
+    "criteria": {
+      "activeCancer": "Kanker aktif (pengobatan dalam 6 bulan, atau paliatif) (+1 poin)",
+      "paralysisParesisImmobilization": "Paralisis, paresis, atau imobilisasi gips terkini pada ekstremitas bawah (+1 poin)",
+      "bedriddenRecently": "Baru-baru ini tirah baring >3 hari atau operasi besar dalam 12 minggu yang memerlukan anestesi umum/regional (+1 poin)",
+      "localizedTenderness": "Nyeri tekan terlokalisir di sepanjang distribusi sistem vena dalam (+1 poin)",
+      "entireLegSwollen": "Seluruh tungkai bengkak (+1 poin)",
+      "calfSwellingDifference": "Pembengkakan betis >3 cm dibandingkan tungkai asimtomatik (diukur 10 cm di bawah tuberositas tibia) (+1 poin)",
+      "pittingEdema": "Edema pitting (terbatas pada tungkai simtomatik) (+1 poin)",
+      "collateralSuperficialVeins": "Vena superfisial kolateral (non-varikosa) (+1 poin)",
+      "previousDvt": "DVT yang terdokumentasi sebelumnya (+1 poin)",
+      "alternativeDiagnosisLikely": "Diagnosis alternatif setidaknya sama mungkinnya dengan DVT (-2 poin)"
+    },
+    "calculatedScoreTitle": "Skor Terhitung: {{score}}",
+    "interpretation": {
+      "high_probability": "Skor {{score}}: Probabilitas Tinggi DVT (~75%)",
+      "moderate_probability": "Skor {{score}}: Probabilitas Sedang DVT (~17%)",
+      "low_probability": "Skor {{score}}: Probabilitas Rendah DVT (~3%)",
+      "pending": "Perhitungan skor tertunda"
+    },
+    "disclaimerTitle": "Sanggahan",
+    "disclaimerText": "Alat ini hanya untuk tujuan pendidikan dan tidak menggantikan penilaian klinis atau pengujian diagnostik (misalnya, D-dimer, ultrasonografi). Konsultasikan panduan terkini.",
+    "resetButton": "Atur Ulang"
+  },
+  "wellsScorePe": {
+    "title": "Kalkulator Skor Wells untuk PE",
+    "description": "Untuk Penilaian Probabilitas Emboli Paru",
+    "criteria": {
+      "clinicalSignsDvt": "Tanda dan gejala klinis DVT (minimal pembengkakan tungkai dan nyeri saat palpasi vena dalam) (+3 poin)",
+      "peMostLikelyDiagnosis": "PE adalah diagnosis #1 ATAU sama mungkinnya (+3 poin)",
+      "heartRateGreaterThan100": "Denyut jantung > 100x/menit (+1,5 poin)",
+      "immobilizationOrSurgery": "Imobilisasi minimal 3 hari ATAU operasi dalam 4 minggu sebelumnya (+1,5 poin)",
+      "previousPeOrDvt": "Riwayat PE atau DVT yang didiagnosis secara objektif sebelumnya (+1,5 poin)",
+      "hemoptysis": "Hemoptisis (+1 poin)",
+      "malignancy": "Keganasan dengan pengobatan dalam 6 bulan atau paliatif (+1 poin)"
+    },
+    "calculatedScoreTitle": "Skor Terhitung: {{score}}",
+    "interpretation": {
+      "traditional_high_probability": "Skor {{score}}: Probabilitas Tinggi PE",
+      "traditional_moderate_probability": "Skor {{score}}: Probabilitas Sedang PE",
+      "traditional_low_probability": "Skor {{score}}: Probabilitas Rendah PE",
+      "traditional_pending": "Perhitungan skor tertunda",
+      "simplified_pe_likely": "Skor {{score}}: PE Mungkin",
+      "simplified_pe_unlikely": "Skor {{score}}: PE Tidak Mungkin",
+      "simplified_pending": "Perhitungan skor tertunda"
+    },
+    "interpretationLabels": {
+        "traditional": "Tradisional",
+        "simplified": "Disederhanakan (2 Tingkat)"
+    },
+    "disclaimerTitle": "Sanggahan",
+    "disclaimerText": "Alat ini membantu stratifikasi risiko tetapi tidak menggantikan penilaian klinis atau pengujian diagnostik (misalnya, D-dimer, CTPA). Konsultasikan panduan terkini.",
+    "resetButton": "Atur Ulang"
+  },
+  "gcsScore": {
+    "title": "Kalkulator Glasgow Coma Scale (GCS)",
+    "description": "Menilai tingkat kesadaran setelah cedera kepala.",
+    "eyeOpeningResponseTitle": "Respons Membuka Mata (E)",
+    "verbalResponseTitle": "Respons Verbal (V)",
+    "motorResponseTitle": "Respons Motorik (M)",
+    "eyeOptions": {
+      "4": "Spontan",
+      "3": "Terhadap suara",
+      "2": "Terhadap tekanan",
+      "1": "Tidak ada"
+    },
+    "verbalOptions": {
+      "5": "Berorientasi",
+      "4": "Bingung",
+      "3": "Kata-kata (tidak sesuai)",
+      "2": "Suara (tidak dapat dipahami)",
+      "1": "Tidak ada"
+    },
+    "motorOptions": {
+      "6": "Mengikuti perintah",
+      "5": "Melokalisir nyeri",
+      "4": "Menghindar dari nyeri (fleksi normal)",
+      "3": "Fleksi abnormal terhadap nyeri (dekortikasi)",
+      "2": "Ekstensi terhadap nyeri (deserebrasi)",
+      "1": "Tidak ada"
+    },
+    "pointsSuffix": "poin",
+    "calculatedScoreTitle": "Skor Terhitung: {{score}}",
+    "interpretation": {
+      "selectOptionsPrompt": "Pilih satu opsi dari setiap kategori (Mata, Verbal, Motorik) untuk menghitung skor.",
+      "mildBrainInjury": "Cedera Otak Ringan",
+      "moderateBrainInjury": "Cedera Otak Sedang",
+      "severeBrainInjury": "Cedera Otak Berat",
+      "resultFormat": "Total Skor {{score}}: {{severity}}. (Komponen: E{{eyeScore}} V{{verbalScore}} M{{motorScore}})"
+    },
+    "disclaimerTitle": "Sanggahan",
+    "disclaimerText": "Alat ini untuk tujuan pendidikan. Penilaian GCS memerlukan pelatihan klinis. Pertimbangkan faktor-faktor seperti intubasi (skor V = VT) atau sedasi.",
+    "resetButton": "Atur Ulang",
+    "notApplicable": "T/A"
+  },
+  "curb65Score": {
+    "title": "Kalkulator Skor CURB-65",
+    "description": "Untuk Penilaian Keparahan Pneumonia Komunitas",
+    "criteria": {
+      "confusion": "Kebingungan (disorientasi baru pada orang, tempat, atau waktu) (+1 poin)",
+      "ureaGreaterThan7": "Urea > 7 mmol/L (atau BUN > 19 mg/dL) (+1 poin)",
+      "respiratoryRateGreaterThan30": "Frekuensi Napas ≥ 30 kali/menit (+1 poin)",
+      "lowBloodPressure": "Tekanan Darah Rendah (SBP < 90 mmHg atau DBP ≤ 60 mmHg) (+1 poin)",
+      "ageLabel": "Usia:",
+      "agePlaceholder": "Masukkan usia",
+      "ageCriteria": "(≥ 65 tahun = +1 poin)"
+    },
+    "calculatedScoreTitle": "Skor Terhitung: {{score}}",
+    "interpretation": {
+      "low_risk": "Skor {{score}}: Risiko rendah (Mortalitas ~1.5%). Pertimbangkan pengobatan rawat jalan.",
+      "moderate_risk": "Skor {{score}}: Risiko sedang (Mortalitas ~9.2%). Pertimbangkan rawat inap di rumah sakit.",
+      "high_risk": "Skor {{score}}: Risiko tinggi (Mortalitas ~22%). Rawat inap segera di rumah sakit, pertimbangkan ICU.",
+      "pending": "Perhitungan skor tertunda"
+    },
+    "disclaimerTitle": "Sanggahan",
+    "disclaimerText": "Alat ini membantu penilaian keparahan dan keputusan tempat perawatan tetapi tidak menggantikan penilaian klinis. Pertimbangkan faktor lain (misalnya, komorbiditas, saturasi oksigen).",
+    "resetButton": "Atur Ulang"
+  },
+  "meldScore": {
+    "title": "Kalkulator Skor MELD / MELD-Na",
+    "description": "Model untuk Prognosis Penyakit Hati Tahap Akhir",
+    "labels": {
+      "bilirubin": "Bilirubin (mg/dL)",
+      "creatinine": "Kreatinin (mg/dL)",
+      "inr": "INR",
+      "sodium": "Natrium (mEq/L)",
+      "dialysis": "Dialisis dua kali dalam 7 hari terakhir?"
+    },
+    "placeholders": {
+      "bilirubin": "cth., 1.2",
+      "creatinine": "cth., 1.0",
+      "inr": "cth., 1.1",
+      "sodium": "cth., 135 (untuk MELD-Na)"
+    },
+    "calculatedScoreTitle": "Skor Terhitung",
+    "interpretation": {
+      "prompt": "Masukkan nilai Bilirubin, Kreatinin, dan INR.",
+      "risk_40_plus": "~71.3% mortalitas",
+      "risk_30_39": "~52.6% mortalitas",
+      "risk_20_29": "~19.6% mortalitas",
+      "risk_10_19": "~6.0% mortalitas",
+      "risk_0_9": "<1.9% mortalitas",
+      "meld_na_addon": " Skor MELD-Na: {{meldNaScore}}.",
+      "result_format": "Skor MELD: {{meldScore}} ({{risk}}).{{naInterpretation}} Digunakan untuk alokasi transplantasi hati dan prognosis."
+    },
+    "disclaimerTitle": "Sanggahan",
+    "disclaimerText": "Alat ini untuk tujuan pendidikan. Perhitungan skor MELD mengikuti aturan spesifik UNOS/OPTN. Konsultasikan panduan resmi untuk penggunaan klinis, terutama terkait alokasi transplantasi.",
+    "resetButton": "Atur Ulang"
   }
 }

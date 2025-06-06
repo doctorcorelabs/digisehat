@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface WellsDvtState {
   activeCancer: boolean;
@@ -20,6 +21,7 @@ interface WellsDvtState {
 }
 
 const WellsScoreDvt: React.FC = () => {
+  const { t } = useTranslation();
   const [criteria, setCriteria] = useState<WellsDvtState>({
     activeCancer: false,
     paralysisParesisImmobilization: false,
@@ -55,11 +57,11 @@ const WellsScoreDvt: React.FC = () => {
 
   const interpretation = useMemo(() => {
     // Interpretation based on original Wells criteria stratification
-    if (score >= 3) return `Score ${score}: High Probability of DVT (~75%)`;
-    if (score >= 1 && score <= 2) return `Score ${score}: Moderate Probability of DVT (~17%)`;
-    if (score <= 0) return `Score ${score}: Low Probability of DVT (~3%)`;
-    return "Score calculation pending"; // Fallback
-  }, [score]);
+    if (score >= 3) return t('wellsScoreDvt.interpretation.high_probability', { score });
+    if (score >= 1 && score <= 2) return t('wellsScoreDvt.interpretation.moderate_probability', { score });
+    if (score <= 0) return t('wellsScoreDvt.interpretation.low_probability', { score });
+    return t('wellsScoreDvt.interpretation.pending'); // Fallback
+  }, [score, t]);
 
   const resetCalculator = () => {
     setCriteria({
@@ -79,8 +81,8 @@ const WellsScoreDvt: React.FC = () => {
   return (
     <Card className="w-full max-w-lg mx-auto mt-6"> {/* Added margin top */}
       <CardHeader>
-        <CardTitle>Wells' Score Calculator for DVT</CardTitle>
-        <CardDescription className="text-justify">For Deep Vein Thrombosis Probability Assessment</CardDescription>
+        <CardTitle>{t('wellsScoreDvt.title')}</CardTitle>
+        <CardDescription className="text-justify">{t('wellsScoreDvt.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
@@ -92,38 +94,29 @@ const WellsScoreDvt: React.FC = () => {
                 onCheckedChange={() => handleCheckboxChange(key)}
               />
               <Label htmlFor={key} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-justify">
-                {key === 'activeCancer' && 'Active cancer (treatment within 6 months, or palliative) (+1 pt)'}
-                {key === 'paralysisParesisImmobilization' && 'Paralysis, paresis, or recent plaster immobilization of lower extremity (+1 pt)'}
-                {key === 'bedriddenRecently' && 'Recently bedridden >3 days or major surgery within 12 weeks requiring general/regional anesthesia (+1 pt)'}
-                {key === 'localizedTenderness' && 'Localized tenderness along the distribution of the deep venous system (+1 pt)'}
-                {key === 'entireLegSwollen' && 'Entire leg swollen (+1 pt)'}
-                {key === 'calfSwellingDifference' && 'Calf swelling >3 cm compared to asymptomatic leg (measured 10 cm below tibial tuberosity) (+1 pt)'}
-                {key === 'pittingEdema' && 'Pitting edema (confined to symptomatic leg) (+1 pt)'}
-                {key === 'collateralSuperficialVeins' && 'Collateral superficial veins (non-varicose) (+1 pt)'}
-                {key === 'previousDvt' && 'Previously documented DVT (+1 pt)'}
-                {key === 'alternativeDiagnosisLikely' && 'Alternative diagnosis at least as likely as DVT (-2 pts)'}
+                {t(`wellsScoreDvt.criteria.${key}`)}
               </Label>
             </div>
           ))}
         </div>
         <Alert>
           <Info className="h-4 w-4" />
-          <AlertTitle>Calculated Score: {score}</AlertTitle>
+          <AlertTitle>{t('wellsScoreDvt.calculatedScoreTitle', { score })}</AlertTitle>
           <AlertDescription className="text-justify">
             {interpretation}
           </AlertDescription>
         </Alert>
          <Alert variant="destructive">
            <Info className="h-4 w-4" />
-           <AlertTitle>Disclaimer</AlertTitle>
+           <AlertTitle>{t('wellsScoreDvt.disclaimerTitle')}</AlertTitle>
            <AlertDescription className="text-justify">
-             This tool is for educational purposes only and does not replace clinical judgment or diagnostic testing (e.g., D-dimer, ultrasound). Consult current guidelines.
+             {t('wellsScoreDvt.disclaimerText')}
            </AlertDescription>
          </Alert>
       </CardContent>
       <CardFooter>
         <Button onClick={resetCalculator} variant="outline" className="w-full">
-          Reset
+          {t('wellsScoreDvt.resetButton')}
         </Button>
       </CardFooter>
     </Card>

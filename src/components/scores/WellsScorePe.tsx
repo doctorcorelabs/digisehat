@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface WellsPeState {
   clinicalSignsDvt: boolean;
@@ -17,6 +18,7 @@ interface WellsPeState {
 }
 
 const WellsScorePe: React.FC = () => {
+  const { t } = useTranslation();
   const [criteria, setCriteria] = useState<WellsPeState>({
     clinicalSignsDvt: false,
     peMostLikelyDiagnosis: false,
@@ -47,17 +49,17 @@ const WellsScorePe: React.FC = () => {
   const interpretation = useMemo(() => {
     // Interpretation based on original Wells criteria for PE
     // Can also use simplified 2-level stratification (PE Likely > 4, PE Unlikely <= 4)
-    if (score > 6) return `Score ${score}: High Probability of PE`;
-    if (score >= 2 && score <= 6) return `Score ${score}: Moderate Probability of PE`;
-    if (score < 2) return `Score ${score}: Low Probability of PE`;
-    return "Score calculation pending"; // Fallback
-  }, [score]);
+    if (score > 6) return t('wellsScorePe.interpretation.traditional_high_probability', { score });
+    if (score >= 2 && score <= 6) return t('wellsScorePe.interpretation.traditional_moderate_probability', { score });
+    if (score < 2) return t('wellsScorePe.interpretation.traditional_low_probability', { score });
+    return t('wellsScorePe.interpretation.traditional_pending'); // Fallback
+  }, [score, t]);
 
    const simplifiedInterpretation = useMemo(() => {
-    if (score > 4) return `Score ${score}: PE Likely`;
-    if (score <= 4) return `Score ${score}: PE Unlikely`;
-    return "Score calculation pending";
-  }, [score]);
+    if (score > 4) return t('wellsScorePe.interpretation.simplified_pe_likely', { score });
+    if (score <= 4) return t('wellsScorePe.interpretation.simplified_pe_unlikely', { score });
+    return t('wellsScorePe.interpretation.simplified_pending');
+  }, [score, t]);
 
 
   const resetCalculator = () => {
@@ -75,8 +77,8 @@ const WellsScorePe: React.FC = () => {
   return (
     <Card className="w-full max-w-lg mx-auto mt-6"> {/* Added margin top */}
       <CardHeader>
-        <CardTitle>Wells' Score Calculator for PE</CardTitle>
-        <CardDescription className="text-justify">For Pulmonary Embolism Probability Assessment</CardDescription>
+        <CardTitle>{t('wellsScorePe.title')}</CardTitle>
+        <CardDescription className="text-justify">{t('wellsScorePe.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
@@ -88,36 +90,30 @@ const WellsScorePe: React.FC = () => {
                 onCheckedChange={() => handleCheckboxChange(key)}
               />
               <Label htmlFor={key} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-justify">
-                {key === 'clinicalSignsDvt' && 'Clinical signs and symptoms of DVT (minimum of leg swelling and pain with palpation of the deep veins) (+3 pts)'}
-                {key === 'peMostLikelyDiagnosis' && 'PE is #1 diagnosis OR equally likely (+3 pts)'}
-                {key === 'heartRateGreaterThan100' && 'Heart rate > 100 bpm (+1.5 pts)'}
-                {key === 'immobilizationOrSurgery' && 'Immobilization at least 3 days OR surgery in the previous 4 weeks (+1.5 pts)'}
-                {key === 'previousPeOrDvt' && 'Previous, objectively diagnosed PE or DVT (+1.5 pts)'}
-                {key === 'hemoptysis' && 'Hemoptysis (+1 pt)'}
-                {key === 'malignancy' && 'Malignancy with treatment within 6 months or palliative (+1 pt)'}
+                {t(`wellsScorePe.criteria.${key}`)}
               </Label>
             </div>
           ))}
         </div>
         <Alert>
           <Info className="h-4 w-4" />
-          <AlertTitle>Calculated Score: {score}</AlertTitle>
+          <AlertTitle>{t('wellsScorePe.calculatedScoreTitle', { score })}</AlertTitle>
           <AlertDescription className="text-justify">
-            Traditional: {interpretation} <br />
-            Simplified (2-Level): {simplifiedInterpretation}
+            {t('wellsScorePe.interpretationLabels.traditional')}: {interpretation} <br />
+            {t('wellsScorePe.interpretationLabels.simplified')}: {simplifiedInterpretation}
           </AlertDescription>
         </Alert>
          <Alert variant="destructive">
            <Info className="h-4 w-4" />
-           <AlertTitle>Disclaimer</AlertTitle>
+           <AlertTitle>{t('wellsScorePe.disclaimerTitle')}</AlertTitle>
            <AlertDescription className="text-justify">
-             This tool aids in risk stratification but does not replace clinical judgment or diagnostic testing (e.g., D-dimer, CTPA). Consult current guidelines.
+             {t('wellsScorePe.disclaimerText')}
            </AlertDescription>
          </Alert>
       </CardContent>
       <CardFooter>
         <Button onClick={resetCalculator} variant="outline" className="w-full">
-          Reset
+          {t('wellsScorePe.resetButton')}
         </Button>
       </CardFooter>
     </Card>

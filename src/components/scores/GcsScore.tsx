@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface GcsState {
   eyeOpening: number; // 1-4
@@ -13,6 +14,7 @@ interface GcsState {
 }
 
 const GcsScore: React.FC = () => {
+  const { t } = useTranslation();
   const [criteria, setCriteria] = useState<GcsState>({
     eyeOpening: 0, // Use 0 to indicate not selected
     verbalResponse: 0,
@@ -32,15 +34,21 @@ const GcsScore: React.FC = () => {
   }, [criteria]);
 
   const interpretation = useMemo(() => {
-    if (score === null) return "Select one option from each category (Eyes, Verbal, Motor) to calculate the score.";
+    if (score === null) return t('gcsScore.interpretation.selectOptionsPrompt');
 
-    let severity = '';
-    if (score >= 13) severity = 'Mild Brain Injury';
-    else if (score >= 9) severity = 'Moderate Brain Injury';
-    else severity = 'Severe Brain Injury'; // Score 3-8
+    let severityKey = '';
+    if (score >= 13) severityKey = 'gcsScore.interpretation.mildBrainInjury';
+    else if (score >= 9) severityKey = 'gcsScore.interpretation.moderateBrainInjury';
+    else severityKey = 'gcsScore.interpretation.severeBrainInjury'; // Score 3-8
 
-    return `Total Score ${score}: ${severity}. (Components: E${criteria.eyeOpening} V${criteria.verbalResponse} M${criteria.motorResponse})`;
-  }, [score, criteria]);
+    return t('gcsScore.interpretation.resultFormat', {
+      score,
+      severity: t(severityKey),
+      eyeScore: criteria.eyeOpening,
+      verbalScore: criteria.verbalResponse,
+      motorScore: criteria.motorResponse,
+    });
+  }, [score, criteria, t]);
 
   const resetCalculator = () => {
     setCriteria({
@@ -51,39 +59,39 @@ const GcsScore: React.FC = () => {
   };
 
   const eyeOptions = [
-    { value: 4, label: 'Spontaneous' },
-    { value: 3, label: 'To sound' },
-    { value: 2, label: 'To pressure' },
-    { value: 1, label: 'None' },
+    { value: 4, labelKey: 'gcsScore.eyeOptions.4' },
+    { value: 3, labelKey: 'gcsScore.eyeOptions.3' },
+    { value: 2, labelKey: 'gcsScore.eyeOptions.2' },
+    { value: 1, labelKey: 'gcsScore.eyeOptions.1' },
   ];
 
   const verbalOptions = [
-    { value: 5, label: 'Oriented' },
-    { value: 4, label: 'Confused' },
-    { value: 3, label: 'Words (inappropriate)' },
-    { value: 2, label: 'Sounds (incomprehensible)' },
-    { value: 1, label: 'None' },
+    { value: 5, labelKey: 'gcsScore.verbalOptions.5' },
+    { value: 4, labelKey: 'gcsScore.verbalOptions.4' },
+    { value: 3, labelKey: 'gcsScore.verbalOptions.3' },
+    { value: 2, labelKey: 'gcsScore.verbalOptions.2' },
+    { value: 1, labelKey: 'gcsScore.verbalOptions.1' },
   ];
 
   const motorOptions = [
-    { value: 6, label: 'Obeys commands' },
-    { value: 5, label: 'Localizes pain' },
-    { value: 4, label: 'Withdraws to pain (normal flexion)' },
-    { value: 3, label: 'Abnormal flexion to pain (decorticate)' },
-    { value: 2, label: 'Extension to pain (decerebrate)' },
-    { value: 1, label: 'None' },
+    { value: 6, labelKey: 'gcsScore.motorOptions.6' },
+    { value: 5, labelKey: 'gcsScore.motorOptions.5' },
+    { value: 4, labelKey: 'gcsScore.motorOptions.4' },
+    { value: 3, labelKey: 'gcsScore.motorOptions.3' },
+    { value: 2, labelKey: 'gcsScore.motorOptions.2' },
+    { value: 1, labelKey: 'gcsScore.motorOptions.1' },
   ];
 
   return (
     <Card className="w-full max-w-lg mx-auto mt-6">
       <CardHeader>
-        <CardTitle>Glasgow Coma Scale (GCS) Calculator</CardTitle>
-        <CardDescription className="text-justify">Assesses level of consciousness after head injury.</CardDescription>
+        <CardTitle>{t('gcsScore.title')}</CardTitle>
+        <CardDescription className="text-justify">{t('gcsScore.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Eye Opening Response */}
         <div>
-          <Label className="font-semibold mb-2 block">Eye Opening Response (E)</Label>
+          <Label className="font-semibold mb-2 block">{t('gcsScore.eyeOpeningResponseTitle')}</Label>
           <RadioGroup
             value={criteria.eyeOpening.toString()}
             onValueChange={(value) => handleRadioChange('eyeOpening', value)}
@@ -92,7 +100,7 @@ const GcsScore: React.FC = () => {
             {eyeOptions.map((opt) => (
               <div key={`eye-${opt.value}`} className="flex items-center space-x-2">
                 <RadioGroupItem value={opt.value.toString()} id={`eye-${opt.value}`} />
-                <Label htmlFor={`eye-${opt.value}`}>{opt.label} ({opt.value} pts)</Label>
+                <Label htmlFor={`eye-${opt.value}`}>{t(opt.labelKey)} ({opt.value} {t('gcsScore.pointsSuffix')})</Label>
               </div>
             ))}
           </RadioGroup>
@@ -100,7 +108,7 @@ const GcsScore: React.FC = () => {
 
         {/* Verbal Response */}
         <div>
-          <Label className="font-semibold mb-2 block">Verbal Response (V)</Label>
+          <Label className="font-semibold mb-2 block">{t('gcsScore.verbalResponseTitle')}</Label>
           <RadioGroup
             value={criteria.verbalResponse.toString()}
             onValueChange={(value) => handleRadioChange('verbalResponse', value)}
@@ -109,7 +117,7 @@ const GcsScore: React.FC = () => {
             {verbalOptions.map((opt) => (
               <div key={`verbal-${opt.value}`} className="flex items-center space-x-2">
                 <RadioGroupItem value={opt.value.toString()} id={`verbal-${opt.value}`} />
-                <Label htmlFor={`verbal-${opt.value}`}>{opt.label} ({opt.value} pts)</Label>
+                <Label htmlFor={`verbal-${opt.value}`}>{t(opt.labelKey)} ({opt.value} {t('gcsScore.pointsSuffix')})</Label>
               </div>
             ))}
           </RadioGroup>
@@ -117,7 +125,7 @@ const GcsScore: React.FC = () => {
 
         {/* Motor Response */}
         <div>
-          <Label className="font-semibold mb-2 block">Motor Response (M)</Label>
+          <Label className="font-semibold mb-2 block">{t('gcsScore.motorResponseTitle')}</Label>
           <RadioGroup
             value={criteria.motorResponse.toString()}
             onValueChange={(value) => handleRadioChange('motorResponse', value)}
@@ -126,7 +134,7 @@ const GcsScore: React.FC = () => {
             {motorOptions.map((opt) => (
               <div key={`motor-${opt.value}`} className="flex items-center space-x-2">
                 <RadioGroupItem value={opt.value.toString()} id={`motor-${opt.value}`} />
-                <Label htmlFor={`motor-${opt.value}`}>{opt.label} ({opt.value} pts)</Label>
+                <Label htmlFor={`motor-${opt.value}`}>{t(opt.labelKey)} ({opt.value} {t('gcsScore.pointsSuffix')})</Label>
               </div>
             ))}
           </RadioGroup>
@@ -134,22 +142,22 @@ const GcsScore: React.FC = () => {
 
         <Alert>
           <Info className="h-4 w-4" />
-          <AlertTitle>Calculated Score: {score ?? 'N/A'}</AlertTitle>
+          <AlertTitle>{t('gcsScore.calculatedScoreTitle', { score: score ?? t('gcsScore.notApplicable') })}</AlertTitle>
           <AlertDescription className="text-justify">
             {interpretation}
           </AlertDescription>
         </Alert>
          <Alert variant="destructive">
            <Info className="h-4 w-4" />
-           <AlertTitle>Disclaimer</AlertTitle>
+           <AlertTitle>{t('gcsScore.disclaimerTitle')}</AlertTitle>
            <AlertDescription className="text-justify">
-             This tool is for educational purposes. GCS assessment requires clinical training. Consider factors like intubation (V score = VT) or sedation.
+             {t('gcsScore.disclaimerText')}
            </AlertDescription>
          </Alert>
       </CardContent>
       <CardFooter>
         <Button onClick={resetCalculator} variant="outline" className="w-full">
-          Reset
+          {t('gcsScore.resetButton')}
         </Button>
       </CardFooter>
     </Card>
