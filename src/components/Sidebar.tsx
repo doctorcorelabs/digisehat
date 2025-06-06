@@ -27,9 +27,12 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
     navigate('/'); // Navigate to Home page after sign out
   };
 
+  // Determine home path based on environment
+  const homePath = import.meta.env.PROD ? 'https://digisehat.daivanlabs.com/' : 'http://localhost:8888/';
+
   // Define tool links - adjust paths and names as needed
   const toolLinks = [
-    { path: "http://localhost:8888/", name: t('sidebar.home'), icon: Home, isExternal: true },
+    { path: homePath, name: t('sidebar.home'), icon: Home, isExternal: true },
     { path: "/tools/ai-chatbot", name: t('tools.aiChatbot'), icon: Bot },
     { path: "/tools/ai-peer-review", name: t('tools.aiPeerReview'), icon: Users },
     { path: "/tools/drug-reference", name: t('tools.drugReference'), icon: FlaskConical },

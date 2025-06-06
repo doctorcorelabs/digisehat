@@ -605,7 +605,52 @@
       "threadFileLoadedSuccess": "{{fileType}} berhasil dimuat untuk utas.",
       "threadPdfExtractedSuccess": "Teks PDF berhasil diekstrak untuk utas.",
       "addedToHistory": "Ditambahkan ke Riwayat Eksplorasi",
-      "errorSendingMessageTitle": "Kesalahan Mengirim Pesan"
+    "errorSendingMessageTitle": "Kesalahan Mengirim Pesan"
+    }
+  },
+  "interactionCheckerPage": {
+    "headerTitle": "Pemeriksa Interaksi Obat",
+    "headerSubtitle": "Periksa potensi interaksi obat menggunakan data dari OpenFDA.",
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "defaultMessage": "Anda tidak memiliki izin untuk mengakses fitur ini.",
+      "failedToVerify": "Gagal memeriksa akses fitur.",
+      "couldNotVerify": "Tidak dapat memverifikasi akses fitur saat ini."
+    },
+    "enterDrugsCard": {
+      "title": "Masukkan Obat",
+      "drugInputPlaceholder": "Obat {{index}}",
+      "addAnotherDrugButton": "Tambah Obat Lain",
+      "removeDrugButtonLabel": "Hapus obat",
+      "checkInteractionsButton": "Periksa Interaksi",
+      "checkingButton": "Memeriksa..."
+    },
+    "errorMessages": {
+      "atLeastTwoDrugs": "Harap masukkan setidaknya dua obat untuk memeriksa interaksi.",
+      "failedToFetch": "Gagal memeriksa interaksi. Pastikan pekerja lokal berjalan dan dapat dijangkau.",
+      "summaryNotAvailable": "Ringkasan tidak tersedia.",
+      "failedToGetSummary": "Gagal mendapatkan ringkasan."
+    },
+    "resultsCard": {
+      "title": "Hasil Interaksi",
+      "noSignificantInteractions": "Tidak ditemukan interaksi signifikan antara obat yang dimasukkan berdasarkan data yang tersedia.",
+      "aiSummaryTitle": "Ringkasan AI:",
+      "summarizeWithAIButton": "Ringkas dengan AI",
+      "generatingSummary": "Menghasilkan Ringkasan...",
+      "errorSummarizing": "Kesalahan saat meringkas: {{error}}",
+      "disclaimer": "Sanggahan: Alat ini menyediakan informasi berdasarkan data yang tersedia dan tidak menggantikan nasihat medis profesional. Selalu konsultasikan dengan penyedia layanan kesehatan untuk keputusan klinis.",
+      "openFDANote": "Catatan: Deskripsi interaksi terperinci bersumber dari OpenFDA dan disediakan dalam bahasa Inggris."
+    },
+    "loadingText": "Memuat hasil interaksi...",
+    "backToToolsButton": "Kembali ke Alat",
+    "toastTitles": {
+      "error": "Kesalahan",
+      "accessDenied": "Akses Ditolak",
+      "cannotSummarize": "Tidak Dapat Meringkas"
+    },
+    "toastDescriptions": {
+      "accessDeniedInteractionCheck": "Anda tidak dapat melakukan pemeriksaan interaksi saat ini.",
+      "cannotSummarizeEmpty": "Deskripsi interaksi kosong dan tidak dapat diringkas."
     }
   }
 }

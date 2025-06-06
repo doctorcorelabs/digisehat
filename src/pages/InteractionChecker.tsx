@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import PageHeader from '@/components/PageHeader';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -28,6 +29,7 @@ const InteractionChecker = () => {
   const { checkAccess, incrementUsage, isLoadingToggles } = useFeatureAccess();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t, i18n } = useTranslation(); // Destructure i18n here
   const [drugs, setDrugs] = useState<string[]>(['', '']);
   const [results, setResults] = useState<InteractionResult[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,17 +56,17 @@ const InteractionChecker = () => {
           const result = await checkAccess(featureName);
          if (result.quota === 0 || result.isDisabled) { // Check if denied by level/toggle
               setInitialAccessAllowed(false);
-              setInitialAccessMessage(result.message || 'Access denied.');
+              setInitialAccessMessage(result.message || t('interactionCheckerPage.accessDenied.defaultMessage'));
          } else {
               setInitialAccessAllowed(true); // Allow rendering the UI
          }
        } catch (error) {
          console.error("Error checking initial feature access:", error);
          setInitialAccessAllowed(false);
-         setInitialAccessMessage('Failed to check feature access.');
+         setInitialAccessMessage(t('interactionCheckerPage.accessDenied.failedToVerify'));
          toast({
-           title: "Error",
-           description: "Could not verify feature access at this time.",
+           title: t('interactionCheckerPage.toastTitles.error'),
+           description: t('interactionCheckerPage.accessDenied.couldNotVerify'),
            variant: "destructive",
          });
        } // Removed finally block
@@ -93,7 +95,7 @@ const InteractionChecker = () => {
   const handleCheckInteractions = async () => {
     const validDrugs = drugs.map(d => d.trim()).filter(d => d.length > 0);
     if (validDrugs.length < 2) {
-      setError('Please enter at least two drugs to check for interactions.');
+      setError(t('interactionCheckerPage.errorMessages.atLeastTwoDrugs'));
       setResults(null);
       return;
     }
@@ -102,8 +104,8 @@ const InteractionChecker = () => {
      const accessResult = await checkAccess(featureName);
      if (!accessResult.allowed) {
        toast({
-         title: "Access Denied",
-         description: accessResult.message || 'You cannot perform an interaction check at this time.',
+         title: t('interactionCheckerPage.toastTitles.accessDenied'),
+         description: accessResult.message || t('interactionCheckerPage.toastDescriptions.accessDeniedInteractionCheck'),
          variant: "destructive",
        });
        openUpgradeDialog(); // Open the upgrade dialog
@@ -140,7 +142,7 @@ const InteractionChecker = () => {
 
     } catch (err: any) {
       console.error('Error checking interactions:', err);
-      setError(err.message || 'Failed to check interactions. Please ensure the local worker is running and reachable.');
+      setError(err.message || t('interactionCheckerPage.errorMessages.failedToFetch'));
       setResults(null);
     } finally {
       setIsLoading(false);
@@ -154,13 +156,18 @@ const InteractionChecker = () => {
   const handleSummarize = useCallback(async (index: number) => {
     if (!results || !results[index] || !results[index].description) return;
 
-    const interactionText = results[index].description;
+    let textToSummarizeForWorker = results[index].description;
+    const currentLanguage = i18n.language;
 
-    if (!interactionText || interactionText.trim().length === 0) {
+    if (currentLanguage === 'id') {
+      textToSummarizeForWorker = `Tolong ringkas teks berikut dalam Bahasa Indonesia: "${results[index].description}"`;
+    }
+
+    if (!textToSummarizeForWorker || textToSummarizeForWorker.trim().length === 0) {
       console.warn(`Attempted to summarize empty description for interaction index ${index}. Aborting.`);
       toast({
-           title: "Cannot Summarize",
-           description: "The interaction description is empty and cannot be summarized.",
+           title: t('interactionCheckerPage.toastTitles.cannotSummarize'),
+           description: t('interactionCheckerPage.toastDescriptions.cannotSummarizeEmpty'),
            variant: "destructive",
       });
       return;
@@ -182,7 +189,7 @@ const InteractionChecker = () => {
       const response = await fetch(geminiWorkerUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ textToSummarize: interactionText }),
+        body: JSON.stringify({ textToSummarize: textToSummarizeForWorker }),
       });
 
       const data = await response.json();
@@ -195,7 +202,7 @@ const InteractionChecker = () => {
       console.log(`Received summary from Gemini worker (interaction index ${index})`);
       setResults(currentResults =>
         currentResults?.map((res, i) =>
-          i === index ? { ...res, isSummarizing: false, summary: data.responseText || "Summary not available." } : res
+          i === index ? { ...res, isSummarizing: false, summary: data.responseText || t('interactionCheckerPage.errorMessages.summaryNotAvailable') } : res
         ) || null
       );
 
@@ -203,11 +210,11 @@ const InteractionChecker = () => {
       console.error('Error summarizing interaction:', err);
       setResults(currentResults =>
         currentResults?.map((res, i) =>
-          i === index ? { ...res, isSummarizing: false, summaryError: err.message || 'Failed to get summary.' } : res
+          i === index ? { ...res, isSummarizing: false, summaryError: err.message || t('interactionCheckerPage.errorMessages.failedToGetSummary') } : res
         ) || null
       );
     }
-  }, [results, toast]);
+  }, [results, toast, i18n.language]); // Add i18n.language to dependencies
 
   const renderMarkdown = (text: string) => {
     if (!text) return { __html: '' };
@@ -221,8 +228,8 @@ const InteractionChecker = () => {
   return (
     <>
       <PageHeader
-        title="Drug Interaction Checker"
-        subtitle="Check potential drug interactions using data sourced from OpenFDA."
+        title={t('interactionCheckerPage.headerTitle')}
+        subtitle={t('interactionCheckerPage.headerSubtitle')}
       />
       <div className="container max-w-4xl mx-auto px-4 py-12">
 
@@ -238,9 +245,9 @@ const InteractionChecker = () => {
          {!isLoadingToggles && !initialAccessAllowed && (
             <Alert variant="destructive" className="mt-4">
               <Terminal className="h-4 w-4" />
-              <AlertTitle>Access Denied</AlertTitle>
+              <AlertTitle>{t('interactionCheckerPage.accessDenied.title')}</AlertTitle>
               <AlertDescription>
-                {initialAccessMessage || 'You do not have permission to access this feature.'}
+                {initialAccessMessage || t('interactionCheckerPage.accessDenied.defaultMessage')}
               </AlertDescription>
             </Alert>
           )}
@@ -250,20 +257,20 @@ const InteractionChecker = () => {
          <>
             <Card>
               <CardHeader>
-                <CardTitle>Enter Drugs</CardTitle>
+                <CardTitle>{t('interactionCheckerPage.enterDrugsCard.title')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {drugs.map((drug, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     <Input
                       type="text"
-                      placeholder={`Drug ${index + 1}`}
+                      placeholder={t('interactionCheckerPage.enterDrugsCard.drugInputPlaceholder', { index: index + 1 })}
                       value={drug}
                       onChange={(e) => handleInputChange(index, e.target.value)}
                       className="flex-grow"
                     />
                     {drugs.length > 2 && (
-                      <Button variant="ghost" size="icon" onClick={() => removeDrugInput(index)} aria-label="Remove drug">
+                      <Button variant="ghost" size="icon" onClick={() => removeDrugInput(index)} aria-label={t('interactionCheckerPage.enterDrugsCard.removeDrugButtonLabel')}>
                         <X className="h-4 w-4" />
                       </Button>
                     )}
@@ -271,14 +278,14 @@ const InteractionChecker = () => {
                 ))}
                 <div className="flex justify-between items-center">
                    <Button variant="outline" onClick={addDrugInput}>
-                     Add Another Drug
+                     {t('interactionCheckerPage.enterDrugsCard.addAnotherDrugButton')}
                    </Button>
                    <Button
                      onClick={handleCheckInteractions}
                      disabled={isLoading || drugs.filter(d => d.trim().length > 0).length < 2}
                      className="bg-medical-teal hover:bg-medical-blue"
                    >
-                     {isLoading ? 'Checking...' : 'Check Interactions'}
+                     {isLoading ? t('interactionCheckerPage.enterDrugsCard.checkingButton') : t('interactionCheckerPage.enterDrugsCard.checkInteractionsButton')}
                    </Button>
                 </div>
               </CardContent>
@@ -293,18 +300,18 @@ const InteractionChecker = () => {
             {isLoading && (
                <div className="mt-6 text-center">
                  <Loader2 className="h-6 w-6 animate-spin inline-block mr-2" />
-                 <span>Loading interaction results...</span>
+                 <span>{t('interactionCheckerPage.loadingText')}</span>
                </div>
              )}
 
             {results && !isLoading && (
               <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle>Interaction Results</CardTitle>
+                  <CardTitle>{t('interactionCheckerPage.resultsCard.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {results.length === 0 ? (
-                    <p>No significant interactions found between the entered drugs based on available data.</p>
+                    <p>{t('interactionCheckerPage.resultsCard.noSignificantInteractions')}</p>
                   ) : (
                     <ul className="space-y-4">
                       {results.map((result, index) => (
@@ -314,22 +321,26 @@ const InteractionChecker = () => {
                             <strong className="text-lg">{result.pair.join(' + ')}</strong>
                           </div>
                           <p className="text-gray-700 text-justify mb-3">{result.description}</p>
-
+                          {i18n.language === 'id' && (
+                            <p className="text-xs text-gray-500 italic mt-1 mb-2">
+                              {t('interactionCheckerPage.resultsCard.openFDANote')}
+                            </p>
+                          )}
                           <div className="mt-2 pt-2 border-t border-gray-200">
                             {result.isSummarizing ? (
                               <div className="flex items-center text-sm text-gray-500">
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Generating Summary...
+                                {t('interactionCheckerPage.resultsCard.generatingSummary')}
                               </div>
                             ) : result.summaryError ? (
                               <div className="text-sm text-red-600">
-                                Error summarizing: {result.summaryError}
+                                {t('interactionCheckerPage.resultsCard.errorSummarizing', { error: result.summaryError })}
                               </div>
                             ) : result.summary ? (
                               <div>
                                 <h4 className="text-sm font-semibold mb-1 flex items-center">
                                   <Sparkles className="h-4 w-4 mr-1 text-yellow-500" />
-                                  AI Summary:
+                                  {t('interactionCheckerPage.resultsCard.aiSummaryTitle')}
                                 </h4>
                                 <p
                                   className="text-sm text-gray-600 text-justify"
@@ -343,7 +354,7 @@ const InteractionChecker = () => {
                                 onClick={() => handleSummarize(index)}
                                 disabled={result.isSummarizing}
                               >
-                                Summarize with AI
+                                {t('interactionCheckerPage.resultsCard.summarizeWithAIButton')}
                               </Button>
                             )}
                           </div>
@@ -352,7 +363,7 @@ const InteractionChecker = () => {
                      </ul>
                    )}
                     <p className="mt-4 text-sm text-gray-500 italic text-justify">
-                      Disclaimer: This tool provides information based on available data and does not substitute for professional medical advice. Always consult with a healthcare provider for clinical decisions.
+                      {t('interactionCheckerPage.resultsCard.disclaimer')}
                     </p>
                  </CardContent>
               </Card>
@@ -366,7 +377,7 @@ const InteractionChecker = () => {
         <Link to="/tools">
           <Button variant="outline" className="inline-flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
-            Back to Tools
+            {t('interactionCheckerPage.backToToolsButton')}
           </Button>
         </Link>
       </div>

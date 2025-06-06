@@ -605,7 +605,52 @@
       "threadFileLoadedSuccess": "{{fileType}} loaded for thread.",
       "threadPdfExtractedSuccess": "PDF text extracted for thread.",
       "addedToHistory": "Added to Exploration History",
-      "errorSendingMessageTitle": "Error Sending Message"
+    "errorSendingMessageTitle": "Error Sending Message"
+    }
+  },
+  "interactionCheckerPage": {
+    "headerTitle": "Drug Interaction Checker",
+    "headerSubtitle": "Check potential drug interactions using data sourced from OpenFDA.",
+    "accessDenied": {
+      "title": "Access Denied",
+      "defaultMessage": "You do not have permission to access this feature.",
+      "failedToVerify": "Failed to check feature access.",
+      "couldNotVerify": "Could not verify feature access at this time."
+    },
+    "enterDrugsCard": {
+      "title": "Enter Drugs",
+      "drugInputPlaceholder": "Drug {{index}}",
+      "addAnotherDrugButton": "Add Another Drug",
+      "removeDrugButtonLabel": "Remove drug",
+      "checkInteractionsButton": "Check Interactions",
+      "checkingButton": "Checking..."
+    },
+    "errorMessages": {
+      "atLeastTwoDrugs": "Please enter at least two drugs to check for interactions.",
+      "failedToFetch": "Failed to check interactions. Please ensure the local worker is running and reachable.",
+      "summaryNotAvailable": "Summary not available.",
+      "failedToGetSummary": "Failed to get summary."
+    },
+    "resultsCard": {
+      "title": "Interaction Results",
+      "noSignificantInteractions": "No significant interactions found between the entered drugs based on available data.",
+      "aiSummaryTitle": "AI Summary:",
+      "summarizeWithAIButton": "Summarize with AI",
+      "generatingSummary": "Generating Summary...",
+      "errorSummarizing": "Error summarizing: {{error}}",
+      "disclaimer": "Disclaimer: This tool provides information based on available data and does not substitute for professional medical advice. Always consult with a healthcare provider for clinical decisions.",
+      "openFDANote": "Note: The detailed interaction description is sourced from OpenFDA and is provided in English."
+    },
+    "loadingText": "Loading interaction results...",
+    "backToToolsButton": "Back to Tools",
+    "toastTitles": {
+      "error": "Error",
+      "accessDenied": "Access Denied",
+      "cannotSummarize": "Cannot Summarize"
+    },
+    "toastDescriptions": {
+      "accessDeniedInteractionCheck": "You cannot perform an interaction check at this time.",
+      "cannotSummarizeEmpty": "The interaction description is empty and cannot be summarized."
     }
   }
 }
