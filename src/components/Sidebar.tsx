@@ -46,6 +46,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
     { path: "/tools/ai-mindmap-generator", name: t('tools.aiMindMapGenerator'), icon: Map },
     { path: "/tools/explore-gemini", name: t('tools.exploreGemini'), icon: Gem },
     { path: "/tools/explore-deepseek", name: t('tools.exploreDeepSeek'), icon: Brain },
+    { path: "/tools/explore-chatgpt", name: t('tools.exploreChatGPT'), icon: Bot },
     { path: "/nucleus", name: t('tools.nucleusArchive'), icon: Microscope }, // Added Nucleus
     { path: "/author", name: t('tools.author'), icon: User }, // Added Author link
   ];

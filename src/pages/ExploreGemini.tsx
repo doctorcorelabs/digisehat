@@ -276,8 +276,8 @@ Transparency: When flagging an issue, explain why it's being flagged (e.g., "Fig
 const modelOptions = [
   { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
   { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-  { value: "gemini-2.0-flash-lite", label: "Gemini 2.0 Flash Lite" },
-  { value: "gemini-2.5-flash-preview-04-17", label: "Gemini 2.5 Flash" }, // Replaced Pro Exp with Flash
+  { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash Lite" },
+  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" }, // Replaced Pro Exp with Flash
 ];
 
 interface FileData {
@@ -439,7 +439,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
     }
 
     // Add enableThinking flag if the correct model is selected
-    if (selectedModel === "gemini-2.5-flash-preview-04-17") {
+    if (selectedModel === "gemini-2.5-flash") {
       payload.enableThinking = enableThinking;
     }
 
@@ -523,7 +523,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
       initialSystemInstructionId: selectedSystemInstructionId,
       initialCustomSystemInstruction: selectedSystemInstructionId === "custom" ? customSystemInstruction : undefined,
       // Store the thinking setting if it's the relevant model
-      initialEnableThinking: selectedModel === "gemini-2.5-flash-preview-04-17" ? enableThinking : undefined,
+      initialEnableThinking: selectedModel === "gemini-2.5-flash" ? enableThinking : undefined,
       messages: [userMessage, modelMessage],
       createdAt: new Date()
     };
@@ -620,7 +620,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
           ? { systemInstructionId: thread.initialSystemInstructionId }
           : {}),
       // Add enableThinking flag if the thread started with the correct model and had it enabled/disabled
-      ...(thread.initialModel === "gemini-2.5-flash-preview-04-17" && typeof thread.initialEnableThinking === 'boolean'
+      ...(thread.initialModel === "gemini-2.5-flash" && typeof thread.initialEnableThinking === 'boolean'
         ? { enableThinking: thread.initialEnableThinking }
         : {})
     };
@@ -738,7 +738,7 @@ const ExploreGemini: React.FC<ExploreGeminiProps> = ({ isAuthenticated: propIsAu
                       <SelectContent>{modelOptions.map((option) => (<SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>))}</SelectContent>
                     </Select>
                     {/* Conditionally render Thinking Checkbox */}
-                    {selectedModel === "gemini-2.5-flash-preview-04-17" && (
+                    {selectedModel === "gemini-2.5-flash" && (
                       <div className="flex items-center space-x-2 mt-2 pl-1">
                         <Checkbox
                           id="enable-thinking"

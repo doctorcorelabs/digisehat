@@ -13,7 +13,8 @@ export type FeatureName =
   | 'learning_resources' // Access based, not count based
   | 'mind_map_maker'
   | 'clinical_scoring' // Unlimited
-  | 'explore_deepseek';
+  | 'explore_deepseek'
+  | 'explore_chatgpt';
 
 // Define quota limits (null means unlimited or access-based)
 const quotas: Record<UserLevel, Record<FeatureName, number | null>> = {
@@ -31,6 +32,7 @@ const quotas: Record<UserLevel, Record<FeatureName, number | null>> = {
     mind_map_maker: 2,
     clinical_scoring: null, // Unlimited
     explore_deepseek: 3,
+    explore_chatgpt: 3,
   },
   Researcher: {
     ai_chatbot: 30,
@@ -46,6 +48,7 @@ const quotas: Record<UserLevel, Record<FeatureName, number | null>> = {
     mind_map_maker: 10,
     clinical_scoring: null, // Unlimited
     explore_deepseek: 30,
+    explore_chatgpt: 30,
   },
   Master: {
     ai_chatbot: null,
@@ -61,6 +64,7 @@ const quotas: Record<UserLevel, Record<FeatureName, number | null>> = {
     mind_map_maker: null,
     clinical_scoring: null,
     explore_deepseek: null,
+    explore_chatgpt: null,
   },
   Administrator: { // Administrators likely have unlimited access
     ai_chatbot: null,
@@ -76,6 +80,7 @@ const quotas: Record<UserLevel, Record<FeatureName, number | null>> = {
     mind_map_maker: null,
     clinical_scoring: null,
     explore_deepseek: null,
+    explore_chatgpt: null,
   },
 };
 

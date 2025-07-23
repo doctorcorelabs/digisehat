@@ -23,6 +23,7 @@ import InteractionChecker from "./pages/InteractionChecker"; // Import Interacti
 import MindMapMaker from "./pages/MindMapMaker"; // Import MindMapMaker
 import ClinicalScoringHub from "./pages/ClinicalScoringHub"; // Import ClinicalScoringHub
 import ExploreDeepSeek from "./pages/ExploreDeepSeek"; // Import ExploreDeepSeek
+import ExploreChatGPT from "./pages/ExploreChatGPT"; // Import ExploreChatGPT
 import AdminDashboard from "./pages/AdminDashboard"; // Import AdminDashboard
 import NucleusArchive from "./pages/NucleusArchive"; // Import NucleusArchive
 import NucleusPost from "./pages/NucleusPost"; // Import NucleusPost
@@ -167,6 +168,15 @@ const App = () => (
                element={
                  <ProtectedRoute>
                   <Layout><ExploreDeepSeek /></Layout>
+                </ProtectedRoute>
+              }
+            />
+            {/* Add route for Explore ChatGPT */}
+            <Route
+              path="/tools/explore-chatgpt"
+              element={
+                <ProtectedRoute>
+                  <Layout><ExploreChatGPT /></Layout>
                 </ProtectedRoute>
               }
             />

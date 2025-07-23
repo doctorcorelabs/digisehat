@@ -27,6 +27,7 @@
     "aiMindMapGenerator": "AI Pembuat Mind Map",
     "exploreGemini": "Jelajahi Gemini",
     "exploreDeepSeek": "Jelajahi DeepSeek",
+    "exploreChatGPT": "Jelajahi ChatGPT",
     "nucleusArchive": "Arsip Nucleus",
     "author": "Penulis"
   },
@@ -906,6 +907,53 @@
     },
     "buttons": {
       "backToTools": "Kembali ke Alat"
+    }
+  },
+  "exploreChatGPTPage": {
+    "header": {
+      "title": "Jelajahi ChatGPT",
+      "subtitle": "Berinteraksi dengan berbagai model ChatGPT"
+    },
+    "interactCard": {
+      "title": "Berinteraksi dengan ChatGPT",
+      "selectModelLabel": "Pilih Model",
+      "promptLabel": "Masukkan prompt Anda",
+      "promptPlaceholder": "Tanyakan apa saja pada ChatGPT...",
+      "fileUploadLabel": "Unggah File (Opsional)",
+      "chooseFileButton": "Pilih File",
+      "submitButton": "Kirim",
+      "generatingButton": "Menghasilkan...",
+      "removeFileButtonTitle": "Hapus file"
+    },
+    "buttons": {
+      "backToTools": "Kembali ke Alat"
+    },
+    "responseCard": {
+      "title": "Respons ChatGPT",
+      "exploreTopicButton": "Jelajahi Topik"
+    },
+    "history": {
+      "sectionTitle": "Riwayat Eksplorasi",
+      "threadTitle": "Utas Eksplorasi",
+      "startedLabel": "Dimulai",
+      "initialModelLabel": "Model Awal",
+      "followUpPlaceholder": "Prompt tindak lanjut...",
+      "sendButton": "Kirim"
+    },
+    "toasts": {
+      "addedToHistory": "Ditambahkan ke Riwayat Eksplorasi"
+    },
+    "errors": {
+      "unsupportedFileType": "Jenis file tidak didukung: {{fileType}}.",
+      "failedToReadFile": "Gagal membaca file.",
+      "promptOrFileRequired": "Prompt atau file diperlukan."
+    },
+    "alerts": {
+      "authRequired": {
+        "title": "Autentikasi Diperlukan",
+        "description": "Silakan <1>Masuk</1> atau <3>Daftar</3> untuk menggunakan fitur ini."
+      },
+      "errorTitle": "Kesalahan"
     }
   }
 }

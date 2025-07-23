@@ -1,0 +1,6 @@
+name = "chatgpt-cf-worker"
+main = "src/index.ts"
+compatibility_date = "2025-03-27"
+
+[vars]
+OPENROUTER_API_KEY = "sk-or-v1-e8a4b3b9a8f9c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3"
