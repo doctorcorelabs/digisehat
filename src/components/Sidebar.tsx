@@ -165,7 +165,7 @@ const Sidebar = ({ isCollapsed, onToggle }: SidebarProps) => {
               )}
 
               {/* Upgrade Plan Button */}
-              {user.level !== 'Administrator' && user.level !== 'Researcher' && ( // Only show if not already upgraded or admin
+              {user.level !== 'Administrator' && user.level !== 'Researcher' && user.level !== 'Master' && ( // Only show if not already upgraded or admin
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant="ghost" onClick={openUpgradeDialog} className={`w-full text-blue-600 hover:bg-blue-50 hover:text-blue-700 ${isCollapsed ? 'justify-center h-10 w-10 p-0' : 'justify-start'}`}>

@@ -47,6 +47,21 @@ const quotas: Record<UserLevel, Record<FeatureName, number | null>> = {
     clinical_scoring: null, // Unlimited
     explore_deepseek: 30,
   },
+  Master: {
+    ai_chatbot: null,
+    ai_peer_review: null,
+    disease_library: null,
+    drug_reference: null,
+    clinical_guidelines: null,
+    interaction_checker: null,
+    explore_gemini: null,
+    medical_calculator: null,
+    nutrition_database: null,
+    learning_resources: null,
+    mind_map_maker: null,
+    clinical_scoring: null,
+    explore_deepseek: null,
+  },
   Administrator: { // Administrators likely have unlimited access
     ai_chatbot: null,
     ai_peer_review: null,
@@ -70,16 +85,17 @@ export const getQuotaLimit = (level: UserLevel | null, feature: FeatureName): nu
     level = 'Free';
   }
 
-  // Administrators have unlimited access
-  if (level === 'Administrator') {
+  // Administrator and Master have unlimited access
+  if (level === 'Administrator' || level === 'Master') {
     return null;
   }
 
-  return quotas[level]?.[feature] ?? quotas['Free'][feature]; // Fallback to Free if level/feature not found
+  // For other levels, get from the quotas object, defaulting to Free if not found
+  return quotas[level]?.[feature] ?? quotas['Free'][feature];
 };
 
 // Special check for Learning Resources access
 export const hasLearningResourcesAccess = (level: UserLevel | null): boolean => {
     if (!level) return false; // No access if no level
-    return level === 'Researcher' || level === 'Administrator';
+    return level === 'Researcher' || level === 'Administrator' || level === 'Master';
 };

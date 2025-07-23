@@ -1,6 +1,9 @@
 {
-  "brandName": "DigiSehat",
-  "welcomeMessage": "Welcome to DigiSehat!",
+  "brandName": "NucleAi",
+  "altText": {
+    "daivanlabsLogo": "DaivanLabs Logo"
+  },
+  "welcomeMessage": "Welcome to NucleAi!",
   "welcomeSubtitle": "Your digital health platform. Access tools and resources below.",
   "featuredTools": "Featured Tools",
   "quickAccessTools": "Quick Access Tools",
@@ -48,6 +51,7 @@
     "collapseSidebar": "Collapse Sidebar",
     "home": "Home"
   },
+  "Master": "Master",
   "language": "Language",
   "indonesian": "Indonesian",
   "english": "English",
@@ -55,12 +59,12 @@
   "switchToIndonesian": "Switch to Indonesian",
   "home": {
     "hero": {
-      "headline": "Digital Health at Your Fingertips",
-      "subheadline": "A comprehensive platform for health information, clinical tools, and learning resources.",
+      "headline": "AI-Powered Health Insights & Tools",
+      "subheadline": "Leverage the power of Artificial Intelligence for accessible health information, innovative clinical tools, and personalized insights.",
       "cta": "Explore Our Tools"
     },
     "features": {
-      "sectionTitle": "Key Features of DigiSehat",
+      "sectionTitle": "Key Features of NucleAi",
       "trustedInfo": {
         "title": "Trusted Health Information",
         "description": "Access accurate and up-to-date medical data and drug references."

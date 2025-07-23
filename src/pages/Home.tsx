@@ -40,7 +40,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-green-500 text-white py-20 px-4 md:px-8 text-center">
         <div className="container mx-auto">
-          <HeartPulse className="h-24 w-24 mx-auto mb-6 text-white" />
+          <img src="/daivanlabs.png" alt={t('altText.daivanlabsLogo')} className="h-24 w-auto mx-auto mb-6" />
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('home.hero.headline')}</h1>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">{t('home.hero.subheadline')}</p>
           <Link to="/tools">

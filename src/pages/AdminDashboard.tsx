@@ -565,7 +565,7 @@ const AdminDashboard: React.FC = () => {
       [userId]: {
         ...prev[userId],
         level: newLevel,
-        level_expires_at: newLevel !== 'Researcher' ? null : (prev[userId]?.level_expires_at ?? users.find(u => u.id === userId)?.level_expires_at),
+        level_expires_at: (newLevel === 'Researcher' || newLevel === 'Master') ? (prev[userId]?.level_expires_at ?? users.find(u => u.id === userId)?.level_expires_at) : null,
       }
     }));
   };
@@ -582,7 +582,10 @@ const AdminDashboard: React.FC = () => {
     if (!changes || !changes.level) {
       toast({ title: "Error", description: "User level cannot be empty.", variant: "destructive" }); return;
     }
-    const updateData = { level: changes.level, level_expires_at: changes.level === 'Researcher' ? (changes.level_expires_at ?? null) : null };
+    const updateData = {
+      level: changes.level,
+      level_expires_at: (changes.level === 'Researcher' || changes.level === 'Master') ? (changes.level_expires_at ?? null) : null
+    };
     try {
       const { error } = await supabase.from('profiles').update(updateData).eq('id', userId);
       if (error) throw error;
@@ -799,11 +802,12 @@ const AdminDashboard: React.FC = () => {
                           <Select value={editingUsers[user.id]?.level ?? user.level ?? 'Free'} onValueChange={(value) => handleLevelChange(user.id, value as UserLevel)}>
                             <SelectTrigger className="w-[150px]"><SelectValue placeholder="Select level" /></SelectTrigger>
                             <SelectContent>
-                              {/* Only show Free and Researcher if NOT the specific admin user */}
+                              {/* Show Free, Researcher, and Master for non-specific admin user */}
                               {user.id !== 'bd66e44f-4bcb-494d-803b-9fead7399ddb' && (
                                 <>
                                   <SelectItem value="Free">Free</SelectItem>
                                   <SelectItem value="Researcher">Researcher</SelectItem>
+                                  <SelectItem value="Master">Master</SelectItem>
                                 </>
                               )}
                               {/* Only show Administrator option for the specific user ID */}
@@ -814,7 +818,7 @@ const AdminDashboard: React.FC = () => {
                           </Select>
                         </TableCell>
                         <TableCell>
-                          {(editingUsers[user.id]?.level ?? user.level) === 'Researcher' ? (
+                          {((editingUsers[user.id]?.level ?? user.level) === 'Researcher' || (editingUsers[user.id]?.level ?? user.level) === 'Master') ? (
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant={"outline"} className={cn("w-[200px] justify-start text-left font-normal", !(editingUsers[user.id]?.level_expires_at ?? user.level_expires_at) && "text-muted-foreground")}>
@@ -862,11 +866,12 @@ const AdminDashboard: React.FC = () => {
                         >
                           <SelectTrigger id={`select-level-card-${user.id}`}><SelectValue placeholder="Select level" /></SelectTrigger>
                           <SelectContent>
-                            {/* Only show Free and Researcher if NOT the specific admin user */}
+                            {/* Show Free, Researcher, and Master for non-specific admin user */}
                             {user.id !== 'bd66e44f-4bcb-494d-803b-9fead7399ddb' && (
                               <>
                                 <SelectItem value="Free">Free</SelectItem>
                                 <SelectItem value="Researcher">Researcher</SelectItem>
+                                <SelectItem value="Master">Master</SelectItem>
                               </>
                             )}
                             {/* Only show Administrator option for the specific user ID */}
@@ -877,7 +882,7 @@ const AdminDashboard: React.FC = () => {
                         </Select>
                       </div>
 
-                      {(editingUsers[user.id]?.level ?? user.level) === 'Researcher' && (
+                      {((editingUsers[user.id]?.level ?? user.level) === 'Researcher' || (editingUsers[user.id]?.level ?? user.level) === 'Master') && (
                         <div className="flex flex-col space-y-1.5">
                           <Label>Level Expires</Label>
                           <Popover>

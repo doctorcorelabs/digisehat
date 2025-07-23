@@ -1,6 +1,9 @@
 {
-  "brandName": "DigiSehat",
-  "welcomeMessage": "Selamat Datang di DigiSehat!",
+  "brandName": "NucleAi",
+  "altText": {
+    "daivanlabsLogo": "Logo DaivanLabs"
+  },
+  "welcomeMessage": "Selamat Datang di NucleAi!",
   "welcomeSubtitle": "Platform kesehatan digital Anda. Akses alat dan sumber daya di bawah ini.",
   "featuredTools": "Alat Unggulan",
   "quickAccessTools": "Alat Akses Cepat",
@@ -48,6 +51,7 @@
     "collapseSidebar": "Ciutkan Sidebar",
     "home": "Beranda"
   },
+  "Master": "Master",
   "language": "Bahasa",
   "indonesian": "Indonesia",
   "english": "Inggris",
@@ -55,12 +59,12 @@
   "switchToIndonesian": "Ganti ke Bahasa Indonesia",
   "home": {
     "hero": {
-      "headline": "Kesehatan Digital di Ujung Jari Anda",
-      "subheadline": "Platform komprehensif untuk informasi kesehatan, alat klinis, dan sumber belajar.",
+      "headline": "Wawasan & Alat Kesehatan Berbasis AI",
+      "subheadline": "Manfaatkan kekuatan Kecerdasan Buatan untuk informasi kesehatan yang mudah diakses, alat klinis inovatif, dan wawasan yang dipersonalisasi.",
       "cta": "Jelajahi Alat Kami"
     },
     "features": {
-      "sectionTitle": "Fitur Utama DigiSehat",
+      "sectionTitle": "Fitur Utama NucleAi",
       "trustedInfo": {
         "title": "Informasi Kesehatan Terpercaya",
         "description": "Akses data medis dan referensi obat yang akurat dan terkini."

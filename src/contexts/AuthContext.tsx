@@ -4,7 +4,7 @@ import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 // Removed: import { useToast } from '@/components/ui/use-toast';
 
 // User type including profile level - Updated levels
-export type UserLevel = 'Free' | 'Researcher' | 'Administrator'; // Removed Premium, Added Administrator
+export type UserLevel = 'Free' | 'Researcher' | 'Administrator' | 'Master'; // Removed Premium, Added Administrator, Added Master
 
 type User = {
   id: string;
