@@ -128,7 +128,8 @@ const featureNameMap: Record<string, string> = {
     'mind_map_maker': 'AI Mind Map Generator',
     'clinical_scoring': 'Clinical Scoring Hub',
     'learning_resources': 'Learning Resources',
-    'explore_deepseek': 'Explore DeepSeek' // Added DeepSeek mapping
+    'explore_deepseek': 'Explore DeepSeek', // Added DeepSeek mapping
+    'explore_chatgpt': 'Explore ChatGPT'
     // 'health_statistics': 'Health Statistics' // Removed as page doesn't exist
 };
 
@@ -394,7 +395,7 @@ const AdminDashboard: React.FC = () => {
         'ai_chatbot', 'ai_peer_review', 'disease_library', 'drug_reference',
         'clinical_guidelines', 'interaction_checker', 'explore_gemini',
         'medical_calculator', 'nutrition_database', 'learning_resources',
-        'mind_map_maker', 'clinical_scoring', 'explore_deepseek' // Added explore_deepseek
+        'mind_map_maker', 'clinical_scoring', 'explore_deepseek', 'explore_chatgpt'
       ];
 
       for (const [userId, profileInfo] of userLevelMap.entries()) {
