@@ -1,9 +1,9 @@
 {
-  "brandName": "NucleAi",
+  "brandName": "DigiSehat",
   "altText": {
     "daivanlabsLogo": "DaivanLabs Logo"
   },
-  "welcomeMessage": "Welcome to NucleAi!",
+  "welcomeMessage": "Welcome to DigiSehat!",
   "welcomeSubtitle": "Your digital health platform. Access tools and resources below.",
   "featuredTools": "Featured Tools",
   "quickAccessTools": "Quick Access Tools",
@@ -65,7 +65,7 @@
       "cta": "Explore Our Tools"
     },
     "features": {
-      "sectionTitle": "Key Features of NucleAi",
+      "sectionTitle": "Key Features of DigiSehat",
       "trustedInfo": {
         "title": "Trusted Health Information",
         "description": "Access accurate and up-to-date medical data and drug references."
@@ -124,6 +124,10 @@
     "exploreDeepSeek": {
       "title": "Explore DeepSeek",
       "description": "Leverage DeepSeek AI for advanced medical insights."
+    },
+    "exploreChatGPT": {
+      "title": "Explore ChatGPT",
+      "description": "Interact with various ChatGPT models for a wide range of tasks."
     },
     "interactionChecker": {
       "title": "Drug Interaction Checker",

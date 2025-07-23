@@ -1,9 +1,9 @@
 {
-  "brandName": "NucleAi",
+  "brandName": "DigiSehat",
   "altText": {
     "daivanlabsLogo": "Logo DaivanLabs"
   },
-  "welcomeMessage": "Selamat Datang di NucleAi!",
+  "welcomeMessage": "Selamat Datang di DigiSehat!",
   "welcomeSubtitle": "Platform kesehatan digital Anda. Akses alat dan sumber daya di bawah ini.",
   "featuredTools": "Alat Unggulan",
   "quickAccessTools": "Alat Akses Cepat",
@@ -65,7 +65,7 @@
       "cta": "Jelajahi Alat Kami"
     },
     "features": {
-      "sectionTitle": "Fitur Utama NucleAi",
+      "sectionTitle": "Fitur Utama DigiSehat",
       "trustedInfo": {
         "title": "Informasi Kesehatan Terpercaya",
         "description": "Akses data medis dan referensi obat yang akurat dan terkini."
@@ -124,6 +124,10 @@
     "exploreDeepSeek": {
       "title": "Jelajahi DeepSeek",
       "description": "Manfaatkan DeepSeek AI untuk wawasan medis tingkat lanjut."
+    },
+    "exploreChatGPT": {
+      "title": "Jelajahi ChatGPT",
+      "description": "Berinteraksi dengan berbagai model ChatGPT untuk berbagai macam tugas."
     },
     "interactionChecker": {
       "title": "Pemeriksa Interaksi Obat",

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
 import PageHeader from '@/components/PageHeader';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Stethoscope, Book, Brain, FlaskConical, FileSearch, Calculator, Pill, HeartPulse, Apple, FileText, Computer, AlertTriangle, Network, ClipboardList, XCircle, Bot } from 'lucide-react'; // Added XCircle
+import { Stethoscope, Book, Brain, FlaskConical, FileSearch, Calculator, Pill, HeartPulse, Apple, FileText, Computer, AlertTriangle, Network, ClipboardList, XCircle, Bot, Cpu } from 'lucide-react'; // Added XCircle
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { useFeatureAccess } from '@/hooks/useFeatureAccess'; // Import hook
@@ -113,6 +113,15 @@ const toolsData: ToolData[] = [
     descriptionKey: 'toolsPage.exploreDeepSeek.description',
     icon: Bot,
     path: '/tools/explore-deepseek',
+    comingSoon: false
+  },
+  {
+    id: 14,
+    featureName: 'explore_chatgpt',
+    titleKey: 'toolsPage.exploreChatGPT.title',
+    descriptionKey: 'toolsPage.exploreChatGPT.description',
+    icon: Cpu,
+    path: '/tools/explore-chatgpt',
     comingSoon: false
   },
   {

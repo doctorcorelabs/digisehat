@@ -1,0 +1,6 @@
+name = "chatgpt-worker"
+main = "src/index.ts"
+compatibility_date = "2025-03-27"
+
+[vars]
+ALLOWED_ORIGIN = "https://digisehat.daivanlabs.com"
