@@ -1,11 +1,18 @@
+// File: cf-worker/chatgpt-worker/src/index.ts
+
 export interface Env {
 	OPENROUTER_API_KEY: string;
 	ALLOWED_ORIGIN: string;
 }
 
+// Perbarui RequestBody untuk menerima riwayat pesan
 interface RequestBody {
-	prompt: string;
+	prompt?: string; // Tetap ada untuk kompatibilitas
 	modelName?: string;
+	messages?: { // Array untuk riwayat percakapan
+		role: 'user' | 'model' | 'assistant' | 'system';
+		content: any;
+	}[];
 }
 
 // Helper function to create JSON response with CORS headers
@@ -49,8 +56,9 @@ export default {
 		let requestBody: RequestBody;
 		try {
 			requestBody = await request.json();
-			if (!requestBody.prompt) {
-				throw new Error("Request must include 'prompt'");
+			// Permintaan harus berisi 'prompt' atau 'messages'
+			if (!requestBody.prompt && (!requestBody.messages || requestBody.messages.length === 0)) {
+				throw new Error("Request must include 'prompt' or a non-empty 'messages' array");
 			}
 		} catch (error: any) {
 			return createJsonResponse({ error: `Bad Request: ${error.message}` }, 400, allowedOrigin);
@@ -58,11 +66,26 @@ export default {
 
 		try {
 			const modelName = requestBody.modelName || 'openai/gpt-4o-mini';
+			let apiMessages;
+
+			// Prioritaskan 'messages' jika ada untuk percakapan berlanjut
+			if (requestBody.messages && requestBody.messages.length > 0) {
+				apiMessages = requestBody.messages.map(msg => ({
+					...msg,
+					// API OpenRouter menggunakan 'assistant' untuk respons model
+					role: msg.role === 'model' ? 'assistant' : msg.role,
+				}));
+			} else {
+				// Gunakan 'prompt' untuk permintaan tunggal
+				apiMessages = [{ role: 'user', content: requestBody.prompt }];
+			}
+
 			const payload = {
 				model: modelName,
-				messages: [{ role: 'user', content: requestBody.prompt }],
+				messages: apiMessages,
 			};
 
+			// Panggilan ke OpenRouter tetap aman di sisi server
 			const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 				method: 'POST',
 				headers: {
