@@ -29,6 +29,13 @@
   # port = 8888
 
 # Redirects/Rewrites untuk SPA
+# Redirect for chatgpt-worker
+[[redirects]]
+  from = "/api/chatgpt-worker/*"
+  to = "https://chatgpt-worker.daivanfebrijuansetiya.workers.dev/:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
