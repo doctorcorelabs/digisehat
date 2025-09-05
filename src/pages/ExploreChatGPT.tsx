@@ -420,18 +420,16 @@ const ExploreChatGPT: React.FC<ExploreChatGPTProps> = ({ isAuthenticated: propIs
     });
 
 
-    const payload = {
-      modelName: thread.initialModel,
-      messages: messagesForApi,
-    };
-
     try {
       const res = await fetch("/api/chatgpt-worker", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({
+          messages: messagesForApi,
+          modelName: thread.initialModel,
+        })
       });
 
       if (!res.ok) {
@@ -441,7 +439,7 @@ const ExploreChatGPT: React.FC<ExploreChatGPTProps> = ({ isAuthenticated: propIs
       }
 
       const data = await res.json();
-      const responseContent = data.choices?.[0]?.message?.content;
+      const responseContent = data.responseText;
       let modelResponseImage: ResponseImageData | null = null; // OpenRouter text-only for now
 
       if (responseContent) {
