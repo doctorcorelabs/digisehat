@@ -264,8 +264,8 @@ async function handleRequest(request: Request): Promise<Response> {
 
     // --- Model Selection Logic ---
     // Updated validModels to include 2.5 Flash and remove 2.5 Pro Exp
-    const validModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-flash-preview-04-17"];
-    const defaultModel = "gemini-1.5-flash"; // Use a fast default
+    const validModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-flash-lite", "gemini-2.5-flash-preview-04-17"];
+    const defaultModel = "gemini-2.5-flash-lite"; // Use 2.5 Flash Lite as default
     const isLocalDev = false;
     const selectedModelIdentifier = (requestBody.modelName && validModels.includes(requestBody.modelName)) ? requestBody.modelName : defaultModel;
     //const useStreaming = selectedModelIdentifier === "gemini-2.5-pro-exp-03-25"; // Condition for streaming

@@ -6,7 +6,7 @@ const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require('@googl
 // --- Configuration ---
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 // Use a standard, valid Gemini model name
-const GEMINI_MODEL_NAME = "gemini-1.5-flash-latest"; 
+const GEMINI_MODEL_NAME = "gemini-2.5-flash-lite"; 
 // Fields to potentially supplement with AI
 const FIELDS_TO_SUPPLEMENT = [
   'indications_and_usage',

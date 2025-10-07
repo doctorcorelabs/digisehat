@@ -157,8 +157,8 @@ export default {
 		try {
 			const genAI = new GoogleGenerativeAI(apiKey);
 
-			const validModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-pro-exp-03-25"];
-			const defaultModel = "gemini-2.0-flash"; // Changed default model
+			const validModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.5-flash-lite", "gemini-2.5-pro-exp-03-25"];
+			const defaultModel = "gemini-2.5-flash-lite"; // Use 2.5 Flash Lite as default
 			const selectedModelIdentifier = (requestBody.modelName && validModels.includes(requestBody.modelName)) ? requestBody.modelName : defaultModel;
 			console.log(`CF Worker using model: ${selectedModelIdentifier}`); // No forcing needed here
 

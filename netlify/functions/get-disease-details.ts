@@ -8,7 +8,7 @@ if (!API_KEY) {
 }
 
 const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" }); // Or your preferred model
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" }); // Updated to 2.5 Flash Lite
 
 const generationConfig = {
   temperature: 0.7, // Adjust temperature for creativity vs. factuality

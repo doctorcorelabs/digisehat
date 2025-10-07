@@ -26,7 +26,7 @@ interface WorkerResponse {
 // --- Helper Function to call Gemini ---
 async function callGemini(apiKey: string, prompt: string): Promise<string> {
 	const genAI = new GoogleGenerativeAI(apiKey);
-	const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // Or 'gemini-pro'
+	const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // Updated to 2.5 Flash Lite
 
 	const generationConfig = {
 		temperature: 0.6,
